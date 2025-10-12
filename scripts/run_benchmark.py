@@ -62,23 +62,87 @@ MODE_OFFLINE = ModeConfig(name="offline", offline=True, epoch_multiplier=1.0)
 MODE_REAL = ModeConfig(name="real", offline=False, epoch_multiplier=1.2)
 
 VARIANTS: Sequence[VariantConfig] = (
-    VariantConfig("backprop_float", strategy="backprop", flip="off", flip_schedule="off"),
-    VariantConfig("backprop_ternary_step", strategy="backprop", flip="ternary", flip_schedule="per_step"),
+    VariantConfig(
+        "backprop_float", strategy="backprop", flip="off", flip_schedule="off"
+    ),
+    VariantConfig(
+        "backprop_ternary_step",
+        strategy="backprop",
+        flip="ternary",
+        flip_schedule="per_step",
+    ),
     VariantConfig("dfa_float", strategy="dfa", flip="off", flip_schedule="off"),
-    VariantConfig("dfa_ternary_step", strategy="dfa", flip="ternary", flip_schedule="per_step"),
-    VariantConfig("dfa_ternary_epoch", strategy="dfa", flip="ternary", flip_schedule="per_epoch"),
-    VariantConfig("ternary_dfa_step", strategy="ternary_dfa", flip="ternary", flip_schedule="per_step"),
-    VariantConfig("structured_orth_float", strategy="structured", flip="off", flip_schedule="off", model_overrides={"structure_type": "orthogonal", "feedback_refresh": "per_step"}),
-    VariantConfig("structured_orth_ternary", strategy="structured", flip="ternary", flip_schedule="per_step", model_overrides={"structure_type": "orthogonal", "feedback_refresh": "per_step"}),
-    VariantConfig("structured_hadamard_float", strategy="structured", flip="off", flip_schedule="off", model_overrides={"structure_type": "hadamard", "feedback_refresh": "per_step"}),
-    VariantConfig("structured_hadamard_ternary", strategy="structured", flip="ternary", flip_schedule="per_step", model_overrides={"structure_type": "hadamard", "feedback_refresh": "per_step"}),
+    VariantConfig(
+        "dfa_ternary_step", strategy="dfa", flip="ternary", flip_schedule="per_step"
+    ),
+    VariantConfig(
+        "dfa_ternary_epoch", strategy="dfa", flip="ternary", flip_schedule="per_epoch"
+    ),
+    VariantConfig(
+        "ternary_dfa_step",
+        strategy="ternary_dfa",
+        flip="ternary",
+        flip_schedule="per_step",
+    ),
+    VariantConfig(
+        "structured_orth_float",
+        strategy="structured",
+        flip="off",
+        flip_schedule="off",
+        model_overrides={
+            "structure_type": "orthogonal",
+            "feedback_refresh": "per_step",
+        },
+    ),
+    VariantConfig(
+        "structured_orth_ternary",
+        strategy="structured",
+        flip="ternary",
+        flip_schedule="per_step",
+        model_overrides={
+            "structure_type": "orthogonal",
+            "feedback_refresh": "per_step",
+        },
+    ),
+    VariantConfig(
+        "structured_hadamard_float",
+        strategy="structured",
+        flip="off",
+        flip_schedule="off",
+        model_overrides={
+            "structure_type": "hadamard",
+            "feedback_refresh": "per_step",
+        },
+    ),
+    VariantConfig(
+        "structured_hadamard_ternary",
+        strategy="structured",
+        flip="ternary",
+        flip_schedule="per_step",
+        model_overrides={
+            "structure_type": "hadamard",
+            "feedback_refresh": "per_step",
+        },
+    ),
 )
 
 DATASETS: Sequence[DatasetConfig] = (
-    DatasetConfig(name="mnist", preset="mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
-    DatasetConfig(name="ucr", preset="ucr_gunpoint_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
-    DatasetConfig(name="california_housing", preset="california_housing_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
-    DatasetConfig(name="20newsgroups", preset="20newsgroups_bow_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
+    DatasetConfig(
+        name="mnist", preset="mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)
+    ),
+    DatasetConfig(
+        name="ucr", preset="ucr_gunpoint_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)
+    ),
+    DatasetConfig(
+        name="california_housing",
+        preset="california_housing_mlp_dfa",
+        modes=(MODE_OFFLINE, MODE_REAL),
+    ),
+    DatasetConfig(
+        name="20newsgroups",
+        preset="20newsgroups_bow_mlp_dfa",
+        modes=(MODE_OFFLINE, MODE_REAL),
+    ),
 )
 
 
@@ -154,7 +218,8 @@ def _run_single(
     run_dir.mkdir(parents=True, exist_ok=True)
 
     print(
-        f"[run] dataset={dataset.name} mode={mode.name} variant={variant.identifier} seed={seed} -> {run_dir}"
+        f"[run] dataset={dataset.name} mode={mode.name} variant={variant.identifier} "
+        f"seed={seed} -> {run_dir}"
     )
 
     result = pipelines.run_pipeline(config)

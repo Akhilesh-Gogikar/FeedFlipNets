@@ -95,22 +95,88 @@ def collect() -> List[Row]:
             dataset=dataset,
             task_type=task_type_for(dataset),
             run_dir=str(rdir),
-            epochs=int(train_cfg.get("epochs")) if isinstance(train_cfg, dict) and "epochs" in train_cfg else None,
-            batch_size=int(train_cfg.get("batch_size")) if isinstance(train_cfg, dict) and "batch_size" in train_cfg else None,
-            lr=float(train_cfg.get("lr")) if isinstance(train_cfg, dict) and "lr" in train_cfg else None,
-            flip=str(train_cfg.get("flip")) if isinstance(train_cfg, dict) and "flip" in train_cfg else None,
-            flip_schedule=str(train_cfg.get("flip_schedule")) if isinstance(train_cfg, dict) and "flip_schedule" in train_cfg else None,
-            seed=int(train_cfg.get("seed")) if isinstance(train_cfg, dict) and "seed" in train_cfg else None,
-            test_loss=float(test_metrics.get("loss")) if isinstance(test_metrics, dict) and "loss" in test_metrics else None,
-            accuracy=float(test_metrics.get("accuracy")) if isinstance(test_metrics, dict) and "accuracy" in test_metrics else None,
-            macro_f1=float(test_metrics.get("macro_f1")) if isinstance(test_metrics, dict) and "macro_f1" in test_metrics else None,
-            mae=float(test_metrics.get("mae")) if isinstance(test_metrics, dict) and "mae" in test_metrics else None,
-            rmse=float(test_metrics.get("rmse")) if isinstance(test_metrics, dict) and "rmse" in test_metrics else None,
-            r2=float(test_metrics.get("r2")) if isinstance(test_metrics, dict) and "r2" in test_metrics else None,
-            sample_count=float(test_metrics.get("sample_count")) if isinstance(test_metrics, dict) and "sample_count" in test_metrics else None,
-            samples_per_step=float(test_metrics.get("samples_per_step")) if isinstance(test_metrics, dict) and "samples_per_step" in test_metrics else None,
-            test_throughput_samples_sec=float(test_metrics.get("test_throughput_samples_sec")) if isinstance(test_metrics, dict) and "test_throughput_samples_sec" in test_metrics else None,
-            ternary_zero_ratio=float(test_metrics.get("ternary_zero_ratio")) if isinstance(test_metrics, dict) and "ternary_zero_ratio" in test_metrics else None,
+            epochs=(
+                int(train_cfg.get("epochs"))
+                if isinstance(train_cfg, dict) and "epochs" in train_cfg
+                else None
+            ),
+            batch_size=(
+                int(train_cfg.get("batch_size"))
+                if isinstance(train_cfg, dict) and "batch_size" in train_cfg
+                else None
+            ),
+            lr=(
+                float(train_cfg.get("lr"))
+                if isinstance(train_cfg, dict) and "lr" in train_cfg
+                else None
+            ),
+            flip=(
+                str(train_cfg.get("flip"))
+                if isinstance(train_cfg, dict) and "flip" in train_cfg
+                else None
+            ),
+            flip_schedule=(
+                str(train_cfg.get("flip_schedule"))
+                if isinstance(train_cfg, dict) and "flip_schedule" in train_cfg
+                else None
+            ),
+            seed=(
+                int(train_cfg.get("seed"))
+                if isinstance(train_cfg, dict) and "seed" in train_cfg
+                else None
+            ),
+            test_loss=(
+                float(test_metrics.get("loss"))
+                if isinstance(test_metrics, dict) and "loss" in test_metrics
+                else None
+            ),
+            accuracy=(
+                float(test_metrics.get("accuracy"))
+                if isinstance(test_metrics, dict) and "accuracy" in test_metrics
+                else None
+            ),
+            macro_f1=(
+                float(test_metrics.get("macro_f1"))
+                if isinstance(test_metrics, dict) and "macro_f1" in test_metrics
+                else None
+            ),
+            mae=(
+                float(test_metrics.get("mae"))
+                if isinstance(test_metrics, dict) and "mae" in test_metrics
+                else None
+            ),
+            rmse=(
+                float(test_metrics.get("rmse"))
+                if isinstance(test_metrics, dict) and "rmse" in test_metrics
+                else None
+            ),
+            r2=(
+                float(test_metrics.get("r2"))
+                if isinstance(test_metrics, dict) and "r2" in test_metrics
+                else None
+            ),
+            sample_count=(
+                float(test_metrics.get("sample_count"))
+                if isinstance(test_metrics, dict) and "sample_count" in test_metrics
+                else None
+            ),
+            samples_per_step=(
+                float(test_metrics.get("samples_per_step"))
+                if isinstance(test_metrics, dict) and "samples_per_step" in test_metrics
+                else None
+            ),
+            test_throughput_samples_sec=(
+                float(test_metrics.get("test_throughput_samples_sec"))
+                if isinstance(test_metrics, dict)
+                and "test_throughput_samples_sec" in test_metrics
+                else None
+            ),
+            ternary_zero_ratio=(
+                float(test_metrics.get("ternary_zero_ratio"))
+                if isinstance(test_metrics, dict)
+                and "ternary_zero_ratio" in test_metrics
+                else None
+            ),
         )
         rows.append(row)
     return rows
@@ -138,10 +204,18 @@ def write_md(rows: List[Row], out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     lines: List[str] = []
     lines.append("# FeedFlipNets Modality Results (offline fixtures)\n")
-    lines.append("All runs were executed offline with deterministic seeds. Test-set metrics shown.\n")
+    lines.append(
+        "All runs were executed offline with deterministic seeds.\n"
+    )
+    lines.append(
+        "Test-set metrics shown.\n"
+    )
     lines.append("")
     # Compact table
-    lines.append("| Preset | Modality | Dataset | Flip | Schedule | Epochs | Acc | Macro-F1 | MAE | RMSE | R2 | Samples/Step | Test Throughput (samples/s) | Zero Ratio | Run Dir |")
+    lines.append(
+        "| Preset | Modality | Dataset | Flip | Schedule | Epochs | Acc | Macro-F1 | "
+        "MAE | RMSE | R2 | Samples/Step | Test Throughput (samples/s) | Zero Ratio | Run Dir |"
+    )
     lines.append("|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|")
     for r in rows:
         acc = f"{r.accuracy:.4f}" if r.accuracy is not None else ""
@@ -149,8 +223,14 @@ def write_md(rows: List[Row], out_path: Path) -> None:
         mae = f"{r.mae:.4f}" if r.mae is not None else ""
         rmse = f"{r.rmse:.4f}" if r.rmse is not None else ""
         r2 = f"{r.r2:.4f}" if r.r2 is not None else ""
-        samples_step = f"{r.samples_per_step:.2f}" if r.samples_per_step is not None else ""
-        throughput = f"{r.test_throughput_samples_sec:.2f}" if r.test_throughput_samples_sec is not None else ""
+        samples_step = (
+            f"{r.samples_per_step:.2f}" if r.samples_per_step is not None else ""
+        )
+        throughput = (
+            f"{r.test_throughput_samples_sec:.2f}"
+            if r.test_throughput_samples_sec is not None
+            else ""
+        )
         zero_ratio = f"{r.ternary_zero_ratio:.3f}" if r.ternary_zero_ratio is not None else ""
         lines.append(
             "| "
