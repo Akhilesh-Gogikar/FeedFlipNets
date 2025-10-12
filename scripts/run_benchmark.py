@@ -118,6 +118,87 @@ VARIANTS: Sequence[VariantConfig] = (
             "feedback_refresh": "per_step",
         },
     ),
+    # Learning-rate sweeps (global; applicable across datasets)
+    VariantConfig(
+        "backprop_float_lr06",
+        strategy="backprop",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"lr": 0.03},
+    ),
+    VariantConfig(
+        "backprop_float_lr10",
+        strategy="backprop",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"lr": 0.05},
+    ),
+    VariantConfig(
+        "backprop_float_lr15",
+        strategy="backprop",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"lr": 0.075},
+    ),
+    VariantConfig(
+        "dfa_float_lr06",
+        strategy="dfa",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"lr": 0.03},
+    ),
+    VariantConfig(
+        "dfa_float_lr10",
+        strategy="dfa",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"lr": 0.05},
+    ),
+    VariantConfig(
+        "dfa_float_lr15",
+        strategy="dfa",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"lr": 0.075},
+    ),
+    # Ternary threshold sweeps (used especially for text)
+    VariantConfig(
+        "dfa_ternary_epoch_tau002",
+        strategy="dfa",
+        flip="ternary",
+        flip_schedule="per_epoch",
+        train_overrides={"flip_threshold": 0.02},
+    ),
+    VariantConfig(
+        "dfa_ternary_epoch_tau005",
+        strategy="dfa",
+        flip="ternary",
+        flip_schedule="per_epoch",
+        train_overrides={"flip_threshold": 0.05},
+    ),
+    VariantConfig(
+        "dfa_ternary_epoch_tau010",
+        strategy="dfa",
+        flip="ternary",
+        flip_schedule="per_epoch",
+        train_overrides={"flip_threshold": 0.10},
+    ),
+    # Gradient clipping (notably for tabular/text baselines)
+    VariantConfig(
+        "dfa_float_clip1",
+        strategy="dfa",
+        flip="off",
+        flip_schedule="off",
+        train_overrides={"grad_clip": 1.0},
+    ),
+    VariantConfig(
+        "structured_hadamard_float_clip1",
+        strategy="structured",
+        flip="off",
+        flip_schedule="off",
+        model_overrides={"structure_type": "hadamard", "feedback_refresh": "per_step"},
+        train_overrides={"grad_clip": 1.0},
+    ),
 )
 
 DATASETS: Sequence[DatasetConfig] = (

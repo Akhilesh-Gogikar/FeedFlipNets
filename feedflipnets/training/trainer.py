@@ -168,6 +168,7 @@ class Trainer:
         ternary_mode: str | None = None,
         early_stopping_patience: int | None = None,
         checkpoint_dir: str | Path | None = None,
+        grad_clip: float | None = None,
     ) -> RunResult:
         if device != "cpu":  # pragma: no cover - guardrail
             raise ValueError("Only CPU execution is supported in the reference trainer")
@@ -239,6 +240,7 @@ class Trainer:
                 flip_schedule=resolved_schedule,
                 flip_enabled=flip_enabled,
                 split_name="train",
+                grad_clip=grad_clip,
             )
             total_steps += train_steps
             self._emit_epoch("train", epoch, train_metrics, split_loggers)
@@ -261,6 +263,7 @@ class Trainer:
                     flip_schedule="off",
                     flip_enabled=False,
                     split_name="val",
+                    grad_clip=None,
                 )
                 self._emit_epoch("val", epoch, val_metrics, split_loggers)
 
@@ -277,6 +280,7 @@ class Trainer:
                     flip_schedule="off",
                     flip_enabled=False,
                     split_name="test",
+                    grad_clip=None,
                 )
                 self._emit_epoch("test", epoch, test_metrics, split_loggers)
 
@@ -322,6 +326,7 @@ class Trainer:
         flip_schedule: str,
         flip_enabled: bool,
         split_name: str,
+        grad_clip: float | None,
     ) -> tuple[Mapping[str, float], StrategyState]:
         iterator = iter(loader)
         losses: list[float] = []
@@ -344,6 +349,16 @@ class Trainer:
             total_samples += int(batch.inputs.shape[0])
             if training:
                 grads, current_state = self.strategy.backward(activations, delta, current_state)
+                if grad_clip is not None and grad_clip > 0:
+                    # Compute global L2 norm across all parameter gradients
+                    sqsum = 0.0
+                    for g in grads.values():
+                        sqsum += float(np.sum(g.astype(np.float64) ** 2))
+                    norm = float(np.sqrt(sqsum))
+                    if norm > grad_clip:
+                        scale = float(grad_clip / (norm + 1e-12))
+                        for k, g in grads.items():
+                            grads[k] = g * scale
                 self.optimizer.step(self.model, grads)
                 if flip_enabled and flip_schedule == "per_step":
                     self.model.quantise()
