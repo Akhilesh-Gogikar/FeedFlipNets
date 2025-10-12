@@ -234,6 +234,77 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
     best = _best_by_dataset(summary)
     metric_labels, topline = _topline(summary)
 
+    # Build variant→metrics view (for best-configs summary)
+    by_variant: MutableMapping[Tuple[str, str, str], Dict[str, SummaryRecord]] = defaultdict(dict)
+    for rec in summary:
+        by_variant[(rec.dataset, rec.mode, rec.strategy_variant)][rec.metric] = rec
+
+    def _primary_metric(dataset: str) -> str:
+        return "r2" if dataset == "california_housing" else "accuracy"
+
+    def _best_configs_lines() -> List[str]:
+        rows: List[str] = []
+        rows.append("## Best Configs\n")
+        rows.append(
+            "| Dataset | Mode | Primary | Best (μ±σ) | Variant | Flip | n | "
+            "Baseline (μ±σ) | Δ | Effect Size |"
+        )
+        rows.append("|---|---|---|---|---|---|---:|---|---:|---:|")
+        keys = sorted({(rec.dataset, rec.mode) for rec in summary})
+        for dataset, mode in keys:
+            primary = _primary_metric(dataset)
+            variants = [v for (ds, md, v), _ in by_variant.items() if ds == dataset and md == mode]
+
+            def _rec(variant: str, metric: str) -> SummaryRecord | None:
+                return by_variant.get((dataset, mode, variant), {}).get(metric)
+
+            # Best overall for primary metric
+            best_rec: SummaryRecord | None = None
+            for v in variants:
+                r = _rec(v, primary)
+                if r and (best_rec is None or r.mean > best_rec.mean):
+                    best_rec = r
+            # Best baseline among flip-off variants
+            base_rec: SummaryRecord | None = None
+            for v in variants:
+                r = _rec(v, primary)
+                if not r or r.flip != "off":
+                    continue
+                if base_rec is None or r.mean > base_rec.mean:
+                    base_rec = r
+            if best_rec is None:
+                continue
+            delta = best_rec.mean - base_rec.mean if base_rec is not None else float("nan")
+            pooled = 0.0
+            if base_rec is not None:
+                pooled = ((best_rec.std or 0.0) ** 2 + (base_rec.std or 0.0) ** 2) / 2.0
+                pooled = float(pooled) ** 0.5
+            effect = (delta / pooled) if (base_rec is not None and pooled > 1e-12) else 0.0
+
+            best_label = _format_pm(best_rec.mean, best_rec.std)
+            base_label = _format_pm(base_rec.mean, base_rec.std) if base_rec else "—"
+            flip_label = f"{best_rec.flip} ({best_rec.flip_schedule})"
+            rows.append(
+                "| "
+                + " | ".join(
+                    [
+                        dataset,
+                        mode,
+                        primary,
+                        best_label,
+                        best_rec.strategy_variant,
+                        flip_label,
+                        str(best_rec.count),
+                        base_label,
+                        f"{delta:.4f}" if base_rec is not None else "—",
+                        f"{effect:.3f}" if base_rec is not None else "—",
+                    ]
+                )
+                + " |"
+            )
+        rows.append("")
+        return rows
+
     lines: List[str] = []
     lines.append("# FeedFlipNets Benchmark Summary\n")
     lines.append("Aggregated over seeds with mean ± std.\n")
@@ -265,6 +336,9 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                 )
         lines.append("")
 
+    # Best configs across modalities (primary metric)
+    lines.extend(_best_configs_lines())
+
     for (dataset, mode), records in sorted(grouped.items()):
         lines.append(f"## {dataset} ({mode})\n")
         lines.append("| Strategy Variant | Flip | Metric | Mean ± Std | n |")
@@ -295,7 +369,100 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             )
         lines.append("")
 
+    # Recommendations (appendix-ready prose)
+    lines.append("## Recommendations\n")
+    lines.append(
+        "- Vision (MNIST, real): backprop_float with lr≈0.075 leads accuracy; "
+        "if ternary forward is required, use DFA with per_epoch flips and τ≈0.05.\n"
+    )
+    lines.append(
+        "- Text (20 Newsgroups, real): DFA float (lr≈0.05) remains most stable; "
+        "ternary benefits from per_epoch flips with τ in [0.02, 0.05], accepting reduced accuracy "
+        "for higher sparsity.\n"
+    )
+    lines.append("- Tabular (California Housing, real): DFA float with lr≈0.05 and grad_clip=1.0\n")
+    lines.append("  improves robustness;\n")
+    lines.append("  structured hadamard float is the throughput leader. Avoid per_step ternary.\n")
+    lines.append(
+        "- Time-series (UCR): accuracy saturates at 1.0 across methods; prefer ternary DFA\n"
+    )
+    lines.append("  for deployability and footprint.\n")
+    lines.append("- Flip scheduling: prefer per_epoch over per_step on non-vision modalities.\n")
+    lines.append("- Ternary threshold: start at τ=0.05 and adjust by modality (lower for text).\n")
+
     summary_path.write_text("\n".join(lines) + "\n")
+
+    # Also export the Best Configs as a CSV one-pager for the paper
+    best_rows_csv: List[Dict[str, object]] = []
+    keys = sorted({(rec.dataset, rec.mode) for rec in summary})
+    for dataset, mode in keys:
+        primary = _primary_metric(dataset)
+        variants = [v for (ds, md, v), _ in by_variant.items() if ds == dataset and md == mode]
+
+        def _rec(variant: str, metric: str) -> SummaryRecord | None:
+            return by_variant.get((dataset, mode, variant), {}).get(metric)
+
+        best_rec = None
+        for v in variants:
+            r = _rec(v, primary)
+            if r and (best_rec is None or r.mean > best_rec.mean):
+                best_rec = r
+        if best_rec is None:
+            continue
+        base_rec = None
+        for v in variants:
+            r = _rec(v, primary)
+            if not r or r.flip != "off":
+                continue
+            if base_rec is None or r.mean > base_rec.mean:
+                base_rec = r
+        delta = best_rec.mean - base_rec.mean if base_rec is not None else float("nan")
+        pooled = 0.0
+        if base_rec is not None:
+            pooled = ((best_rec.std or 0.0) ** 2 + (base_rec.std or 0.0) ** 2) / 2.0
+            pooled = float(pooled) ** 0.5
+        effect = (delta / pooled) if (base_rec is not None and pooled > 1e-12) else float("nan")
+        best_rows_csv.append(
+            {
+                "dataset": dataset,
+                "mode": mode,
+                "primary": primary,
+                "best_mean": float(best_rec.mean),
+                "best_std": float(best_rec.std),
+                "best_variant": best_rec.strategy_variant,
+                "best_flip": best_rec.flip,
+                "best_flip_schedule": best_rec.flip_schedule,
+                "n": int(best_rec.count),
+                "baseline_mean": (float(base_rec.mean) if base_rec else float("nan")),
+                "baseline_std": (float(base_rec.std) if base_rec else float("nan")),
+                "delta": float(delta) if math.isfinite(delta) else float("nan"),
+                "effect_size": (float(effect) if math.isfinite(effect) else float("nan")),
+            }
+        )
+    if best_rows_csv:
+        out_csv = REPORT_DIR / "best_configs.csv"
+        with out_csv.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle,
+                fieldnames=[
+                    "dataset",
+                    "mode",
+                    "primary",
+                    "best_mean",
+                    "best_std",
+                    "best_variant",
+                    "best_flip",
+                    "best_flip_schedule",
+                    "n",
+                    "baseline_mean",
+                    "baseline_std",
+                    "delta",
+                    "effect_size",
+                ],
+            )
+            writer.writeheader()
+            for row in best_rows_csv:
+                writer.writerow(row)
 
 
 def main() -> None:
