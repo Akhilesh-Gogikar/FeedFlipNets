@@ -26,7 +26,7 @@ import os
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Sequence
+from typing import Dict, Mapping, Sequence
 
 from feedflipnets.training import pipelines
 
@@ -228,4 +228,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

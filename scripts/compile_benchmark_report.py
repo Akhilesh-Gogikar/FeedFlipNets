@@ -23,7 +23,7 @@ from collections import defaultdict
 from dataclasses import dataclass, asdict
 from pathlib import Path
 from statistics import mean, stdev
-from typing import Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Mapping, MutableMapping, Sequence, Tuple
 
 
 ROOT = Path("runs/bench")
