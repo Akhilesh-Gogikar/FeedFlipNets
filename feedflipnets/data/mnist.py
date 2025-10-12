@@ -12,16 +12,22 @@ from .cache import fetch
 from .registry import DatasetSpec, DataSpec, register_dataset
 from .utils import batch_iterator, deterministic_split, resolve_cache_dir
 
-MNIST_URL = "https://storage.googleapis.com/tf-keras-datasets/mnist.npz"
-MNIST_CHECKSUM = "8ecf920312e1afce37bc2c6c96142e1698af7837f2ca82bb28d5f633cb3517a2"
+MNIST_URL = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
+MNIST_CHECKSUM = "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1"
 
 
 def _load_archive(path: Path) -> tuple[np.ndarray, np.ndarray]:
     data = np.load(path)
-    x_train = data["X_train"].astype(np.float32)
-    y_train = data["y_train"].astype(np.int64)
-    x_test = data["X_test"].astype(np.float32)
-    y_test = data["y_test"].astype(np.int64)
+    def _lookup(*keys: str) -> np.ndarray:
+        for key in keys:
+            if key in data:
+                return data[key]
+        raise KeyError(f"None of {keys} found in MNIST archive")
+
+    x_train = _lookup("X_train", "x_train").astype(np.float32)
+    y_train = _lookup("y_train", "Y_train").astype(np.int64)
+    x_test = _lookup("X_test", "x_test").astype(np.float32)
+    y_test = _lookup("y_test", "Y_test").astype(np.int64)
     x = np.concatenate([x_train, x_test], axis=0)
     y = np.concatenate([y_train, y_test], axis=0)
     return x, y
