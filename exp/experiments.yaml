@@ -1,0 +1,20 @@
+subsets:
+  MWR:
+    datasets: [mnist]
+    modes: [offline, real]
+    variants: [backprop_float, dfa_float]
+    seeds: [0]
+
+  ABLATE:
+    datasets: [mnist, 20newsgroups]
+    modes: [real]
+    variants: [backprop_float, dfa_float, dfa_ternary_epoch]
+    seeds: [0, 1]
+
+  SWEEP:
+    # Full matrix uses script defaults (all datasets/modes/variants, seeds 0,1,2)
+    datasets: []
+    modes: []
+    variants: []
+    seeds: [0, 1, 2]
+
