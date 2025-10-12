@@ -70,7 +70,8 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
         env = manifest.get("environment", {}) if isinstance(manifest, dict) else {}
         if isinstance(env, dict) and env.get("offline") in {"0", 0, False}:
             mode = "real"
-        variant = run_dir.relative_to(root).parts[2] if len(run_dir.relative_to(root).parts) >= 3 else strategy
+        parts = run_dir.relative_to(root).parts
+        variant = parts[2] if len(parts) >= 3 else strategy
         seed_str = run_dir.name.replace("seed", "")
         try:
             seed = int(seed_str)
@@ -86,8 +87,14 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
             if isinstance(test_timing, dict):
                 total_sec = test_timing.get("total_sec")
                 sample_count = numeric_metrics.get("sample_count")
-                if isinstance(total_sec, (int, float)) and total_sec > 0 and isinstance(sample_count, (int, float)):
-                    numeric_metrics["test_throughput_samples_sec"] = float(sample_count) / float(total_sec)
+                if (
+                    isinstance(total_sec, (int, float))
+                    and total_sec > 0
+                    and isinstance(sample_count, (int, float))
+                ):
+                    numeric_metrics["test_throughput_samples_sec"] = (
+                        float(sample_count) / float(total_sec)
+                    )
         yield RunRecord(
             dataset=dataset,
             mode=mode,
@@ -126,8 +133,11 @@ class SummaryRecord:
     count: int
 
 
+GroupKey = Tuple[str, str, str, str, str, str]
+
+
 def _aggregate(runs: Sequence[RunRecord]) -> List[SummaryRecord]:
-    grouped: MutableMapping[Tuple[str, str, str, str, str, str], List[RunRecord]] = defaultdict(list)
+    grouped: MutableMapping[GroupKey, List[RunRecord]] = defaultdict(list)
     for run in runs:
         grouped[_group_key(run)].append(run)
 
@@ -266,7 +276,11 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             key = (dataset, mode)
             highlight = ""
             best_record = best.get(key)
-            if best_record and record.metric == best_record.metric and math.isclose(record.mean, best_record.mean):
+            if (
+                best_record
+                and record.metric == best_record.metric
+                and math.isclose(record.mean, best_record.mean)
+            ):
                 highlight = " **(best)**"
             lines.append(
                 "| "

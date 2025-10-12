@@ -18,6 +18,7 @@ MNIST_CHECKSUM = "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673
 
 def _load_archive(path: Path) -> tuple[np.ndarray, np.ndarray]:
     data = np.load(path)
+
     def _lookup(*keys: str) -> np.ndarray:
         for key in keys:
             if key in data:
