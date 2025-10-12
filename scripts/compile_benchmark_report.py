@@ -78,9 +78,7 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
         except ValueError:
             seed = int(train_cfg.get("seed", 0)) if isinstance(train_cfg, dict) else 0
         numeric_metrics = {
-            key: float(value)
-            for key, value in metrics.items()
-            if isinstance(value, (int, float))
+            key: float(value) for key, value in metrics.items() if isinstance(value, (int, float))
         }
         if isinstance(timing, dict):
             test_timing = timing.get("test")
@@ -92,8 +90,8 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
                     and total_sec > 0
                     and isinstance(sample_count, (int, float))
                 ):
-                    numeric_metrics["test_throughput_samples_sec"] = (
-                        float(sample_count) / float(total_sec)
+                    numeric_metrics["test_throughput_samples_sec"] = float(sample_count) / float(
+                        total_sec
                     )
         yield RunRecord(
             dataset=dataset,
@@ -245,7 +243,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
         lines.append("## Topline Highlights\n")
         lines.append("| Dataset | Mode | Metric | Mean ± Std | Strategy Variant | Flip | n |")
         lines.append("|---|---|---|---|---|---|---:|")
-        for (dataset, mode) in sorted(topline.keys()):
+        for dataset, mode in sorted(topline.keys()):
             records = topline[(dataset, mode)]
             for metric in sorted(records.keys()):
                 record = records[metric]

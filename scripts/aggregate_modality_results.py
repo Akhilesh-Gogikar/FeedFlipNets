@@ -167,14 +167,12 @@ def collect() -> List[Row]:
             ),
             test_throughput_samples_sec=(
                 float(test_metrics.get("test_throughput_samples_sec"))
-                if isinstance(test_metrics, dict)
-                and "test_throughput_samples_sec" in test_metrics
+                if isinstance(test_metrics, dict) and "test_throughput_samples_sec" in test_metrics
                 else None
             ),
             ternary_zero_ratio=(
                 float(test_metrics.get("ternary_zero_ratio"))
-                if isinstance(test_metrics, dict)
-                and "ternary_zero_ratio" in test_metrics
+                if isinstance(test_metrics, dict) and "ternary_zero_ratio" in test_metrics
                 else None
             ),
         )
@@ -204,12 +202,8 @@ def write_md(rows: List[Row], out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     lines: List[str] = []
     lines.append("# FeedFlipNets Modality Results (offline fixtures)\n")
-    lines.append(
-        "All runs were executed offline with deterministic seeds.\n"
-    )
-    lines.append(
-        "Test-set metrics shown.\n"
-    )
+    lines.append("All runs were executed offline with deterministic seeds.\n")
+    lines.append("Test-set metrics shown.\n")
     lines.append("")
     # Compact table
     lines.append(
@@ -223,9 +217,7 @@ def write_md(rows: List[Row], out_path: Path) -> None:
         mae = f"{r.mae:.4f}" if r.mae is not None else ""
         rmse = f"{r.rmse:.4f}" if r.rmse is not None else ""
         r2 = f"{r.r2:.4f}" if r.r2 is not None else ""
-        samples_step = (
-            f"{r.samples_per_step:.2f}" if r.samples_per_step is not None else ""
-        )
+        samples_step = f"{r.samples_per_step:.2f}" if r.samples_per_step is not None else ""
         throughput = (
             f"{r.test_throughput_samples_sec:.2f}"
             if r.test_throughput_samples_sec is not None
