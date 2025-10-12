@@ -422,6 +422,12 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             pooled = ((best_rec.std or 0.0) ** 2 + (base_rec.std or 0.0) ** 2) / 2.0
             pooled = float(pooled) ** 0.5
         effect = (delta / pooled) if (base_rec is not None and pooled > 1e-12) else float("nan")
+        baseline_present = bool(base_rec is not None)
+        note = ""
+        if not baseline_present:
+            note = "no_baseline"
+        elif primary == "accuracy" and best_rec.mean >= 0.9995:
+            note = "saturated"
         best_rows_csv.append(
             {
                 "dataset": dataset,
@@ -437,6 +443,8 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                 "baseline_std": (float(base_rec.std) if base_rec else float("nan")),
                 "delta": float(delta) if math.isfinite(delta) else float("nan"),
                 "effect_size": (float(effect) if math.isfinite(effect) else float("nan")),
+                "baseline_present": baseline_present,
+                "note": note,
             }
         )
     if best_rows_csv:
@@ -458,11 +466,113 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                     "baseline_std",
                     "delta",
                     "effect_size",
+                    "baseline_present",
+                    "note",
                 ],
             )
             writer.writeheader()
             for row in best_rows_csv:
                 writer.writerow(row)
+
+        # Best Configs — markdown-only table (paper-ready)
+        md_path = REPORT_DIR / "best_configs_table.md"
+        md_lines = [
+            "| Dataset | Mode | Primary | Best (μ±σ) | Variant | Flip | n | "
+            "Baseline (μ±σ) | Δ | Effect | Note |",
+            "|---|---|---|---|---|---|---:|---|---:|---:|---|",
+        ]
+        for row in best_rows_csv:
+            best_label = _format_pm(float(row["best_mean"]), float(row["best_std"]))
+            if math.isfinite(float(row["baseline_mean"])):
+                base_label = _format_pm(float(row["baseline_mean"]), float(row["baseline_std"]))
+            else:
+                base_label = "—"
+            delta_str = f"{float(row['delta']):.4f}" if math.isfinite(float(row["delta"])) else "—"
+            effect_str = (
+                f"{float(row['effect_size']):.3f}"
+                if math.isfinite(float(row["effect_size"]))
+                else "—"
+            )
+            flip_label = f"{row['best_flip']} ({row['best_flip_schedule']})"
+            md_lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        str(row["dataset"]),
+                        str(row["mode"]),
+                        str(row["primary"]),
+                        best_label,
+                        str(row["best_variant"]),
+                        flip_label,
+                        str(row["n"]),
+                        base_label,
+                        delta_str,
+                        effect_str,
+                        str(row["note"]),
+                    ]
+                )
+                + " |"
+            )
+        md_path.write_text("\n".join(md_lines) + "\n")
+
+        # Best Configs — LaTeX table (paper-ready)
+        def _tex_escape(s: str) -> str:
+            return s.replace("_", "\\_")
+
+        tex_path = REPORT_DIR / "best_configs_table.tex"
+        header = "\\begin{tabular}{lllcclrcc l}\n"
+        header += "\\toprule\n"
+        header += (
+            "Dataset & Mode & Primary & Best ($\\mu\\pm\\sigma$) & Variant & Flip & n & Baseline & "
+            "$\\Delta$ & Effect & Note \\\\\\n"
+        )
+        header += "\\midrule\n"
+        rows_tex: List[str] = []
+        for row in best_rows_csv:
+            best_label = f"{float(row['best_mean']):.4f} \\pm {float(row['best_std']):.4f}"
+            if math.isfinite(float(row["baseline_mean"])):
+                base_label = (
+                    f"{float(row['baseline_mean']):.4f} \\pm {float(row['baseline_std']):.4f}"
+                )
+            else:
+                base_label = "—"
+            delta_str = f"{float(row['delta']):.4f}" if math.isfinite(float(row["delta"])) else "—"
+            effect_str = (
+                f"{float(row['effect_size']):.3f}"
+                if math.isfinite(float(row["effect_size"]))
+                else "—"
+            )
+            flip_label = f"{row['best_flip']} ({row['best_flip_schedule']})"
+            rows_tex.append(
+                " ".join(
+                    [
+                        _tex_escape(str(row["dataset"])),
+                        "&",
+                        _tex_escape(str(row["mode"])),
+                        "&",
+                        _tex_escape(str(row["primary"])),
+                        "&",
+                        best_label,
+                        "&",
+                        _tex_escape(str(row["best_variant"])),
+                        "&",
+                        _tex_escape(flip_label),
+                        "&",
+                        str(row["n"]),
+                        "&",
+                        base_label,
+                        "&",
+                        delta_str,
+                        "&",
+                        effect_str,
+                        "&",
+                        _tex_escape(str(row["note"])),
+                        "\\\\",
+                    ]
+                )
+            )
+        trailer = "\\bottomrule\n\\end{tabular}\n"
+        tex_path.write_text(header + "\n".join(rows_tex) + "\n" + trailer)
 
 
 def main() -> None:
@@ -479,6 +589,72 @@ def main() -> None:
     if summary:
         _write_csv(REPORT_DIR / "benchmark_summary.csv", summary)
     _write_markdown(runs, summary)
+    # Auto-generate simple plots for LR and tau sweeps from summary
+    plots_dir = REPORT_DIR / "plots"
+    plots_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        import matplotlib.pyplot as plt  # type: ignore
+    except Exception:
+        plt = None  # type: ignore
+    if plt is not None:
+        # Build lookup
+        rec_map: Dict[Tuple[str, str, str, str], SummaryRecord] = {}
+        for rec in summary:
+            rec_map[(rec.dataset, rec.mode, rec.strategy_variant, rec.metric)] = rec
+        keys = sorted({(rec.dataset, rec.mode) for rec in summary})
+        lr_map = {"lr06": 0.03, "lr10": 0.05, "lr15": 0.075}
+        for dataset, mode in keys:
+            primary = "r2" if dataset == "california_housing" else "accuracy"
+            X: List[float] = []
+            y_back: List[float] = []
+            e_back: List[float] = []
+            y_dfa: List[float] = []
+            e_dfa: List[float] = []
+            for suffix, lr in lr_map.items():
+                vb = f"backprop_float_{suffix}"
+                vd = f"dfa_float_{suffix}"
+                rb = rec_map.get((dataset, mode, vb, primary))
+                rd = rec_map.get((dataset, mode, vd, primary))
+                if rb is not None and rd is not None:
+                    X.append(lr)
+                    y_back.append(rb.mean)
+                    e_back.append(rb.std)
+                    y_dfa.append(rd.mean)
+                    e_dfa.append(rd.std)
+            if X:
+                plt.figure(figsize=(4.8, 3.2))
+                plt.errorbar(X, y_back, yerr=e_back, marker="o", label="backprop")
+                plt.errorbar(X, y_dfa, yerr=e_dfa, marker="s", label="dfa")
+                plt.xlabel("Learning rate")
+                plt.ylabel(primary)
+                plt.title(f"LR sweep — {dataset} ({mode})")
+                plt.grid(True, alpha=0.3)
+                plt.legend()
+                plt.tight_layout()
+                plt.savefig(plots_dir / f"lr_sweep_{dataset}_{mode}.png", dpi=200)
+                plt.close()
+        for dataset, mode in keys:
+            taus = [0.02, 0.05, 0.10]
+            X: List[float] = []
+            Y: List[float] = []
+            E: List[float] = []
+            for tau in taus:
+                v = f"dfa_ternary_epoch_tau{int(tau*1000):03d}"
+                r = rec_map.get((dataset, mode, v, "accuracy"))
+                if r is not None:
+                    X.append(tau)
+                    Y.append(r.mean)
+                    E.append(r.std)
+            if X:
+                plt.figure(figsize=(4.8, 3.2))
+                plt.errorbar(X, Y, yerr=E, marker="o")
+                plt.xlabel("tau (threshold)")
+                plt.ylabel("accuracy")
+                plt.title(f"Tau sweep — {dataset} ({mode})")
+                plt.grid(True, alpha=0.3)
+                plt.tight_layout()
+                plt.savefig(plots_dir / f"tau_sweep_{dataset}_{mode}.png", dpi=200)
+                plt.close()
     print(f"Wrote aggregated artefacts to {REPORT_DIR}")
 
 
