@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import random
+import time
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Mapping, MutableSequence, Sequence
+from typing import Dict, Iterable, Mapping, MutableSequence, Sequence
 
 import numpy as np
-import warnings
 
 from ..core.activations import relu
 from ..core.quant import quantize_ternary_det, quantize_ternary_stoch
@@ -28,6 +29,16 @@ from .metrics import compute_metrics, default_metrics
 
 def _relu_deriv(z: Array) -> Array:
     return (z > 0).astype(np.float32)
+
+
+def _ternary_zero_ratio(model: "FeedForwardModel") -> float:
+    total = sum(int(w.size) for w in model.weights)
+    if total == 0:
+        return 0.0
+    zeros = 0
+    for w in model.weights:
+        zeros += int(np.count_nonzero(np.isclose(w, 0.0)))
+    return float(zeros / total)
 
 
 @dataclass
@@ -131,6 +142,7 @@ class Trainer:
         self.optimizer = optimizer
         self.callbacks = list(callbacks or [])
         self._state: StrategyState | None = None
+        self._timings: Dict[str, list[float]] = {"train": [], "val": [], "test": []}
 
     def run(
         self,
@@ -226,6 +238,7 @@ class Trainer:
                 training=True,
                 flip_schedule=resolved_schedule,
                 flip_enabled=flip_enabled,
+                split_name="train",
             )
             total_steps += train_steps
             self._emit_epoch("train", epoch, train_metrics, split_loggers)
@@ -247,6 +260,7 @@ class Trainer:
                     training=False,
                     flip_schedule="off",
                     flip_enabled=False,
+                    split_name="val",
                 )
                 self._emit_epoch("val", epoch, val_metrics, split_loggers)
 
@@ -262,6 +276,7 @@ class Trainer:
                     training=False,
                     flip_schedule="off",
                     flip_enabled=False,
+                    split_name="test",
                 )
                 self._emit_epoch("test", epoch, test_metrics, split_loggers)
 
@@ -287,6 +302,9 @@ class Trainer:
             summary_path="",
         )
 
+    def timings(self) -> Mapping[str, Sequence[float]]:
+        return {split: list(values) for split, values in self._timings.items() if values}
+
     # ------------------------------------------------------------------
     # Internal helpers
 
@@ -303,12 +321,15 @@ class Trainer:
         training: bool,
         flip_schedule: str,
         flip_enabled: bool,
+        split_name: str,
     ) -> tuple[Mapping[str, float], StrategyState]:
         iterator = iter(loader)
         losses: list[float] = []
         preds_all: list[Array] = []
         targets_all: list[Array] = []
         current_state = state
+        total_samples = 0
+        start = time.perf_counter()
         for _ in range(max(1, steps)):
             try:
                 batch = next(iterator)
@@ -320,11 +341,13 @@ class Trainer:
             losses.append(loss_value)
             preds_all.append(predictions.copy())
             targets_all.append(batch.targets.copy())
+            total_samples += int(batch.inputs.shape[0])
             if training:
                 grads, current_state = self.strategy.backward(activations, delta, current_state)
                 self.optimizer.step(self.model, grads)
                 if flip_enabled and flip_schedule == "per_step":
                     self.model.quantise()
+
         metrics = {"loss": float(np.mean(losses)) if losses else 0.0}
         if preds_all:
             predictions = np.concatenate(preds_all, axis=0)
@@ -338,6 +361,12 @@ class Trainer:
                     num_classes=num_classes,
                 )
             )
+
+        elapsed = max(time.perf_counter() - start, 1e-9)
+        self._timings.setdefault(split_name, []).append(elapsed)
+        metrics["sample_count"] = float(total_samples)
+        metrics["samples_per_step"] = float(total_samples / max(steps, 1))
+        metrics["ternary_zero_ratio"] = _ternary_zero_ratio(self.model)
         return metrics, current_state
 
     def _emit_epoch(

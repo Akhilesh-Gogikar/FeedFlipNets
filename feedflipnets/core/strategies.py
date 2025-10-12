@@ -213,8 +213,12 @@ class StructuredFeedback:
         return False
 
     def _signature(self, dims: Sequence[int]) -> List[Tuple[int, int]]:
-        output_dim = dims[-1]
-        return [(output_dim, dims[idx + 1]) for idx in range(len(dims) - 2)]
+        pairs: List[Tuple[int, int]] = []
+        for idx in range(len(dims) - 2):
+            rows = dims[idx + 2]
+            cols = dims[idx + 1]
+            pairs.append((rows, cols))
+        return pairs
 
     def _build_stack(self, dims: Sequence[int]) -> List[Array]:
         matrices: List[Array] = []

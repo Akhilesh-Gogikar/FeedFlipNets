@@ -1,0 +1,5 @@
+preset,modality,dataset,task_type,run_dir,epochs,batch_size,lr,flip,flip_schedule,seed,test_loss,accuracy,macro_f1,mae,rmse,r2,sample_count,samples_per_step,test_throughput_samples_sec,ternary_zero_ratio
+mnist_mlp_dfa,vision,mnist,multiclass,runs/mnist-mlp-dfa,5,64,0.05,ternary,per_step,7,0.6476020564358254,0.96875,0.8857142851867543,,,,128.0,64.0,,0.6727008928571429
+ucr_gunpoint_mlp_dfa,time_series,ucr,multiclass,runs/ucr-gunpoint-mlp-dfa,6,32,0.02,ternary,per_step,11,-1.000000082240371e-09,1.0,0.9999999994313753,,,,64.0,32.0,,0.6517906526548672
+california_housing_mlp_dfa,tabular,california_housing,regression,runs/california-housing-mlp-dfa,8,64,0.01,off,,5,5.858938968017064,,,1.8603766250804321,2.4205245233248647,0.07314272094914054,64.0,64.0,,0.0
+20newsgroups_bow_mlp_dfa,text,20newsgroups,multiclass,runs/20newsgroups-bow-mlp-dfa,6,64,0.05,ternary,per_step,13,16.189876608396652,0.21875,0.146680231086268,,,,64.0,64.0,,0.6820671306325823

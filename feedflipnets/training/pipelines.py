@@ -479,6 +479,18 @@ def _train_single(config: Mapping[str, object]) -> RunResult:
         checkpoint_dir=run_dir,
     )
 
+    timings = trainer.timings()
+    if timings:
+        timing_payload = {
+            split: {
+                "total_sec": float(sum(values)),
+                "per_phase_sec": [float(v) for v in values],
+            }
+            for split, values in timings.items()
+            if values
+        }
+        (run_dir / "timing.json").write_text(json.dumps(timing_payload, indent=2))
+
     test_metrics_final = capture_test.last or {}
     (run_dir / "metrics_test.json").write_text(json.dumps(test_metrics_final, indent=2))
 

@@ -1,4 +1,4 @@
-.PHONY: setup test smoke format lint run precommit clean
+.PHONY: setup test smoke format lint run precommit report bench clean
 
 VENV ?= .venv
 PYTHON ?= python3
@@ -40,6 +40,16 @@ smoke:
 		echo "==> $$preset"; \
 		FEEDFLIP_DATA_OFFLINE=1 PYTHONPATH=. $(PYTHON_BIN) -m cli.main --preset $$preset --offline; \
 	done
+
+report:
+	@echo "Aggregating results to data/report/"
+	FEEDFLIP_DATA_OFFLINE=1 PYTHONPATH=. $(PYTHON_BIN) scripts/aggregate_modality_results.py
+
+bench:
+	@echo "Running comprehensive benchmark sweep (this may take a while)"
+	PYTHONPATH=. $(PYTHON_BIN) scripts/run_benchmark.py $(ARGS)
+	@echo "Compiling benchmark report"
+	PYTHONPATH=. $(PYTHON_BIN) scripts/compile_benchmark_report.py
 
 run:
 	@if [ -z "$(PRESET)" ]; then \
