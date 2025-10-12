@@ -477,6 +477,7 @@ def _train_single(config: Mapping[str, object]) -> RunResult:
         flip_schedule=resolved_schedule,
         early_stopping_patience=early_stopping,
         checkpoint_dir=run_dir,
+        grad_clip=(float(train_cfg["grad_clip"]) if "grad_clip" in train_cfg else None),
     )
 
     timings = trainer.timings()

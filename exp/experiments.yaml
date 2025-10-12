@@ -18,3 +18,20 @@ subsets:
     variants: []
     seeds: [0, 1, 2]
 
+  HP_MNIST:
+    datasets: [mnist]
+    modes: [real]
+    variants: [backprop_float_lr06, backprop_float_lr10, backprop_float_lr15, dfa_float_lr06, dfa_float_lr10, dfa_float_lr15]
+    seeds: [0, 1, 2]
+
+  HP_20NG:
+    datasets: [20newsgroups]
+    modes: [real]
+    variants: [dfa_float, dfa_ternary_epoch_tau002, dfa_ternary_epoch_tau005, dfa_ternary_epoch_tau010]
+    seeds: [0, 1, 2]
+
+  HP_CALIFORNIA:
+    datasets: [california_housing]
+    modes: [real]
+    variants: [dfa_float_lr06, dfa_float_lr10, dfa_float_lr15, dfa_float_clip1, structured_hadamard_float, structured_hadamard_float_clip1]
+    seeds: [0, 1, 2]

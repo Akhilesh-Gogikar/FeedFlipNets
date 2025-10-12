@@ -41,42 +41,48 @@ def _load_plan(path: Path) -> dict:
 @app.command()
 def run(
     plan: Path = typer.Option(Path("exp/experiments.yaml"), help="Path to experiments.yaml"),
-    subset: str = typer.Option(
-        "MWR", help="Subset key from experiments.yaml (e.g., MWR, ABLATE, SWEEP)"
+    subset: List[str] = typer.Option(
+        ["MWR"], help="Subset key(s) from experiments.yaml; can be repeated"
     ),
     data_root: Optional[Path] = typer.Option(
         None, help="Optional datasets root (unused by offline fixtures)"
     ),
 ) -> None:
-    """Run a benchmark subset defined in experiments.yaml."""
+    """Run one or more benchmark subsets defined in experiments.yaml."""
 
     cfg = _load_plan(plan)
-    entry = (cfg.get("subsets") or {}).get(subset, {})
-    if not entry:
-        raise typer.BadParameter(f"Subset {subset!r} not found in {plan}")
+    subsets = subset or ["MWR"]
+    for name in subsets:
+        entry = (cfg.get("subsets") or {}).get(name, {})
+        if not entry:
+            raise typer.BadParameter(f"Subset {name!r} not found in {plan}")
 
-    datasets = [str(x) for x in entry.get("datasets") or []]
-    modes = [str(x) for x in entry.get("modes") or []]
-    variants = [str(x) for x in entry.get("variants") or []]
-    seeds = [str(int(x)) for x in entry.get("seeds") or []]
+        datasets = [str(x) for x in entry.get("datasets") or []]
+        modes = [str(x) for x in entry.get("modes") or []]
+        variants = [str(x) for x in entry.get("variants") or []]
+        seeds = [str(int(x)) for x in entry.get("seeds") or []]
 
-    args: List[str] = [
-        "python",
-        "-m",
-        "scripts.run_benchmark",
-    ]
-    if datasets:
-        args.extend(["--datasets", *datasets])
-    if modes:
-        args.extend(["--modes", *modes])
-    if variants:
-        args.extend(["--variants", *variants])
-    if seeds:
-        args.extend(["--seeds", *seeds])
+        args: List[str] = [
+            "python",
+            "-m",
+            "scripts.run_benchmark",
+        ]
+        if datasets:
+            args.extend(["--datasets", *datasets])
+        if modes:
+            args.extend(["--modes", *modes])
+        if variants:
+            args.extend(["--variants", *variants])
+        if seeds:
+            args.extend(["--seeds", *seeds])
 
-    _sh(args)
+        typer.echo(
+            "[exp.runner] Running subset "
+            f"{name}: datasets={datasets} modes={modes} variants={variants} seeds={seeds}"
+        )
+        _sh(args)
 
-    # Always compile a report after a run for quick feedback
+    # Always compile a report after all subsets
     _sh(["python", "-m", "scripts.compile_benchmark_report"])
 
 
