@@ -62,9 +62,7 @@ MODE_OFFLINE = ModeConfig(name="offline", offline=True, epoch_multiplier=1.0)
 MODE_REAL = ModeConfig(name="real", offline=False, epoch_multiplier=1.2)
 
 VARIANTS: Sequence[VariantConfig] = (
-    VariantConfig(
-        "backprop_float", strategy="backprop", flip="off", flip_schedule="off"
-    ),
+    VariantConfig("backprop_float", strategy="backprop", flip="off", flip_schedule="off"),
     VariantConfig(
         "backprop_ternary_step",
         strategy="backprop",
@@ -72,12 +70,8 @@ VARIANTS: Sequence[VariantConfig] = (
         flip_schedule="per_step",
     ),
     VariantConfig("dfa_float", strategy="dfa", flip="off", flip_schedule="off"),
-    VariantConfig(
-        "dfa_ternary_step", strategy="dfa", flip="ternary", flip_schedule="per_step"
-    ),
-    VariantConfig(
-        "dfa_ternary_epoch", strategy="dfa", flip="ternary", flip_schedule="per_epoch"
-    ),
+    VariantConfig("dfa_ternary_step", strategy="dfa", flip="ternary", flip_schedule="per_step"),
+    VariantConfig("dfa_ternary_epoch", strategy="dfa", flip="ternary", flip_schedule="per_epoch"),
     VariantConfig(
         "ternary_dfa_step",
         strategy="ternary_dfa",
@@ -127,12 +121,8 @@ VARIANTS: Sequence[VariantConfig] = (
 )
 
 DATASETS: Sequence[DatasetConfig] = (
-    DatasetConfig(
-        name="mnist", preset="mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)
-    ),
-    DatasetConfig(
-        name="ucr", preset="ucr_gunpoint_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)
-    ),
+    DatasetConfig(name="mnist", preset="mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
+    DatasetConfig(name="ucr", preset="ucr_gunpoint_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
     DatasetConfig(
         name="california_housing",
         preset="california_housing_mlp_dfa",
