@@ -371,6 +371,17 @@ Table~\ref{tab:meta-summary} summarizes per-run meta-metrics and flip schedules 
     \label{tab:meta-summary}
 \end{table}
 
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l r r r r r r}
+    Dataset & E@0.90(ps) & S(ps) & E@0.90(pe) & S(pe) & dE & dS \\
+    MNIST & 1 & 0.000 & 3 & 0.281 & 2 & 0.281 \\
+    20NG & 6 & -0.008 & 6 & 0.078 & 0 & 0.086 \\
+    \end{tabular}
+    \caption{Schedule delta: per\_step (ps) vs per\_epoch (pe). E@0.90 is the first epoch to reach 0.90 accuracy; S is the early slope (epoch 1→3). Deltas are pe $-$ ps.}
+\end{table}
+
 \paragraph{Practical guidelines.}
 \begin{itemize}[leftmargin=*]
     \item \textbf{Feedback structure:} prefer orthogonal or Hadamard $B_\ell$ for deep stacks to preserve error magnitude and reduce tuning sensitivity.
