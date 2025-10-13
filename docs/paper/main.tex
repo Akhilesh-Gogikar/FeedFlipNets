@@ -45,6 +45,22 @@
 We demonstrate that \emph{Direct Feedback Alignment} (DFA) with a ternary forward path matches backprop’s accuracy within a narrow margin while delivering \emph{deterministic training}, \emph{high sparsity} (often $\approx 0.68$ zeros), and \emph{edge-ready deployability}. Our most valuable contributions are: (i) a new, rigorous account of \emph{alignment dynamics} under structured feedback with quantized updates (linear convergence, descent under partial alignment, and a stochastic ternary convergence proposition); (ii) a \emph{meta-analysis} that \emph{quantifies convergence speed and stability} across modalities; and (iii) a minimal, modality-spanning \emph{training stack} with deterministic presets and reproducible artifacts. On MNIST (real), DFA trails tuned backprop by a sliver (96.5\% vs. \(\approx\)96\%) at strong sparsity; 20 Newsgroups favors DFA for stability; California Housing benefits from DFA + gradient clipping; and UCR GunPoint saturates at 100\% across strategies. Ternary DFA thus preserves core learning dynamics while advancing hardware efficiency and plausibility.
 \end{abstract}
 
+% Key Metrics footer table under abstract
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{l l l}
+Headline & Metric & Value \\
+\hline
+Vision (MNIST, real) & Test acc (BP vs DFA) & 96.5\% vs \(\approx\)96\% \\
+Text (20NG, real) & Best stable acc (DFA float) & 0.321 \(\pm\) 0.005 \\
+Time-series (UCR) & Test acc (all strategies) & 100\% \\
+Sparsity (ternary) & Zero ratio & \(\approx\)0.68 \\
+Determinism & Seeds, fixtures & Yes \\
+\end{tabular}
+\caption*{Key Metrics (condensed). Numbers reflect representative runs from our benchmark suite.}
+\end{table}
+
 \section{Introduction}\label{sec:intro}
 Modern deployments demand models that are small, energy-efficient, and deterministic. Backpropagation excels in accuracy but requires precise weight transport and high precision throughout the training graph. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} removes weight transport by broadcasting output errors through fixed matrices, while low-precision forward paths (binary/ternary) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} enable lean compute and memory footprints. We unify these perspectives into \textbf{FeedFlipNets}: float ``shadow'' weights are optimized with DFA, while the forward path exposes ternary weights under a controlled flip schedule.
 
