@@ -565,21 +565,19 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             return s
 
         tex_path = REPORT_DIR / "best_configs_table.tex"
-        # 11 columns: l l l c l l r c c c l (use plain \hline for portability)
-        header = "\\begin{tabular}{lllcllrcccl}\n"
-        header += "\\hline\n"
+        # 11 columns: l l l c l l r c c c l
+        # Use a minimal header without \hline to maximize engine compatibility
+        header = "\\begin{tabular}{lllllllllll}\n"
         header += (
             "Dataset & Mode & Primary & Best (mean+/-std) & Variant & Flip & n & Baseline & "
-            "Delta & Effect & Note \\\\\\n"
+            "Delta & Effect & Note \\\n"
         )
-        header += "\\hline\n"
         rows_tex: List[str] = []
         for row in best_rows_csv:
-            best_label = f"{float(row['best_mean']):.4f} \\pm {float(row['best_std']):.4f}"
+            # Prefer UTF-8 ± using XeTeX to avoid math-mode \pm in tables
+            best_label = f"{float(row['best_mean']):.4f} ± {float(row['best_std']):.4f}"
             if math.isfinite(float(row["baseline_mean"])):
-                base_label = (
-                    f"{float(row['baseline_mean']):.4f} \\pm {float(row['baseline_std']):.4f}"
-                )
+                base_label = f"{float(row['baseline_mean']):.4f} ± {float(row['baseline_std']):.4f}"
             else:
                 base_label = "\\textemdash{}"
             delta_str = (
@@ -621,7 +619,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                     ]
                 )
             )
-        trailer = "\\hline\n\\end{tabular}\n"
+        trailer = "\\end{tabular}\n"
         tex_path.write_text(header + "\n".join(rows_tex) + "\n" + trailer)
 
 

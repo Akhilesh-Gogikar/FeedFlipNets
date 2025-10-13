@@ -876,14 +876,28 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 
 ] [2]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 131.
+put line 132.
  [3]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [4]
-[5] [6] [7] (../../data/report/best_configs_table.tex)
+[5] [6] [7] [8] (../../data/report/best_configs_table.tex
+! Extra alignment tab has been changed to \cr.
+<recently read> \endtemplate
+
+l.3 20newsgroups &
+                   offline & accuracy & 0.3906 ± 0.0681 & backprop\_ternary\...
+You have given more \span or & marks than there were
+in the preamble to the \halign or \valign now in progress.
+So I'll assume that you meant to type \cr instead.
+
+)
+Overfull \hbox (450.20515pt too wide) in paragraph at lines 1--405
+ [][]
+ []
+
 File: ../../data/report/plots//lr_sweep_mnist_real.png Graphic file (type bmp)
 <../../data/report/plots//lr_sweep_mnist_real.png>
 File: ../../data/report/plots//lr_sweep_20newsgroups_real.png Graphic file (typ
@@ -895,28 +909,59 @@ File: ../../data/report/plots//tau_sweep_mnist_real.png Graphic file (type bmp)
 File: ../../data/report/plots//tau_sweep_20newsgroups_real.png Graphic file (ty
 pe bmp)
 <../../data/report/plots//tau_sweep_20newsgroups_real.png>
-File: ../../data/report/plots//tau_sweep_california_housing_real.png Graphic fi
-le (type bmp)
-<../../data/report/plots//tau_sweep_california_housing_real.png>
- [8] [9]
+[9] [10]
 File: ../../data/report/plots//meta_epochs_to_0p90_acc.png Graphic file (type b
 mp)
 <../../data/report/plots//meta_epochs_to_0p90_acc.png>
+
+
+Package caption Warning: \label without proper reference on input line 489.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:throughput' on page 11 undefined on input line 48
+7.
+
+[11]
+File: ../../data/report/plots//throughput_bar_ag_news_real.png Graphic file (ty
+pe bmp)
+<../../data/report/plots//throughput_bar_ag_news_real.png>
+File: ../../data/report/plots//throughput_bar_adult_real.png Graphic file (type
+ bmp)
+<../../data/report/plots//throughput_bar_adult_real.png>
+
+
+Package caption Warning: \label without proper reference on input line 508.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:rho-curves' on page 12 undefined on input line 50
+6.
+
+File: ../../data/report/plots//alignment_curve_ag_news_real.png Graphic file (t
+ype bmp)
+<../../data/report/plots//alignment_curve_ag_news_real.png>
+File: ../../data/report/plots//alignment_curve_adult_real.png Graphic file (typ
+e bmp)
+<../../data/report/plots//alignment_curve_adult_real.png>
+[12]
 File: ../../data/report/plots//meta_early_slopes.png Graphic file (type bmp)
 <../../data/report/plots//meta_early_slopes.png>
-
-(../../data/report/meta_convergence_summary.tex
+ (../../data/report/meta_convergence_summary.tex
 Overfull \hbox (7.7778pt too wide) detected at line 10
 $\OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 0$
  []
 
-) [10]
-Overfull \hbox (7.7778pt too wide) detected at line 476
+) [13]
+Overfull \hbox (7.7778pt too wide) detected at line 604
 $\OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 0$
  []
 
-[11] (main.bbl [12]) [13] (main.aux)
+[14] [15] (main.bbl [16]) [17] (main.aux)
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: C92B26E11583674423BCDB2143F3923D;4844.
+(rerunfilecheck)             Checksum: BE34A060BD0A324E5B1AA1E773912751;5895.
  )
-Output written on main.xdv (13 pages, 321520 bytes).
+Output written on main.xdv (17 pages, 414672 bytes).
