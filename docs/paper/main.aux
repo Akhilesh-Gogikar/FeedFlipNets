@@ -37,13 +37,12 @@
 \newlabel{def:dfa}{{1}{4}{Direct Feedback Alignment}{definition.1}{}}
 \newlabel{def:quant}{{2}{4}{Ternary quantization}{definition.2}{}}
 \citation{courbariaux2015binaryconnect,li2016twn}
-\citation{feedflipnetsRepo}
 \citation{launay2020direct}
 \citation{girotti2021convergence}
 \citation{girotti2021convergence}
 \citation{lillicrap2016random}
 \citation{lillicrap2016random,launay2020direct}
-\citation{courbariaux2015binaryconnect,feedflipnetsRepo}
+\citation{courbariaux2015binaryconnect}
 \newlabel{def:structuredB}{{3}{5}{Structured feedback matrix}{definition.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Convergence Analysis Under Direct Feedback Alignment}{5}{subsection.5.2}\protected@file@percent }
 \newlabel{sec:convergence}{{5.2}{5}{Convergence Analysis Under Direct Feedback Alignment}{subsection.5.2}{}}
@@ -60,7 +59,6 @@
 \citation{launay2020direct}
 \citation{launay2020direct}
 \citation{alistarh2017qsgd}
-\citation{feedflipnetsRepo}
 \newlabel{prop:quantconv}{{1}{7}{Convergence with stochastic ternary updates}{proposition.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Comparison to Standard Backpropagation}{7}{subsection.5.3}\protected@file@percent }
 \newlabel{sec:comparison}{{5.3}{7}{Comparison to Standard Backpropagation}{subsection.5.3}{}}
@@ -69,7 +67,6 @@
 \citation{courbariaux2015binaryconnect,hubara2016binarized,li2016twn}
 \citation{han2015deepcompression,dettmers2018int8}
 \citation{zhou2016dorefa}
-\citation{feedflipnetsRepo}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces DFA vs. BP alignment. Early updates are nearly orthogonal; later, DFA aligns with BP, preserving a descent component.}}{8}{figure.caption.11}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces FeedFlipNets schematic. Forward (blue) exposes Ter. $W=Q_\tau (V)$, while DFA feedback (red, dashed) broadcasts output error directly to hidden layers via fixed $B_\ell $ (no weight symmetry). Float shadow weights $V$ are optimized and periodically flipped into $W$. Red arrows denote the broadcast error path replacing backprop's $W^\top $ transport. Legend: blue solid arrows -- forward path; red dashed arrows -- broadcast error via $B_\ell $.}}{8}{figure.caption.12}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Implications of Ternary Quantization}{8}{subsection.5.5}\protected@file@percent }
@@ -80,7 +77,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Failure Modes and Mitigations}{8}{subsection.5.6}\protected@file@percent }
 \newlabel{sec:failures}{{5.6}{8}{Failure Modes and Mitigations}{subsection.5.6}{}}
 \citation{launay2020direct}
-\citation{li2016twn,feedflipnetsRepo}
+\citation{li2016twn}
 \citation{lillicrap2016random}
 \citation{payeur2020spike}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Neuroscience Plausibility}{9}{subsection.5.7}\protected@file@percent }
@@ -152,16 +149,15 @@
 \bibcite{courbariaux2015binaryconnect}{{2}{2015}{{Courbariaux et~al.}}{{Courbariaux, Bengio, and David}}}
 \bibcite{dettmers2018int8}{{3}{2018}{{Dettmers}}{{}}}
 \bibcite{girotti2021convergence}{{4}{2021}{{Girotti et~al.}}{{Girotti, Scetbon, and Bruna}}}
-\bibcite{feedflipnetsRepo}{{5}{2025}{{Gogikar}}{{}}}
-\bibcite{han2015deepcompression}{{6}{2016}{{Han et~al.}}{{Han, Mao, and Dally}}}
-\bibcite{hubara2016binarized}{{7}{2016}{{Hubara et~al.}}{{Hubara, Courbariaux, Soudry, El-Yaniv, and Bengio}}}
-\bibcite{launay2020direct}{{8}{2020}{{Launay et~al.}}{{Launay, Poli, Zdeborov{\'a}, Krzakala, Bect, and Pehlevan}}}
-\bibcite{li2016twn}{{9}{2016}{{Li et~al.}}{{Li, Zhang, and Liu}}}
+\bibcite{han2015deepcompression}{{5}{2016}{{Han et~al.}}{{Han, Mao, and Dally}}}
+\bibcite{hubara2016binarized}{{6}{2016}{{Hubara et~al.}}{{Hubara, Courbariaux, Soudry, El-Yaniv, and Bengio}}}
+\bibcite{launay2020direct}{{7}{2020}{{Launay et~al.}}{{Launay, Poli, Zdeborov{\'a}, Krzakala, Bect, and Pehlevan}}}
+\bibcite{li2016twn}{{8}{2016}{{Li et~al.}}{{Li, Zhang, and Liu}}}
+\bibcite{lillicrap2016random}{{9}{2016}{{Lillicrap et~al.}}{{Lillicrap, Cownden, Tweed, and Akerman}}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Schedule delta: ps vs pe. E@.90: epoch to .90 Acc.; slope: e1$\to $e3; $\Delta $ = pe $-$ ps.}}{18}{table.caption.37}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Practical guidelines.}{18}{section*.38}\protected@file@percent }
-\bibcite{lillicrap2016random}{{10}{2016}{{Lillicrap et~al.}}{{Lillicrap, Cownden, Tweed, and Akerman}}}
-\bibcite{nokland2016direct}{{11}{2016}{{Nokland}}{{}}}
-\bibcite{payeur2020spike}{{12}{2020}{{Payeur et~al.}}{{Payeur, Guerguiev, Zenke, Richards, and Naud}}}
-\bibcite{rastegari2016xnor}{{13}{2016}{{Rastegari et~al.}}{{Rastegari, Ordonez, Redmon, and Farhadi}}}
-\bibcite{zhou2016dorefa}{{14}{2016}{{Zhou et~al.}}{{Zhou, Wu, Ni, Zhou, Wen, and Zou}}}
+\bibcite{nokland2016direct}{{10}{2016}{{Nokland}}{{}}}
+\bibcite{payeur2020spike}{{11}{2020}{{Payeur et~al.}}{{Payeur, Guerguiev, Zenke, Richards, and Naud}}}
+\bibcite{rastegari2016xnor}{{12}{2016}{{Rastegari et~al.}}{{Rastegari, Ordonez, Redmon, and Farhadi}}}
+\bibcite{zhou2016dorefa}{{13}{2016}{{Zhou et~al.}}{{Zhou, Wu, Ni, Zhou, Wen, and Zou}}}
 \gdef \@abspage@last{19}

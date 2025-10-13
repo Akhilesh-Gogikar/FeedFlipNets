@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  13 OCT 2025 10:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  13 OCT 2025 11:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1082,6 +1082,11 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 (docs/paper/_generated/key_metrics_table.tex)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
 
 [1
 
@@ -1096,11 +1101,6 @@ put line 140.
 [3]
 
 [4]
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmtt' (encoding: OT1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-
 
 [5]
 
@@ -1111,14 +1111,14 @@ Package microtype Info: Loading generic protrusion settings for font family
 [8]
 
 [9]
-<../../data/report/plots/lr_sweep_mnist_real.png, id=319, 346.896pt x 231.264pt
+<../../data/report/plots/lr_sweep_mnist_real.png, id=317, 346.896pt x 231.264pt
 >
 File: ../../data/report/plots/lr_sweep_mnist_real.png Graphic file (type png)
 <use ../../data/report/plots/lr_sweep_mnist_real.png>
 Package pdftex.def Info: ../../data/report/plots/lr_sweep_mnist_real.png  used
 on input line 452.
 (pdftex.def)             Requested size: 225.4804pt x 150.31981pt.
-<../../data/report/plots/lr_sweep_20newsgroups_real.png, id=321, 346.896pt x 23
+<../../data/report/plots/lr_sweep_20newsgroups_real.png, id=319, 346.896pt x 23
 1.264pt>
 File: ../../data/report/plots/lr_sweep_20newsgroups_real.png Graphic file (type
  png)
@@ -1126,7 +1126,7 @@ File: ../../data/report/plots/lr_sweep_20newsgroups_real.png Graphic file (type
 Package pdftex.def Info: ../../data/report/plots/lr_sweep_20newsgroups_real.png
   used on input line 457.
 (pdftex.def)             Requested size: 225.4804pt x 150.31981pt.
-<../../data/report/plots/lr_sweep_fashion_mnist_offline.png, id=322, 346.896pt
+<../../data/report/plots/lr_sweep_fashion_mnist_offline.png, id=320, 346.896pt
 x 231.264pt>
 File: ../../data/report/plots/lr_sweep_fashion_mnist_offline.png Graphic file (
 type png)
@@ -1137,14 +1137,14 @@ Package pdftex.def Info: ../../data/report/plots/lr_sweep_fashion_mnist_offline
 
 
 [10]
-<../../data/report/plots/tau_sweep_mnist_real.png, id=332, 346.896pt x 231.264p
+<../../data/report/plots/tau_sweep_mnist_real.png, id=330, 346.896pt x 231.264p
 t>
 File: ../../data/report/plots/tau_sweep_mnist_real.png Graphic file (type png)
 <use ../../data/report/plots/tau_sweep_mnist_real.png>
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_mnist_real.png  used
  on input line 479.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
-<../../data/report/plots/tau_sweep_20newsgroups_real.png, id=333, 346.896pt x 2
+<../../data/report/plots/tau_sweep_20newsgroups_real.png, id=331, 346.896pt x 2
 31.264pt>
 File: ../../data/report/plots/tau_sweep_20newsgroups_real.png Graphic file (typ
 e png)
@@ -1152,7 +1152,7 @@ e png)
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_20newsgroups_real.pn
 g  used on input line 484.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
-<../../data/report/plots/tau_sweep_fashion_mnist_offline.png, id=334, 346.896pt
+<../../data/report/plots/tau_sweep_fashion_mnist_offline.png, id=332, 346.896pt
  x 231.264pt>
 File: ../../data/report/plots/tau_sweep_fashion_mnist_offline.png Graphic file
 (type png)
@@ -1160,7 +1160,7 @@ File: ../../data/report/plots/tau_sweep_fashion_mnist_offline.png Graphic file
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_fashion_mnist_offlin
 e.png  used on input line 489.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
-<../../data/report/plots/tau_sweep_california_housing_real.png, id=335, 346.896
+<../../data/report/plots/tau_sweep_california_housing_real.png, id=333, 346.896
 pt x 231.264pt>
 File: ../../data/report/plots/tau_sweep_california_housing_real.png Graphic fil
 e (type png)
@@ -1180,7 +1180,7 @@ report/plots/tau_sweep_fashion_mnist_offline.png> <docs/paper/../../data/report
 /plots/tau_sweep_california_housing_real.png>]
 
 [13]
-<../../data/report/plots/meta_epochs_to_0p90_acc.png, id=361, 361.35pt x 231.26
+<../../data/report/plots/meta_epochs_to_0p90_acc.png, id=359, 361.35pt x 231.26
 4pt>
 File: ../../data/report/plots/meta_epochs_to_0p90_acc.png Graphic file (type pn
 g)
@@ -1188,7 +1188,7 @@ g)
 Package pdftex.def Info: ../../data/report/plots/meta_epochs_to_0p90_acc.png  u
 sed on input line 535.
 (pdftex.def)             Requested size: 305.33789pt x 195.41788pt.
-<../../data/report/plots/throughput_bar_ag_news_real.png, id=363, 433.62pt x 24
+<../../data/report/plots/throughput_bar_ag_news_real.png, id=361, 433.62pt x 24
 5.718pt>
 File: ../../data/report/plots/throughput_bar_ag_news_real.png Graphic file (typ
 e png)
@@ -1196,7 +1196,7 @@ e png)
 Package pdftex.def Info: ../../data/report/plots/throughput_bar_ag_news_real.pn
 g  used on input line 548.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
-<../../data/report/plots/throughput_bar_adult_real.png, id=364, 433.62pt x 245.
+<../../data/report/plots/throughput_bar_adult_real.png, id=362, 433.62pt x 245.
 718pt>
 File: ../../data/report/plots/throughput_bar_adult_real.png Graphic file (type
 png)
@@ -1209,7 +1209,7 @@ Package pdftex.def Info: ../../data/report/plots/throughput_bar_adult_real.png
 [14 <docs/paper/../../data/report/plots/meta_epochs_to_0p90_acc.png> <docs/pape
 r/../../data/report/plots/throughput_bar_ag_news_real.png> <docs/paper/../../da
 ta/report/plots/throughput_bar_adult_real.png>]
-<../../data/report/plots/alignment_curve_ag_news_real.png, id=376, 433.62pt x 2
+<../../data/report/plots/alignment_curve_ag_news_real.png, id=374, 433.62pt x 2
 45.718pt>
 File: ../../data/report/plots/alignment_curve_ag_news_real.png Graphic file (ty
 pe png)
@@ -1217,7 +1217,7 @@ pe png)
 Package pdftex.def Info: ../../data/report/plots/alignment_curve_ag_news_real.p
 ng  used on input line 568.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
-<../../data/report/plots/alignment_curve_adult_real.png, id=377, 433.62pt x 245
+<../../data/report/plots/alignment_curve_adult_real.png, id=375, 433.62pt x 245
 .718pt>
 File: ../../data/report/plots/alignment_curve_adult_real.png Graphic file (type
  png)
@@ -1225,7 +1225,7 @@ File: ../../data/report/plots/alignment_curve_adult_real.png Graphic file (type
 Package pdftex.def Info: ../../data/report/plots/alignment_curve_adult_real.png
   used on input line 574.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
-<../../data/report/plots/meta_early_slopes.png, id=378, 404.712pt x 216.81pt>
+<../../data/report/plots/meta_early_slopes.png, id=376, 404.712pt x 216.81pt>
 File: ../../data/report/plots/meta_early_slopes.png Graphic file (type png)
 <use ../../data/report/plots/meta_early_slopes.png>
 Package pdftex.def Info: ../../data/report/plots/meta_early_slopes.png  used on
@@ -1259,10 +1259,10 @@ Package rerunfilecheck Info: File `main.out' has not changed.
  )
 Here is how much of TeX's memory you used:
  33922 strings out of 473190
- 702952 string characters out of 5715801
- 1105726 words of memory out of 5000000
- 56255 multiletter control sequences out of 15000+600000
- 581829 words of font info for 226 fonts, out of 8000000 for 9000
+ 702912 string characters out of 5715801
+ 1105699 words of memory out of 5000000
+ 56254 multiletter control sequences out of 15000+600000
+ 581996 words of font info for 227 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  97i,12n,112p,1384b,1184s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
@@ -1292,12 +1292,13 @@ st/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2025/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2025/texmf-dist/fon
-ts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist
-/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-
-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on docs/paper/main.pdf (19 pages, 975549 bytes).
+ts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2025/texmf-dist/fonts
+/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/f
+onts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-di
+st/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on docs/paper/main.pdf (19 pages, 984098 bytes).
 PDF statistics:
  586 PDF objects out of 1000 (max. 8388607)
- 474 compressed objects within 5 object streams
+ 472 compressed objects within 5 object streams
  135 named destinations out of 1000 (max. 500000)
- 44374 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 44886 words of extra memory for PDF output out of 51595 (max. 10000000)

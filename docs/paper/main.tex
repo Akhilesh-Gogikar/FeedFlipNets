@@ -93,7 +93,7 @@ Determinism & Seeds, fixtures & Yes \\
 \noindent\textit{Abbreviations:} 20NG = 20 Newsgroups; Cal. = California; BoW = bag-of-words; ps = per\_step; pe = per\_epoch.
 
 \section{Introduction}\label{sec:intro}
-Reproducible, deterministic training is essential for credible empirical findings. Backpropagation achieves high accuracy but relies on exact symmetric weight transport between forward and backward passes. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} eliminates this requirement by broadcasting output errors through fixed random matrices to each hidden layer. In parallel, low-precision neural networks (binary or ternary weights) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} drastically reduce memory and compute demands. We combine these ideas in \textbf{FeedFlipNets}: training uses float ``shadow'' weights updated via DFA, while inference (forward passes) uses ternary weights that are periodically ``flipped'' from the shadows. Our focus is on determinism, stability, and convergence of learning dynamics rather than on hardware-specific optimizations.
+Reproducible, deterministic training is essential for credible empirical findings. Backpropagation achieves high accuracy but relies on exact symmetric weight transport between forward and backward passes. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} eliminates this requirement by broadcasting output errors through fixed random matrices to each hidden layer. In parallel, low-precision neural networks (binary or ternary weights) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} drastically reduce memory and compute demands. We combine these ideas in \textbf{FeedFlipNets}\footnote{Source code: \url{https://github.com/akigogikar/FeedFlipNets}}: training uses float ``shadow'' weights updated via DFA, while inference (forward passes) uses ternary weights that are periodically ``flipped'' from the shadows. Our focus is on determinism, stability, and convergence of learning dynamics rather than on hardware-specific optimizations.
 
 \paragraph{Contributions.} We present the following contributions:
 \begin{itemize}[leftmargin=*]
@@ -183,7 +183,7 @@ Q_\tau(v)=
  -1,& v < -\tau,
 \end{cases}
 \end{equation}
-and can be applied deterministically or in stochastic form $Q_\tau^{\text{stoch}}$ that jitters $v$ before thresholding to reduce bias \citep{courbariaux2015binaryconnect,li2016twn}. FeedFlipNets maintains high-precision $V_l$ for optimization and refreshes $W_l$ on a configurable schedule (\texttt{per\_step} or \texttt{per\_epoch}) \citep{feedflipnetsRepo}.
+and can be applied deterministically or in stochastic form $Q_\tau^{\text{stoch}}$ that jitters $v$ before thresholding to reduce bias \citep{courbariaux2015binaryconnect,li2016twn}. FeedFlipNets maintains high-precision $V_l$ for optimization and refreshes $W_l$ on a configurable schedule (\texttt{per\_step} or \texttt{per\_epoch}).
 \end{definition}
 
 \begin{definition}[Structured feedback matrix]\label{def:structuredB}
@@ -210,7 +210,7 @@ The dynamics ``learn to align'' $W_{l+1}$ with $B_l^\top$ so that $B_l\delta_L$ 
 \end{remark}
 
 \subsubsection{Nonlinear networks and quantized updates}
-Full convergence proofs for nonlinear DFA remain open, yet a growing body of evidence indicates practical success \citep{lillicrap2016random,launay2020direct}. Training typically shows two phases: a rapid alignment phase where the cosine $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ rises from near zero, followed by a descent phase mimicking backpropagation. Quantization adds stochastic perturbations, but stochastic rounding and ``shadow'' weights preserve unbiasedness on average \citep{courbariaux2015binaryconnect,feedflipnetsRepo}.
+Full convergence proofs for nonlinear DFA remain open, yet a growing body of evidence indicates practical success \citep{lillicrap2016random,launay2020direct}. Training typically shows two phases: a rapid alignment phase where the cosine $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ rises from near zero, followed by a descent phase mimicking backpropagation. Quantization adds stochastic perturbations, but stochastic rounding and ``shadow'' weights preserve unbiasedness on average \citep{courbariaux2015binaryconnect}.
 
 \begin{definition}[Alignment $\rho$]\label{def:alignment}
 For layer $l$, define the (instantaneous) cosine alignment between the DFA and backprop updates
@@ -328,7 +328,7 @@ Structured $B_l$ precondition error transport:
     \item \textbf{Hadamard feedback} uses deterministic $\pm1$ patterns with fast transforms, enabling hardware-friendly implementations and exact row orthogonality \citep{launay2020direct}.
     \item \textbf{Sparse feedback} can reduce communication cost but risks starving units of signal if too sparse; moderate sparsity still supports learning with slightly slower convergence \citep{alistarh2017qsgd}.
 \end{itemize}
-FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep MLPs and align with the conditioning insights above \citep{feedflipnetsRepo}.
+FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep MLPs and align with the conditioning insights above.
 
 \begin{figure}[t]
     \centering
@@ -386,9 +386,9 @@ Training maintains float shadow weights and applies straight-through gradients t
 \subsection{Failure Modes and Mitigations}\label{sec:failures}
 Despite its robustness, DFA with ternary weights can falter in certain regimes:
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Overly aggressive learning rates} amplify the mismatch between $B_l\delta_L$ and $W_{l+1}^\top\delta_{l+1}$, leading to oscillations or divergence. FeedFlipNets counteracts this with gradient clipping and tuned schedulers \citep{feedflipnetsRepo}.
+    \item \textbf{Overly aggressive learning rates} amplify the mismatch between $B_l\delta_L$ and $W_{l+1}^\top\delta_{l+1}$, leading to oscillations or divergence. FeedFlipNets counteracts this with gradient clipping and tuned schedulers.
     \item \textbf{Deep convolutional stacks} require spatially coherent feedback; naive DFA underperforms on large vision models without architectural tweaks or learned feedback \citep{launay2020direct}.
-    \item \textbf{Quantization thresholds} that are too high freeze learning (weights stay at zero), while thresholds near zero cause rapid $\pm1$ flipping and limit cycles. Adaptive or stochastic thresholds, along with shadow weights, smooth these transitions \citep{li2016twn,feedflipnetsRepo}.
+    \item \textbf{Quantization thresholds} that are too high freeze learning (weights stay at zero), while thresholds near zero cause rapid $\pm1$ flipping and limit cycles. Adaptive or stochastic thresholds, along with shadow weights, smooth these transitions \citep{li2016twn}.
     \item \textbf{Scaling of feedback matrices} with large singular values destabilizes updates; orthogonalization or row-wise normalization keeps signals well-conditioned.
 \end{itemize}
 
