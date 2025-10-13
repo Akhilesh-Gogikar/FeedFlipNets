@@ -143,13 +143,17 @@ mapping $v$ to $\pm1$ if it exceeds the threshold in magnitude, and to $0$ if it
 \State Initialize float weights $\{V_\ell\}$; sample fixed feedback matrices $\{B_\ell\}$
 \For{epoch $=1,\dots,E$}
   \For{batch $(x,y)\in\mathcal{D}$}
-    \If{$s=\text{per\_step}$} \textbf{then} $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$ \EndIf
+    \If{$s=\text{per\_step}$}
+      \State $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$
+    \EndIf
     \State \textbf{Forward:} set $h_0\!\leftarrow x$; for $\ell=1..L$ do $z_\ell \leftarrow W_\ell h_{\ell-1}$, $h_\ell \leftarrow f(z_\ell)$
     \State Compute loss $\mathcal{L}(h_L,y)$ and output error $e \leftarrow \nabla_{z_L} \mathcal{L}$
     \State \textbf{DFA Backward:} for each hidden layer $\ell<L$, set $\delta_\ell \leftarrow (B_\ell \, e) \odot f'(z_\ell)$; then $\nabla_{V_\ell} \mathcal{L} \leftarrow \delta_\ell \, h_{\ell-1}^\top$
     \State Optimizer step on each $V_\ell$ \textbf{(}with optional grad clipping\textbf{)}
   \EndFor
-  \If{$s=\text{per\_epoch}$} \textbf{then} $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$ \EndIf
+  \If{$s=\text{per\_epoch}$}
+    \State $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$
+  \EndIf
 \EndFor
 \end{algorithmic}
 \end{algorithm}
