@@ -11,7 +11,7 @@ if command -v latexmk >/dev/null 2>&1; then
 elif command -v tectonic >/dev/null 2>&1; then
   # Use tectonic as a lightweight TeX engine. It will fetch needed packages.
   # Output is written to OUTDIR.
-  tectonic -o "$OUTDIR" "$DOC" || true
+  tectonic -p --keep-logs --keep-intermediates -Z continue-on-errors -o "$OUTDIR" "$DOC" || true
 else
   if ! command -v pdflatex >/dev/null 2>&1; then
     echo "Error: neither latexmk nor pdflatex is installed."
