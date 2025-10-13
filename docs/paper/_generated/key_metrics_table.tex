@@ -1,0 +1,17 @@
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{l l l}
+\toprule
+Headline & Metric & Value \\
+\midrule
+Vision (MNIST, real) & Test Acc. (BP vs DFA float) & 96.49\% vs 95.14\% \\
+Text (20NG, real) & Best stable Acc. (DFA float) & .321 $\pm$ .005 \\
+AG News (real) & Test Acc. (BP vs DFA float) & 90.05\% vs 89.98\% \\
+Time-series (UCR) & Best Test Acc. (Ternary DFA, real) & 100.00\% \\
+Sparsity (Ternary) & Zero ratio (typical) & \(\approx\) 0.5--0.75 \\
+Determinism & Seeds, fixtures & Yes \\
+\bottomrule
+\end{tabular}
+\caption*{Key Metrics (condensed). Representative values from our benchmark suite.}
+\end{table}
