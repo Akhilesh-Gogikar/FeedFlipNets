@@ -1,0 +1,14 @@
+numpy
+matplotlib
+pandas
+scikit-learn
+pyyaml
+
+[dev]
+pytest
+pytest-cov
+black
+ruff
+flake8
+isort
+pre-commit

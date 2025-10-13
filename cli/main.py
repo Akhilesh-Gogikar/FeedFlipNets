@@ -99,9 +99,12 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         "--dataset",
         choices=[
             "mnist",
+            "fashion_mnist",
             "ucr",
             "california_housing",
             "20newsgroups",
+            "adult",
+            "ag_news",
             "csv_regression",
             "csv_classification",
         ],
@@ -123,6 +126,18 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         type=int,
         default=4096,
         help="Hashing vectorizer dimensionality for 20 Newsgroups",
+    )
+    parser.add_argument(
+        "--tfidf-max-features",
+        type=int,
+        default=30000,
+        help="Max features for TF-IDF (AG News)",
+    )
+    parser.add_argument(
+        "--svd-dim",
+        type=int,
+        default=2048,
+        help="Truncated SVD output dimension (AG News)",
     )
     parser.add_argument(
         "--val-split",
@@ -242,13 +257,16 @@ def main(argv: Iterable[str] | None = None) -> None:
             opts["test_split"] = float(args.test_split)
         if args.seed is not None:
             opts["seed"] = int(args.seed)
-        if args.dataset == "mnist" and args.one_hot is not None:
+        if args.dataset in {"mnist", "fashion_mnist", "adult"} and args.one_hot is not None:
             opts["one_hot"] = bool(args.one_hot)
         if args.dataset == "ucr":
             opts["ucr_name"] = args.ucr_name
         if args.dataset == "20newsgroups":
             opts["subset"] = args.text_subset
             opts["n_features"] = int(args.hash_dim)
+        if args.dataset == "ag_news":
+            opts["tfidf_max_features"] = int(args.tfidf_max_features)
+            opts["svd_dim"] = int(args.svd_dim)
         if args.dataset in {"csv_regression", "csv_classification"}:
             if args.csv_path:
                 opts["csv_path"] = args.csv_path

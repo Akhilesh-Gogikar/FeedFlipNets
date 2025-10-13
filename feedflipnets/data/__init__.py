@@ -1,8 +1,11 @@
 """Dataset registry and loader helpers."""
 
 # Ensure built-in datasets register themselves when the package is imported.
+from . import adult as _adult  # noqa: F401
+from . import ag_news as _ag_news  # noqa: F401
 from . import california as _california  # noqa: F401
 from . import csv_generic as _csv_generic  # noqa: F401
+from . import fashion_mnist as _fashion_mnist  # noqa: F401
 from . import mnist as _mnist  # noqa: F401
 from . import text_20newsgroups as _text_20newsgroups  # noqa: F401
 from . import ucr as _ucr  # noqa: F401

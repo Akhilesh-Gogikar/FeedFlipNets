@@ -13,7 +13,7 @@ import numpy as np
 
 from ..core.activations import relu
 from ..core.quant import quantize_ternary_det, quantize_ternary_stoch
-from ..core.strategies import FeedbackStrategy
+from ..core.strategies import Backprop, FeedbackStrategy
 from ..core.types import (
     ActivationState,
     Array,
@@ -169,6 +169,7 @@ class Trainer:
         early_stopping_patience: int | None = None,
         checkpoint_dir: str | Path | None = None,
         grad_clip: float | None = None,
+        alignment_probe_steps: int | None = None,
     ) -> RunResult:
         if device != "cpu":  # pragma: no cover - guardrail
             raise ValueError("Only CPU execution is supported in the reference trainer")
@@ -241,6 +242,7 @@ class Trainer:
                 flip_enabled=flip_enabled,
                 split_name="train",
                 grad_clip=grad_clip,
+                alignment_probe_steps=alignment_probe_steps,
             )
             total_steps += train_steps
             self._emit_epoch("train", epoch, train_metrics, split_loggers)
@@ -327,6 +329,7 @@ class Trainer:
         flip_enabled: bool,
         split_name: str,
         grad_clip: float | None,
+        alignment_probe_steps: int | None = None,
     ) -> tuple[Mapping[str, float], StrategyState]:
         iterator = iter(loader)
         losses: list[float] = []
@@ -335,7 +338,13 @@ class Trainer:
         current_state = state
         total_samples = 0
         start = time.perf_counter()
-        for _ in range(max(1, steps)):
+        # Alignment accumulators (per-layer) when requested
+        want_align = bool(training and (alignment_probe_steps or 0) > 0)
+        align_bp = Backprop() if want_align else None
+        align_sums: list[float] = []
+        align_counts: list[int] = []
+
+        for step_idx in range(max(1, steps)):
             try:
                 batch = next(iterator)
             except StopIteration:
@@ -349,6 +358,25 @@ class Trainer:
             total_samples += int(batch.inputs.shape[0])
             if training:
                 grads, current_state = self.strategy.backward(activations, delta, current_state)
+                # Alignment probe on early steps
+                if want_align and step_idx < int(alignment_probe_steps or 0):
+                    bp_grads, _ = align_bp.backward(activations, delta, StrategyState())  # type: ignore[arg-type]
+                    # Initialize accumulators lazily
+                    if not align_sums:
+                        last_idx = len(activations.weights) - 1
+                        align_sums = [0.0 for _ in range(last_idx + 1)]
+                        align_counts = [0 for _ in range(last_idx + 1)]
+                    for name, g_dfa in grads.items():
+                        if name in bp_grads:
+                            g_bp = bp_grads[name]
+                            a = float(np.sum(g_dfa.astype(np.float64) * g_bp.astype(np.float64)))
+                            b = float(np.sqrt(np.sum(g_dfa.astype(np.float64) ** 2)) + 1e-12)
+                            c = float(np.sqrt(np.sum(g_bp.astype(np.float64) ** 2)) + 1e-12)
+                            rho = a / (b * c)
+                            idx = int(name[1:]) if name.startswith("W") else 0
+                            if 0 <= idx < len(align_sums):
+                                align_sums[idx] += rho
+                                align_counts[idx] += 1
                 if grad_clip is not None and grad_clip > 0:
                     # Compute global L2 norm across all parameter gradients
                     sqsum = 0.0
@@ -382,6 +410,17 @@ class Trainer:
         metrics["sample_count"] = float(total_samples)
         metrics["samples_per_step"] = float(total_samples / max(steps, 1))
         metrics["ternary_zero_ratio"] = _ternary_zero_ratio(self.model)
+        # Emit average alignment across probed steps if collected
+        if want_align and align_sums and any(align_counts):
+            rhos: list[float] = []
+            for i, (s, n) in enumerate(zip(align_sums, align_counts)):
+                if n > 0:
+                    avg = float(s / n)
+                    metrics[f"rho_l{i}"] = avg
+                    rhos.append(avg)
+            if rhos:
+                metrics["rho_mean"] = float(np.mean(rhos))
+                metrics["rho_min"] = float(np.min(rhos))
         return metrics, current_state
 
     def _emit_epoch(

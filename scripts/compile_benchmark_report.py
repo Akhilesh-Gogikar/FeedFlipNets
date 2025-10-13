@@ -20,11 +20,11 @@ import csv
 import json
 import math
 from collections import defaultdict
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from statistics import mean, stdev
 from typing import Dict, Iterable, List, Mapping, MutableMapping, Sequence, Tuple
 
+import numpy as np
 
 ROOT = Path("runs/bench")
 REPORT_DIR = Path("data/report")
@@ -58,6 +58,24 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
         manifest = _read_json(manifest_path)
         metrics = _read_json(metrics_path)
         timing = _read_json(run_dir / "timing.json")
+        # Optionally compute training throughput as well
+        train_throughput = None
+        try:
+            train_timing = timing.get("train") if isinstance(timing, dict) else None
+            if isinstance(train_timing, dict) and (train_timing.get("total_sec") or 0) > 0:
+                mj = run_dir / "metrics_train.jsonl"
+                if mj.exists():
+                    last_line = ""
+                    with mj.open("r", encoding="utf-8") as h:
+                        for last_line in h:
+                            pass
+                    if last_line.strip():
+                        rec = json.loads(last_line)
+                        sc = rec.get("sample_count")
+                        if isinstance(sc, (int, float)) and sc > 0:
+                            train_throughput = float(sc) / float(train_timing.get("total_sec", 1.0))
+        except Exception:
+            train_throughput = None
         config = manifest.get("config", {}) if isinstance(manifest, dict) else {}
         train_cfg = config.get("train", {}) if isinstance(config, dict) else {}
         model_cfg = config.get("model", {}) if isinstance(config, dict) else {}
@@ -80,6 +98,8 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
         numeric_metrics = {
             key: float(value) for key, value in metrics.items() if isinstance(value, (int, float))
         }
+        if train_throughput is not None:
+            numeric_metrics["train_throughput_samples_sec"] = float(train_throughput)
         if isinstance(timing, dict):
             test_timing = timing.get("test")
             if isinstance(test_timing, dict):
@@ -129,6 +149,8 @@ class SummaryRecord:
     mean: float
     std: float
     count: int
+    sem: float = 0.0
+    ci95: float = 0.0
 
 
 GroupKey = Tuple[str, str, str, str, str, str]
@@ -146,8 +168,12 @@ def _aggregate(runs: Sequence[RunRecord]) -> List[SummaryRecord]:
             values = [run.metrics[metric] for run in members if metric in run.metrics]
             if not values:
                 continue
-            mu = mean(values)
-            sigma = stdev(values) if len(values) > 1 else 0.0
+            # Use numpy for numerical robustness across Python versions
+            mu = float(np.mean(values))
+            sigma = float(np.std(values, ddof=1)) if len(values) > 1 else 0.0
+            n = len(values)
+            sem = (sigma / (n**0.5)) if n > 0 else 0.0
+            ci95 = 1.96 * sem if n > 0 else 0.0
             summary.append(
                 SummaryRecord(
                     dataset=key[0],
@@ -159,7 +185,9 @@ def _aggregate(runs: Sequence[RunRecord]) -> List[SummaryRecord]:
                     metric=metric,
                     mean=mu,
                     std=sigma,
-                    count=len(values),
+                    count=n,
+                    sem=sem,
+                    ci95=ci95,
                 )
             )
     return summary
@@ -180,10 +208,10 @@ def _write_csv(path: Path, rows: Sequence[SummaryRecord]) -> None:
             writer.writerow(asdict(row))
 
 
-def _format_pm(mu: float, sigma: float) -> str:
-    if sigma == 0.0:
+def _format_pm(mu: float, err: float) -> str:
+    if err == 0.0:
         return f"{mu:.4f}"
-    return f"{mu:.4f} ± {sigma:.4f}"
+    return f"{mu:.4f} ± {err:.4f}"
 
 
 def _best_by_dataset(summary: Sequence[SummaryRecord]) -> Dict[str, SummaryRecord]:
@@ -246,7 +274,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
         rows: List[str] = []
         rows.append("## Best Configs\n")
         rows.append(
-            "| Dataset | Mode | Primary | Best (μ±σ) | Variant | Flip | n | "
+            "| Dataset | Mode | Primary | Best (μ±95% CI) | Variant | Flip | n | "
             "Baseline (μ±σ) | Δ | Effect Size |"
         )
         rows.append("|---|---|---|---|---|---|---:|---|---:|---:|")
@@ -281,7 +309,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                 pooled = float(pooled) ** 0.5
             effect = (delta / pooled) if (base_rec is not None and pooled > 1e-12) else 0.0
 
-            best_label = _format_pm(best_rec.mean, best_rec.std)
+            best_label = _format_pm(best_rec.mean, best_rec.ci95)
             base_label = _format_pm(base_rec.mean, base_rec.std) if base_rec else "—"
             flip_label = f"{best_rec.flip} ({best_rec.flip_schedule})"
             rows.append(
@@ -520,13 +548,14 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             return s.replace("_", "\\_")
 
         tex_path = REPORT_DIR / "best_configs_table.tex"
-        header = "\\begin{tabular}{lllcclrcc l}\n"
-        header += "\\toprule\n"
+        # 11 columns: l l l c l l r c c c l (use plain \hline for portability)
+        header = "\\begin{tabular}{lllcllrcccl}\n"
+        header += "\\hline\n"
         header += (
-            "Dataset & Mode & Primary & Best ($\\mu\\pm\\sigma$) & Variant & Flip & n & Baseline & "
-            "$\\Delta$ & Effect & Note \\\\\\n"
+            "Dataset & Mode & Primary & Best (mean+/-std) & Variant & Flip & n & Baseline & "
+            "Delta & Effect & Note \\\\\\n"
         )
-        header += "\\midrule\n"
+        header += "\\hline\n"
         rows_tex: List[str] = []
         for row in best_rows_csv:
             best_label = f"{float(row['best_mean']):.4f} \\pm {float(row['best_std']):.4f}"
@@ -571,7 +600,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                     ]
                 )
             )
-        trailer = "\\bottomrule\n\\end{tabular}\n"
+        trailer = "\\hline\n\\end{tabular}\n"
         tex_path.write_text(header + "\n".join(rows_tex) + "\n" + trailer)
 
 

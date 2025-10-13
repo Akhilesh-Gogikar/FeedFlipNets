@@ -679,52 +679,106 @@ Package: subcaption 2022/01/07 v1.5 Sub-captions (AR)
 \c@subtable=\count331
 ) (placeins.sty
 Package: placeins 2005/04/18  v 2.2
-)
-\c@theorem=\count332
-\c@lemma=\count333
-\c@corollary=\count334
-\c@definition=\count335
-\c@proposition=\count336
-\c@remark=\count337
+) (siunitx.sty
+Package: siunitx 2022-02-15 v3.0.49 A comprehensive (SI) units package
+\l__siunitx_angle_tmp_dim=\dimen312
+\l__siunitx_angle_marker_box=\box90
+\l__siunitx_angle_unit_box=\box91
+\l__siunitx_compound_count_int=\count332
 
-(l3backend-xetex.def
+(translations.sty
+Package: translations 2022/02/05 v1.12 internationalization of LaTeX2e packages
+ (CN)
+)
+\l__siunitx_number_exponent_fixed_int=\count333
+\l__siunitx_number_min_decimal_int=\count334
+\l__siunitx_number_min_integer_int=\count335
+\l__siunitx_number_round_precision_int=\count336
+\l__siunitx_number_group_minimum_int=\count337
+\l__siunitx_table_tmp_box=\box92
+\l__siunitx_table_tmp_dim=\dimen313
+\l__siunitx_table_column_width_dim=\dimen314
+\l__siunitx_table_integer_box=\box93
+\l__siunitx_table_decimal_box=\box94
+\l__siunitx_table_before_box=\box95
+\l__siunitx_table_after_box=\box96
+\l__siunitx_table_before_dim=\dimen315
+\l__siunitx_table_carry_dim=\dimen316
+\l__siunitx_unit_tmp_int=\count338
+\l__siunitx_unit_position_int=\count339
+\l__siunitx_unit_total_int=\count340
+ (l3keys2e.sty (expl3.sty
+Package: expl3 2022-02-24 L3 programming layer (loader)
+ (l3backend-xetex.def
 File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
-\c__kernel_sys_dvipdfmx_version_int=\count338
-\l__color_backend_stack_int=\count339
-\g__color_backend_stack_int=\count340
-\g__graphics_track_int=\count341
-\l__pdf_internal_box=\box90
-\g__pdf_backend_object_int=\count342
-\g__pdf_backend_annotation_int=\count343
-\g__pdf_backend_link_int=\count344
-) (main.aux)
+\c__kernel_sys_dvipdfmx_version_int=\count341
+\l__color_backend_stack_int=\count342
+\g__color_backend_stack_int=\count343
+\g__graphics_track_int=\count344
+\l__pdf_internal_box=\box97
+\g__pdf_backend_object_int=\count345
+\g__pdf_backend_annotation_int=\count346
+\g__pdf_backend_link_int=\count347
+))
+Package: l3keys2e 2022-01-12 LaTeX2e option processing using LaTeX3 keys
+) (array.sty
+Package: array 2021/10/04 v2.5f Tabular extension package (FMi)
+\col@sep=\dimen317
+\ar@mcellbox=\box98
+\extrarowheight=\dimen318
+\NC@list=\toks46
+\extratabsurround=\skip66
+\backup@length=\skip67
+\ar@cellbox=\box99
+))
+
+Package siunitx Info: Option "detect-weight" has been deprecated in this
+(siunitx)             release.
+(siunitx)
+(siunitx)             Use "reset-text-series = false, text-series-to-math =
+(siunitx)             true" as a replacement.
+
+
+
+Package siunitx Warning: Option "detect-inline-weight" has been removed in
+(siunitx)                this release.
+
+\c@theorem=\count348
+\c@lemma=\count349
+\c@corollary=\count350
+\c@definition=\count351
+\c@proposition=\count352
+\c@remark=\count353
+Package translations Info: No language package found. I am going to use `englis
+h' as default language. on input line 59.
+(main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 41.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 4
-1.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 59.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 5
+9.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 59.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -760,7 +814,7 @@ LaTeX Font Info:    ... okay on input line 41.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 41.
+Package hyperref Info: Link coloring OFF on input line 59.
 (nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (refcount.sty
@@ -768,20 +822,20 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count345
+\c@section@level=\count354
 )
-LaTeX Info: Redefining \ref on input line 41.
-LaTeX Info: Redefining \pageref on input line 41.
-LaTeX Info: Redefining \nameref on input line 41.
+LaTeX Info: Redefining \ref on input line 59.
+LaTeX Info: Redefining \pageref on input line 59.
+LaTeX Info: Redefining \nameref on input line 59.
  (main.out) (main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 41.
-Package microtype Info: Applying patch `item' on input line 41.
-Package microtype Info: Applying patch `toc' on input line 41.
-Package microtype Info: Applying patch `eqnum' on input line 41.
-Package microtype Info: Applying patch `footnote' on input line 41.
+LaTeX Info: Redefining \microtypecontext on input line 59.
+Package microtype Info: Applying patch `item' on input line 59.
+Package microtype Info: Applying patch `toc' on input line 59.
+Package microtype Info: Applying patch `eqnum' on input line 59.
+Package microtype Info: Applying patch `footnote' on input line 59.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: No adjustment of tracking.
@@ -794,84 +848,75 @@ ern Roman (RS)
 )
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
- (mt-cmr.cfg
+ (translations-basic-dictionary-english.trsl
+File: translations-basic-dictionary-english.trsl (english translation file `tra
+nslations-basic-dictionary')
+)
+Package translations Info: loading dictionary `translations-basic-dictionary' f
+or `english'. on input line 59.
+
+(mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 61.
 
  (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 61.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-(mt-msb.cfg
+) (mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 ) [1
 
-]
-Overfull \hbox (28.08482pt too wide) in paragraph at lines 71--72
-[]\TU/lmr/bx/n/10.95 Comprehensive evaluation: \TU/lmr/m/n/10.95 cross-modality
- benchmarks that surface accuracy–sparsity–throughput
- []
-
-[2]
+] [2]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 107.
+put line 131.
  [3]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [4] [5]
-Overfull \hbox (0.8577pt too wide) in paragraph at lines 282--283
- []\TU/lmr/bx/n/10.95 Gradient approximation.[] \TU/lmr/m/n/10.95 Training main
-tains float shadow weights and applies straight-through
- []
-
-[6] (../../data/report/best_configs_table.tex) [7]
+ [4]
+[5] [6] [7] (../../data/report/best_configs_table.tex)
 File: ../../data/report/plots//lr_sweep_mnist_real.png Graphic file (type bmp)
 <../../data/report/plots//lr_sweep_mnist_real.png>
- [8]
-File: ../../data/report/plots//meta_epochs_to_0p90_acc.png Graphic file (type b
-mp)
-<../../data/report/plots//meta_epochs_to_0p90_acc.png>
-File: ../../data/report/plots//meta_early_slopes.png Graphic file (type bmp)
-<../../data/report/plots//meta_early_slopes.png>
- [9]
-(../../data/report/meta_convergence_summary.tex)
-Overfull \hbox (7.17259pt too wide) in paragraph at lines 388--389
-[]\TU/lmr/bx/n/10.95 Flip schedule: \TU/lmr/m/n/10.95 start with per-epoch flip
-s for text/tabular, then tighten to per-step on vision/time-
- []
-
-[10]
-Overfull \hbox (62.11809pt too wide) in paragraph at lines 398--399
-\TU/lmr/m/n/10.95 Our reference implementation targets NumPy/CPU and simple MLP
-s; larger architectures (CNNs/Transformers)
- []
-
-(main.bbl [11])
+File: ../../data/report/plots//lr_sweep_20newsgroups_real.png Graphic file (typ
+e bmp)
+<../../data/report/plots//lr_sweep_20newsgroups_real.png>
 File: ../../data/report/plots//tau_sweep_mnist_real.png Graphic file (type bmp)
 
 <../../data/report/plots//tau_sweep_mnist_real.png>
 File: ../../data/report/plots//tau_sweep_20newsgroups_real.png Graphic file (ty
 pe bmp)
 <../../data/report/plots//tau_sweep_20newsgroups_real.png>
- [12]
 File: ../../data/report/plots//tau_sweep_california_housing_real.png Graphic fi
 le (type bmp)
 <../../data/report/plots//tau_sweep_california_housing_real.png>
-File: ../../data/report/plots//lr_sweep_20newsgroups_real.png Graphic file (typ
-e bmp)
-<../../data/report/plots//lr_sweep_20newsgroups_real.png>
- [13] [14] (main.aux)
+ [8] [9]
+File: ../../data/report/plots//meta_epochs_to_0p90_acc.png Graphic file (type b
+mp)
+<../../data/report/plots//meta_epochs_to_0p90_acc.png>
+File: ../../data/report/plots//meta_early_slopes.png Graphic file (type bmp)
+<../../data/report/plots//meta_early_slopes.png>
+
+(../../data/report/meta_convergence_summary.tex
+Overfull \hbox (7.7778pt too wide) detected at line 10
+$\OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 0$
+ []
+
+) [10]
+Overfull \hbox (7.7778pt too wide) detected at line 476
+$\OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 0$
+ []
+
+[11] (main.bbl [12]) [13] (main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: C92B26E11583674423BCDB2143F3923D;4844.
  )
-Output written on main.xdv (14 pages, 303788 bytes).
+Output written on main.xdv (13 pages, 321520 bytes).

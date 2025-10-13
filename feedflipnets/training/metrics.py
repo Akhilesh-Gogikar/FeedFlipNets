@@ -44,14 +44,25 @@ def compute_metric(
     key = name.lower()
     preds = predictions
     targs = targets
+
+    # For regression-like metrics on binary tasks, operate on probabilities
+    # to make MAE/RMSE/R² interpretable as calibration/error on [0,1].
+    def _as_regression(p: Array, t: Array) -> tuple[Array, Array]:
+        if task_type == "binary":
+            return _sigmoid(p), t.astype(np.float32)
+        return p, t
+
     if key == "mae":
-        value = float(np.mean(np.abs(preds - targs)))
+        rp, rt = _as_regression(preds, targs)
+        value = float(np.mean(np.abs(rp - rt)))
     elif key == "rmse":
-        value = float(np.sqrt(np.mean((preds - targs) ** 2)))
+        rp, rt = _as_regression(preds, targs)
+        value = float(np.sqrt(np.mean((rp - rt) ** 2)))
     elif key == "r2":
-        mean = np.mean(targs, axis=0, keepdims=True)
-        ss_res = float(np.sum((targs - preds) ** 2))
-        ss_tot = float(np.sum((targs - mean) ** 2))
+        rp, rt = _as_regression(preds, targs)
+        mean = np.mean(rt, axis=0, keepdims=True)
+        ss_res = float(np.sum((rt - rp) ** 2))
+        ss_tot = float(np.sum((rt - mean) ** 2))
         value = 1.0 if ss_tot == 0 else float(1 - ss_res / (ss_tot + 1e-9))
     elif key == "accuracy":
         if task_type == "multiclass":
