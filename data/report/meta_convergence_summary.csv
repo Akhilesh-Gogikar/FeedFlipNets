@@ -1,5 +1,5 @@
-run,epochs_to_0.90_acc,early_acc_slope_e3,val_loss_var,train_loss_var_e5,epochs_to_90pct_r2,early_r2_slope_e3
-20newsgroups-bow-mlp-dfa,6.0,-0.0078125,0.03940035506316179,2.7729300049444654,,
-mnist-mlp-dfa,1.0,0.0,0.0,2.2912264043595023,,
-ucr-gunpoint-mlp-dfa,2.0,0.1171875,3.5713888780315637,15.974347246783424,,
-california-housing-mlp-dfa,,,0.06556039337497795,3.84901421786364e-05,8.0,0.0007187293172400411
+run,flip,flip_schedule,epochs_to_0.90_acc,early_acc_slope_e3,val_loss_var,train_loss_var_e5,epochs_to_90pct_r2,early_r2_slope_e3
+20newsgroups-bow-mlp-dfa,ternary,per_step,6.0,-0.0078125,0.03940035506316179,2.7729300049444654,,
+mnist-mlp-dfa,ternary,per_step,1.0,0.0,0.0,2.2912264043595023,,
+ucr-gunpoint-mlp-dfa,ternary,per_step,2.0,0.1171875,3.5713888780315637,15.974347246783424,,
+california-housing-mlp-dfa,off,off,,,0.06556039337497795,3.84901421786364e-05,8.0,0.0007187293172400411
