@@ -139,17 +139,17 @@ mapping $v$ to $\pm1$ if it exceeds the threshold in magnitude, and to $0$ if it
 \begin{algorithm}[H]
 \caption{FeedFlipNets training with DFA and ternary flips}\label{alg:feedflip}
 \begin{algorithmic}[1]
-\Require dataset $\mathcal{D}$, layer dims $\{d_\ell\}$, threshold $\tau$, schedule $s\in\{\text{per\_step},\text{per\_epoch}\}$, optimizer, loss $\mathcal{L}$
+\Require dataset $\mathcal{D}$, layer sizes $\{n_\ell\}$, threshold $\tau$, schedule $s\in\{\text{per\_step},\text{per\_epoch}\}$, optimizer, loss $\mathcal{L}$
 \State Initialize float weights $\{V_\ell\}$; sample fixed feedback matrices $\{B_\ell\}$
 \For{epoch $=1,\dots,E$}
   \For{batch $(x,y)\in\mathcal{D}$}
-    \If{$s = \text{per\_step}$} \textbf{then} $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$ \EndIf
-    \State \textbf{Forward:} $h_\ell \leftarrow a_{\ell-1} W_\ell$, $a_\ell \leftarrow f(h_\ell)$ (for each $\ell$); compute logits $z = a_L$
-    \State Compute loss $\mathcal{L}(z,y)$ and output error $e \leftarrow \nabla_z \mathcal{L}$
-    \State \textbf{DFA Backward:} $\delta_\ell \leftarrow (e B_\ell) \odot f'(h_\ell)$; $\nabla_{V_\ell} \mathcal{L} \leftarrow a_{\ell-1}^\top \delta_\ell$
+    \If{$s=\text{per\_step}$} \textbf{then} $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$ \EndIf
+    \State \textbf{Forward:} set $h_0\!\leftarrow x$; for $\ell=1..L$ do $z_\ell \leftarrow W_\ell h_{\ell-1}$, $h_\ell \leftarrow f(z_\ell)$
+    \State Compute loss $\mathcal{L}(h_L,y)$ and output error $e \leftarrow \nabla_{z_L} \mathcal{L}$
+    \State \textbf{DFA Backward:} for each hidden layer $\ell<L$, set $\delta_\ell \leftarrow (B_\ell \, e) \odot f'(z_\ell)$; then $\nabla_{V_\ell} \mathcal{L} \leftarrow \delta_\ell \, h_{\ell-1}^\top$
     \State Optimizer step on each $V_\ell$ \textbf{(}with optional grad clipping\textbf{)}
   \EndFor
-  \If{$s = \text{per\_epoch}$} \textbf{then} $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$ \EndIf
+  \If{$s=\text{per\_epoch}$} \textbf{then} $W_\ell \leftarrow Q_{\tau}(V_\ell)$ for all layers $\ell$ \EndIf
 \EndFor
 \end{algorithmic}
 \end{algorithm}
