@@ -8519,48 +8519,6 @@
   {
     "dataset": "california_housing",
     "mode": "real",
-    "strategy": "dfa",
-    "strategy_variant": "dfa_float_lr15",
-    "flip": "off",
-    "flip_schedule": "off",
-    "seed": 0,
-    "run_dir": "runs/bench/california_housing/real/dfa_float_lr15/seed0",
-    "metrics": {
-      "loss": NaN,
-      "mae": NaN,
-      "rmse": NaN,
-      "r2": NaN,
-      "sample_count": 4160.0,
-      "samples_per_step": 64.0,
-      "ternary_zero_ratio": 0.0,
-      "train_throughput_samples_sec": 41950.038058780294,
-      "test_throughput_samples_sec": 83711.82750727209
-    }
-  },
-  {
-    "dataset": "california_housing",
-    "mode": "real",
-    "strategy": "dfa",
-    "strategy_variant": "dfa_float_lr15",
-    "flip": "off",
-    "flip_schedule": "off",
-    "seed": 1,
-    "run_dir": "runs/bench/california_housing/real/dfa_float_lr15/seed1",
-    "metrics": {
-      "loss": NaN,
-      "mae": NaN,
-      "rmse": NaN,
-      "r2": NaN,
-      "sample_count": 4160.0,
-      "samples_per_step": 64.0,
-      "ternary_zero_ratio": 0.0,
-      "train_throughput_samples_sec": 40980.267403836086,
-      "test_throughput_samples_sec": 86024.69305727826
-    }
-  },
-  {
-    "dataset": "california_housing",
-    "mode": "real",
     "strategy": "ternary_dfa",
     "strategy_variant": "ternary_dfa_step",
     "flip": "ternary",
@@ -9027,27 +8985,6 @@
     "strategy_variant": "dfa_float_lr06",
     "flip": "off",
     "flip_schedule": "off",
-    "seed": 2,
-    "run_dir": "runs/bench/california_housing/real/dfa_float_lr06/seed2",
-    "metrics": {
-      "loss": NaN,
-      "mae": NaN,
-      "rmse": NaN,
-      "r2": NaN,
-      "sample_count": 4160.0,
-      "samples_per_step": 64.0,
-      "ternary_zero_ratio": 0.0,
-      "train_throughput_samples_sec": 36629.627709161694,
-      "test_throughput_samples_sec": 84140.2708928369
-    }
-  },
-  {
-    "dataset": "california_housing",
-    "mode": "real",
-    "strategy": "dfa",
-    "strategy_variant": "dfa_float_lr06",
-    "flip": "off",
-    "flip_schedule": "off",
     "seed": 0,
     "run_dir": "runs/bench/california_housing/real/dfa_float_lr06/seed0",
     "metrics": {
@@ -9060,27 +8997,6 @@
       "ternary_zero_ratio": 0.0,
       "train_throughput_samples_sec": 42729.95369272043,
       "test_throughput_samples_sec": 89112.86302620305
-    }
-  },
-  {
-    "dataset": "california_housing",
-    "mode": "real",
-    "strategy": "dfa",
-    "strategy_variant": "dfa_float_lr06",
-    "flip": "off",
-    "flip_schedule": "off",
-    "seed": 1,
-    "run_dir": "runs/bench/california_housing/real/dfa_float_lr06/seed1",
-    "metrics": {
-      "loss": NaN,
-      "mae": NaN,
-      "rmse": NaN,
-      "r2": NaN,
-      "sample_count": 4160.0,
-      "samples_per_step": 64.0,
-      "ternary_zero_ratio": 0.0,
-      "train_throughput_samples_sec": 41340.22216726832,
-      "test_throughput_samples_sec": 90329.64087041125
     }
   },
   {
@@ -9207,27 +9123,6 @@
       "ternary_zero_ratio": 0.0,
       "train_throughput_samples_sec": 34001.53739198667,
       "test_throughput_samples_sec": 160006.92952993716
-    }
-  },
-  {
-    "dataset": "california_housing",
-    "mode": "real",
-    "strategy": "dfa",
-    "strategy_variant": "dfa_float_lr10",
-    "flip": "off",
-    "flip_schedule": "off",
-    "seed": 2,
-    "run_dir": "runs/bench/california_housing/real/dfa_float_lr10/seed2",
-    "metrics": {
-      "loss": NaN,
-      "mae": NaN,
-      "rmse": NaN,
-      "r2": NaN,
-      "sample_count": 4160.0,
-      "samples_per_step": 64.0,
-      "ternary_zero_ratio": 0.0,
-      "train_throughput_samples_sec": 41252.543920718934,
-      "test_throughput_samples_sec": 89510.1697969199
     }
   },
   {
