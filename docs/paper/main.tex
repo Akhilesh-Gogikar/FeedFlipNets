@@ -596,6 +596,19 @@ We tracked the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}
     \label{tab:meta-summary}
 \end{table}
 
+\section{Impact and Broader Significance}\label{sec:impact}
+FeedFlipNets places strong emphasis on reproducibility, determinism, and deployability. By providing lightweight research artifacts (logs, plots, tables) and a minimal codebase, we make it easy for others to verify results and use this framework for educational purposes. In applied settings, deploying ternary forward weights can simplify firmware and reduce memory/energy costs for microcontroller-class hardware, helping bridge the gap to real-world edge learning.
+
+\section{Limitations}\label{sec:limits}
+Our reference implementation targets NumPy on CPU and simple MLP models; scaling up to larger architectures (CNNs, Transformers) or distributed training is left for future work. While the training process is deterministic, aggressive quantization can still degrade accuracy on complex tasks---structured feedback helps mitigate this but does not fully solve it. Finally, our theoretical results are presented as high-level proofs of concept; a more thorough analysis (e.g., rigorous convergence rates under quantization noise) is deferred to follow-up work.
+
+\section{Future Work}\label{sec:future}
+Future extensions include exploring alternative quantizers (e.g., LSQ, DoReFa) and per-layer threshold tuning, investigating structured or even binary feedback variants, and adding tools to export trained models for embedded inference. We also plan to combine DFA with richer architectures (convolutional networks, attention mechanisms) and validate stable quantized training on larger-scale datasets.
+
+\section{Conclusion}\label{sec:conclusion}
+Pairing DFA with ternary forward ``flips'' yields a simple yet principled training approach that preserves strong performance while improving deployability. Our analysis connected DFA's alignment dynamics, the conditioning effect of structured feedback, and stochastic ternary convergence into a coherent explanation of when and why ternary DFA works. Empirically, we mapped out accuracy--sparsity--throughput frontiers across modalities and distilled practical guidelines for robust quantized training. Overall, our results demonstrate that relaxing weight symmetry and precision preserves the essence of deep learning's learning dynamics while advancing hardware efficiency and even aligning with biologically plausible learning principles.
+
+% Move appendix to the very end, before references
 \section*{Appendix}
 \addcontentsline{toc}{section}{Appendix}
 \subsection*{A. Proof of Theorem~\ref{thm:ternary-nonasymp}}
@@ -637,7 +650,6 @@ Because $B_\ell$ preserves norms and acts as a random rotation (orthonormal/Hada
 \end{equation}
 where $\gamma$ is a depth-dependent floor induced by the near-isometry. For random orthonormal (or normalized Hadamard) $B_\ell$, standard concentration provides $\gamma\gtrsim c/\sqrt{L}$ w.h.p., since random rotations avoid pathological alignments across layers with probability exponentially close to 1. This establishes the claim.
 
-
 \begin{table}[H]
     \centering
     \small
@@ -667,18 +679,6 @@ where $\gamma$ is a depth-dependent floor induced by the near-isometry. For rand
     \item \textbf{Clipping and LR:} clip gradients at $\approx 1.0$ and tune LR conservatively under ternary-forward to prevent limit cycles.
     \item \textbf{Determinism:} fix seeds for feedback and initialization to stabilize alignment onset and variance across runs.
 \end{itemize}
-
-\section{Impact and Broader Significance}\label{sec:impact}
-FeedFlipNets places strong emphasis on reproducibility, determinism, and deployability. By providing lightweight research artifacts (logs, plots, tables) and a minimal codebase, we make it easy for others to verify results and use this framework for educational purposes. In applied settings, deploying ternary forward weights can simplify firmware and reduce memory/energy costs for microcontroller-class hardware, helping bridge the gap to real-world edge learning.
-
-\section{Limitations}\label{sec:limits}
-Our reference implementation targets NumPy on CPU and simple MLP models; scaling up to larger architectures (CNNs, Transformers) or distributed training is left for future work. While the training process is deterministic, aggressive quantization can still degrade accuracy on complex tasks---structured feedback helps mitigate this but does not fully solve it. Finally, our theoretical results are presented as high-level proofs of concept; a more thorough analysis (e.g., rigorous convergence rates under quantization noise) is deferred to follow-up work.
-
-\section{Future Work}\label{sec:future}
-Future extensions include exploring alternative quantizers (e.g., LSQ, DoReFa) and per-layer threshold tuning, investigating structured or even binary feedback variants, and adding tools to export trained models for embedded inference. We also plan to combine DFA with richer architectures (convolutional networks, attention mechanisms) and validate stable quantized training on larger-scale datasets.
-
-\section{Conclusion}\label{sec:conclusion}
-Pairing DFA with ternary forward ``flips'' yields a simple yet principled training approach that preserves strong performance while improving deployability. Our analysis connected DFA's alignment dynamics, the conditioning effect of structured feedback, and stochastic ternary convergence into a coherent explanation of when and why ternary DFA works. Empirically, we mapped out accuracy--sparsity--throughput frontiers across modalities and distilled practical guidelines for robust quantized training. Overall, our results demonstrate that relaxing weight symmetry and precision preserves the essence of deep learning's learning dynamics while advancing hardware efficiency and even aligning with biologically plausible learning principles.
 
 \bibliographystyle{plainnat}
 \bibliography{references}

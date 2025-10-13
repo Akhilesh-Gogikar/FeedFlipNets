@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex docs/paper/main"] 1760369801.21567 "docs/paper/main.aux" "docs/paper/main.bbl" "docs/paper/main" 1760369803.72046 0
+["bibtex docs/paper/main"] 1760370313.00823 "docs/paper/main.aux" "docs/paper/main.bbl" "docs/paper/main" 1760370315.31353 0
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/natbib/plainnat.bst" 1233624470 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "docs/paper/main.aux" 1760369803.30041 17737 de20a23d8af13e27d51c8e3ae93813bd "pdflatex"
+  "docs/paper/main.aux" 1760370314.93362 17737 b8218617e51fed884d17bd49d11d849f "pdflatex"
   "docs/paper/references.bib" 1760300098.6698 4476 3106cd4fc797a01846bdb10857d40d74 ""
   (generated)
   "docs/paper/main.bbl"
   "docs/paper/main.blg"
   (rewritten before read)
-["pdflatex"] 1760369801.31665 "docs/paper/main.tex" "docs/paper/main.pdf" "main" 1760369803.72062 0
+["pdflatex"] 1760370313.0969 "docs/paper/main.tex" "docs/paper/main.pdf" "main" 1760370315.31394 0
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1136768653 1536 02c06700a42be0f5a28664c7273f82e7 ""
@@ -259,11 +259,11 @@
   "docs/paper/../../data/report/plots/tau_sweep_mnist_real.png" 1760363043.55515 40452 7edab4a5494f656fb3a8136a2666aded ""
   "docs/paper/../../data/report/plots/throughput_bar_adult_real.png" 1760361777.95852 58035 cf0a7464513e808ed21ee00b8203b09c ""
   "docs/paper/../../data/report/plots/throughput_bar_ag_news_real.png" 1760361777.47326 55823 ac29e365f841df91c91e9104ff00654b ""
-  "docs/paper/_generated/key_metrics_table.tex" 1760369798.49174 625 2108396ce455e36e74cf73bb87501d5b ""
-  "docs/paper/main.aux" 1760369803.30041 17737 de20a23d8af13e27d51c8e3ae93813bd "pdflatex"
-  "docs/paper/main.bbl" 1760369801.31087 4065 3ad1d827e30c881d153a7aedff47b8db "bibtex docs/paper/main"
-  "docs/paper/main.out" 1760369803.30187 5769 d42d782203b20bb22826290d8e727741 "pdflatex"
-  "docs/paper/main.tex" 1760369791.89763 60307 f2c77c1deba411d0dfde82005fa435bd ""
+  "docs/paper/_generated/key_metrics_table.tex" 1760370310.52145 625 2108396ce455e36e74cf73bb87501d5b ""
+  "docs/paper/main.aux" 1760370314.93362 17737 b8218617e51fed884d17bd49d11d849f "pdflatex"
+  "docs/paper/main.bbl" 1760370313.0918 4065 3ad1d827e30c881d153a7aedff47b8db "bibtex docs/paper/main"
+  "docs/paper/main.out" 1760370314.93558 5769 001fb63b5351cbdc5278bd3d53af260d "pdflatex"
+  "docs/paper/main.tex" 1760370302.08393 60357 43bdb9d9073b88cc21733b589aedcce0 ""
   (generated)
   "docs/paper/main.aux"
   "docs/paper/main.log"
