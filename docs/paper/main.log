@@ -845,13 +845,13 @@ File: ../../data/report/plots//meta_early_slopes.png Graphic file (type bmp)
 <../../data/report/plots//meta_early_slopes.png>
  [9]
 (../../data/report/meta_convergence_summary.tex)
-Overfull \hbox (7.17259pt too wide) in paragraph at lines 377--378
+Overfull \hbox (7.17259pt too wide) in paragraph at lines 388--389
 []\TU/lmr/bx/n/10.95 Flip schedule: \TU/lmr/m/n/10.95 start with per-epoch flip
 s for text/tabular, then tighten to per-step on vision/time-
  []
 
 [10]
-Overfull \hbox (62.11809pt too wide) in paragraph at lines 387--388
+Overfull \hbox (62.11809pt too wide) in paragraph at lines 398--399
 \TU/lmr/m/n/10.95 Our reference implementation targets NumPy/CPU and simple MLP
 s; larger architectures (CNNs/Transformers)
  []
@@ -863,10 +863,10 @@ File: ../../data/report/plots//tau_sweep_mnist_real.png Graphic file (type bmp)
 File: ../../data/report/plots//tau_sweep_20newsgroups_real.png Graphic file (ty
 pe bmp)
 <../../data/report/plots//tau_sweep_20newsgroups_real.png>
+ [12]
 File: ../../data/report/plots//tau_sweep_california_housing_real.png Graphic fi
 le (type bmp)
 <../../data/report/plots//tau_sweep_california_housing_real.png>
- [12]
 File: ../../data/report/plots//lr_sweep_20newsgroups_real.png Graphic file (typ
 e bmp)
 <../../data/report/plots//lr_sweep_20newsgroups_real.png>
@@ -874,4 +874,4 @@ e bmp)
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: C92B26E11583674423BCDB2143F3923D;4844.
  )
-Output written on main.xdv (14 pages, 300872 bytes).
+Output written on main.xdv (14 pages, 303788 bytes).
