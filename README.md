@@ -3,6 +3,8 @@ FeedFlipNets
 
 Deterministic training with Direct Feedback Alignment (DFA) and ternary forward weights. Small, standard benchmarks. Reproducible on a laptop.
 
+Project status: complete — no further development planned.
+
 
 Why FeedFlipNets
 ----------------
@@ -191,73 +193,7 @@ No. CPU is fine for the supported experiments and smoke tests.
 
 ⸻
 
-Roadmap
--------
-
-* Optional binary feedback matrices (±1) with variance scaling.
-* Structured feedback (e.g., orthogonal/Hadamard) for stability.
-* Plug-in quantizers (LSQ, DoReFa) and per-layer thresholds.
-* Exporters for on-device inference formats.
-
-Update these bullets as plans evolve.
-
-
-⸻
-
 Keywords
 --------
 
 Deterministic Training, Direct Feedback Alignment, Ternary Networks, Quantized Training, Stability, Convergence, Reproducibility.
-
-
-⸻
-
-Contributing
-------------
-
-PRs welcome. Please run the smoke suite locally before submitting.
-
-```bash
-# Lint + tests
-make format lint test smoke
-```
-
-Add `ruff`, `black`, `mypy`, or pre-commit hooks here if your workflow uses them.
-
-
-⸻
-
-Citation
---------
-
-If this work helps your research or product, please cite:
-
-```bibtex
-@software{FeedFlipNets,
-  author = {Gogikar, A.},
-  title  = {FeedFlipNets: Deterministic DFA with Ternary Forwards—Stability and Convergence},
-  year   = {2025},
-  url    = {https://github.com/akigogikar/FeedFlipNets}
-}
-```
-
-Swap in a paper or arXiv entry once available.
-
-
-⸻
-
-License
--------
-
-Apache-2.0 © Aki Gogikar
-
-
-⸻
-
-Drop-in checklist for maintainers
----------------------------------
-
-* Replace placeholders with fresh metrics or CLI shortcuts as the project matures.
-* Confirm Python version and dependency pins.
-* Add one tiny metrics table from a smoke run (before/after flip) to make the README “pop.”
-* If you have CI, wire the badge to your workflow URL.
