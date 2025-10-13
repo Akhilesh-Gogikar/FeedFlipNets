@@ -635,12 +635,14 @@ def main() -> None:
                 plt.close()
         for dataset, mode in keys:
             taus = [0.02, 0.05, 0.10]
+            primary = "r2" if dataset == "california_housing" else "accuracy"
             X: List[float] = []
             Y: List[float] = []
             E: List[float] = []
             for tau in taus:
-                v = f"dfa_ternary_epoch_tau{int(tau*1000):03d}"
-                r = rec_map.get((dataset, mode, v, "accuracy"))
+                # Our variants are named with tau*100, e.g., 0.02 -> 002
+                v = f"dfa_ternary_epoch_tau{int(tau*100):03d}"
+                r = rec_map.get((dataset, mode, v, primary))
                 if r is not None:
                     X.append(tau)
                     Y.append(r.mean)
@@ -649,7 +651,7 @@ def main() -> None:
                 plt.figure(figsize=(4.8, 3.2))
                 plt.errorbar(X, Y, yerr=E, marker="o")
                 plt.xlabel("tau (threshold)")
-                plt.ylabel("accuracy")
+                plt.ylabel(primary)
                 plt.title(f"Tau sweep — {dataset} ({mode})")
                 plt.grid(True, alpha=0.3)
                 plt.tight_layout()

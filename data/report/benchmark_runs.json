@@ -2,6 +2,120 @@
   {
     "dataset": "mnist",
     "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr15/seed2",
+    "metrics": {
+      "loss": 1.3152806730718931,
+      "accuracy": 0.9362157534246576,
+      "macro_f1": 0.9360510991605218,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 20713.97651313163
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr15/seed0",
+    "metrics": {
+      "loss": 1.2890673034217213,
+      "accuracy": 0.9372146118721462,
+      "macro_f1": 0.9370252457213631,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 22109.135703723296
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr15/seed1",
+    "metrics": {
+      "loss": 1.3648802542254383,
+      "accuracy": 0.933861301369863,
+      "macro_f1": 0.9332721483066135,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 20669.436476350267
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr06/seed2",
+    "metrics": {
+      "loss": 0.16736461075881845,
+      "accuracy": 0.9526255707762558,
+      "macro_f1": 0.9522702855337986,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 45879.65042966671
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr06/seed0",
+    "metrics": {
+      "loss": 0.17015133817684433,
+      "accuracy": 0.9509845890410958,
+      "macro_f1": 0.9506224311039544,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 44399.16323922866
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr06/seed1",
+    "metrics": {
+      "loss": 0.169099905022067,
+      "accuracy": 0.9497003424657534,
+      "macro_f1": 0.949346008188515,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 42865.40556251995
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
     "strategy": "ternary_dfa",
     "strategy_variant": "ternary_dfa_step",
     "flip": "ternary",
@@ -60,6 +174,234 @@
     "dataset": "mnist",
     "mode": "real",
     "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau010/seed2",
+    "metrics": {
+      "loss": 4.100178152152965,
+      "accuracy": 0.8017979452054794,
+      "macro_f1": 0.80032749203101,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.7418377976190477,
+      "test_throughput_samples_sec": 19001.20849773814
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau010/seed0",
+    "metrics": {
+      "loss": 4.262263450842568,
+      "accuracy": 0.7940211187214612,
+      "macro_f1": 0.7959840532541462,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.7519866071428571,
+      "test_throughput_samples_sec": 18690.349775694176
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau010/seed1",
+    "metrics": {
+      "loss": 4.453014747631499,
+      "accuracy": 0.78474600456621,
+      "macro_f1": 0.7821483464647108,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.7478348214285714,
+      "test_throughput_samples_sec": 17088.86575354141
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau005/seed2",
+    "metrics": {
+      "loss": 3.9528526862196767,
+      "accuracy": 0.80900399543379,
+      "macro_f1": 0.8069657262406823,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.4763839285714286,
+      "test_throughput_samples_sec": 16631.59809484029
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau005/seed0",
+    "metrics": {
+      "loss": 4.21180366575248,
+      "accuracy": 0.7965182648401826,
+      "macro_f1": 0.7955434921432922,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.48125744047619046,
+      "test_throughput_samples_sec": 11772.219397431803
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau005/seed1",
+    "metrics": {
+      "loss": 6.69858056845236,
+      "accuracy": 0.676583904109589,
+      "macro_f1": 0.6342610145246842,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.47898065476190477,
+      "test_throughput_samples_sec": 19304.023538755773
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau002/seed2",
+    "metrics": {
+      "loss": 3.3868649253005922,
+      "accuracy": 0.8361158675799086,
+      "macro_f1": 0.8323099278320066,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.184296875,
+      "test_throughput_samples_sec": 10280.560176663055
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau002/seed0",
+    "metrics": {
+      "loss": 5.524628562336448,
+      "accuracy": 0.7333761415525114,
+      "macro_f1": 0.7194376860176941,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.18450520833333334,
+      "test_throughput_samples_sec": 13632.284720537271
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/dfa_ternary_epoch_tau002/seed1",
+    "metrics": {
+      "loss": 5.554195727504496,
+      "accuracy": 0.7318778538812786,
+      "macro_f1": 0.7098860637756375,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.18530877976190477,
+      "test_throughput_samples_sec": 19018.535812916623
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr15/seed2",
+    "metrics": {
+      "loss": 0.11708278763511953,
+      "accuracy": 0.9648259132420092,
+      "macro_f1": 0.9646066185296155,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 44948.63065179911
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr15/seed0",
+    "metrics": {
+      "loss": 0.11744867473602567,
+      "accuracy": 0.9648259132420092,
+      "macro_f1": 0.9646561822318676,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 47430.44883549374
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr15/seed1",
+    "metrics": {
+      "loss": 0.1146239303541476,
+      "accuracy": 0.9650399543378996,
+      "macro_f1": 0.9648352693226296,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 47012.44341157177
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
     "strategy_variant": "dfa_float",
     "flip": "off",
     "flip_schedule": "off",
@@ -111,6 +453,63 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.0,
       "test_throughput_samples_sec": 31401.777005860786
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr06/seed2",
+    "metrics": {
+      "loss": 0.16162317355545625,
+      "accuracy": 0.951769406392694,
+      "macro_f1": 0.9515166104146162,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 22385.503015365462
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr06/seed0",
+    "metrics": {
+      "loss": 0.16781820441591003,
+      "accuracy": 0.9501997716894978,
+      "macro_f1": 0.9497725162004509,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 22643.977029023077
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr06/seed1",
+    "metrics": {
+      "loss": 0.16048485330713552,
+      "accuracy": 0.9521261415525114,
+      "macro_f1": 0.9517461229550295,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 22037.299850088173
     }
   },
   {
@@ -225,6 +624,63 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.0,
       "test_throughput_samples_sec": 65323.674496025225
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr10/seed2",
+    "metrics": {
+      "loss": 1.3251057127327392,
+      "accuracy": 0.929295091324201,
+      "macro_f1": 0.9291884305943541,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 22449.39333974105
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr10/seed0",
+    "metrics": {
+      "loss": 1.638215453540899,
+      "accuracy": 0.916095890410959,
+      "macro_f1": 0.9152282803160225,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 22305.90199732275
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/dfa_float_lr10/seed1",
+    "metrics": {
+      "loss": 1.2878441589852023,
+      "accuracy": 0.9309360730593608,
+      "macro_f1": 0.9305605792187309,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 21891.43866880095
     }
   },
   {
@@ -453,6 +909,63 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.677905505952381,
       "test_throughput_samples_sec": 31235.253385254062
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr10/seed2",
+    "metrics": {
+      "loss": 0.13365417689119027,
+      "accuracy": 0.961615296803653,
+      "macro_f1": 0.9613596327674685,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 46743.94973008457
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr10/seed0",
+    "metrics": {
+      "loss": 0.1363496968169701,
+      "accuracy": 0.9606164383561644,
+      "macro_f1": 0.9603492271479187,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 47866.4002868704
+    }
+  },
+  {
+    "dataset": "mnist",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/mnist/real/backprop_float_lr10/seed1",
+    "metrics": {
+      "loss": 0.13429370522499084,
+      "accuracy": 0.959332191780822,
+      "macro_f1": 0.9590890775261484,
+      "sample_count": 14016.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 46505.35839377993
     }
   },
   {
@@ -1142,6 +1655,120 @@
   {
     "dataset": "20newsgroups",
     "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr15/seed2",
+    "metrics": {
+      "loss": 2.214798893550317,
+      "accuracy": 0.3170021186440678,
+      "macro_f1": 0.27023449871470645,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 2680.8194547160015
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr15/seed0",
+    "metrics": {
+      "loss": 2.2325756131140264,
+      "accuracy": 0.3257415254237288,
+      "macro_f1": 0.27908620739353446,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 8.440471045808125e-07,
+      "test_throughput_samples_sec": 2927.785709557812
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr15/seed1",
+    "metrics": {
+      "loss": 2.2142781064210033,
+      "accuracy": 0.3191207627118644,
+      "macro_f1": 0.27382462839766186,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 1692.1148923481055
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr06/seed2",
+    "metrics": {
+      "loss": 2.9693937503685386,
+      "accuracy": 0.07070974576271187,
+      "macro_f1": 0.03356327131955666,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 8.440471045808125e-07,
+      "test_throughput_samples_sec": 8454.777123499138
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr06/seed0",
+    "metrics": {
+      "loss": 2.96866581399562,
+      "accuracy": 0.10354872881355932,
+      "macro_f1": 0.062188376270900646,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 7934.442792712632
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr06/seed1",
+    "metrics": {
+      "loss": 2.9689786636223228,
+      "accuracy": 0.08421610169491525,
+      "macro_f1": 0.035999962485765535,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 8755.97165208731
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
     "strategy": "ternary_dfa",
     "strategy_variant": "ternary_dfa_step",
     "flip": "ternary",
@@ -1200,6 +1827,234 @@
     "dataset": "20newsgroups",
     "mode": "real",
     "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau010/seed2",
+    "metrics": {
+      "loss": 3.8439484545593228,
+      "accuracy": 0.08739406779661017,
+      "macro_f1": 0.05833225057533019,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.9544349611063094,
+      "test_throughput_samples_sec": 3743.239638333455
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau010/seed0",
+    "metrics": {
+      "loss": 5.469039715916145,
+      "accuracy": 0.0770656779661017,
+      "macro_f1": 0.050189153045235246,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.9544087956460674,
+      "test_throughput_samples_sec": 3716.8811505762374
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau010/seed1",
+    "metrics": {
+      "loss": 4.422276030878071,
+      "accuracy": 0.08792372881355932,
+      "macro_f1": 0.06385977706628876,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.9544645027549697,
+      "test_throughput_samples_sec": 3599.610534723574
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau005/seed2",
+    "metrics": {
+      "loss": 17.96464316512643,
+      "accuracy": 0.10672669491525423,
+      "macro_f1": 0.07260913557184143,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.6790240789757995,
+      "test_throughput_samples_sec": 3748.016681536898
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau005/seed0",
+    "metrics": {
+      "loss": 16.533314796234905,
+      "accuracy": 0.14327330508474576,
+      "macro_f1": 0.1311654652109004,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.6795245989088159,
+      "test_throughput_samples_sec": 3818.216430696071
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau005/seed1",
+    "metrics": {
+      "loss": 17.102080434825716,
+      "accuracy": 0.1292372881355932,
+      "macro_f1": 0.0938469525466206,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.6793549454407951,
+      "test_throughput_samples_sec": 3601.2012905576544
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau002/seed2",
+    "metrics": {
+      "loss": 18.282555138919726,
+      "accuracy": 0.10460805084745763,
+      "macro_f1": 0.058147158633886364,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.2969754416054451,
+      "test_throughput_samples_sec": 2535.5453833255974
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau002/seed0",
+    "metrics": {
+      "loss": 18.036648519877136,
+      "accuracy": 0.1159957627118644,
+      "macro_f1": 0.07874417285376849,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.2977426804235091,
+      "test_throughput_samples_sec": 2903.3309376085977
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_ternary_epoch_tau002/seed1",
+    "metrics": {
+      "loss": 18.81036412064601,
+      "accuracy": 0.08765889830508475,
+      "macro_f1": 0.05288121753126732,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.2966597679883319,
+      "test_throughput_samples_sec": 2594.3064774297495
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr15/seed2",
+    "metrics": {
+      "loss": 2.7080870927390404,
+      "accuracy": 0.20815677966101695,
+      "macro_f1": 0.15268284558098827,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 4830.265654556639
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr15/seed0",
+    "metrics": {
+      "loss": 2.6970684043431685,
+      "accuracy": 0.1832627118644068,
+      "macro_f1": 0.11715324513659013,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 8151.446519302741
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr15/seed1",
+    "metrics": {
+      "loss": 2.68762907739413,
+      "accuracy": 0.2044491525423729,
+      "macro_f1": 0.15023094602013912,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 8.440471045808125e-07,
+      "test_throughput_samples_sec": 8226.399525641638
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
     "strategy_variant": "dfa_float",
     "flip": "off",
     "flip_schedule": "off",
@@ -1251,6 +2106,63 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 8.440471045808125e-07,
       "test_throughput_samples_sec": 6099.270219899142
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr06/seed2",
+    "metrics": {
+      "loss": 2.886598354883256,
+      "accuracy": 0.14115466101694915,
+      "macro_f1": 0.08773007317619902,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 1484.1445193523912
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr06/seed0",
+    "metrics": {
+      "loss": 2.9164814891939668,
+      "accuracy": 0.11016949152542373,
+      "macro_f1": 0.06730254980257386,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 8.440471045808125e-07,
+      "test_throughput_samples_sec": 1652.4140831957973
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr06/seed1",
+    "metrics": {
+      "loss": 2.8735992828258885,
+      "accuracy": 0.13691737288135594,
+      "macro_f1": 0.07577318525341445,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 1055.6549524243987
     }
   },
   {
@@ -1365,6 +2277,63 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.0,
       "test_throughput_samples_sec": 16774.822736091024
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr10/seed2",
+    "metrics": {
+      "loss": 2.545735512804631,
+      "accuracy": 0.211864406779661,
+      "macro_f1": 0.1620633668264922,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 2572.754683385612
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr10/seed0",
+    "metrics": {
+      "loss": 2.5760503592728363,
+      "accuracy": 0.2333156779661017,
+      "macro_f1": 0.17804418289683735,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 1801.0077944531495
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/dfa_float_lr10/seed1",
+    "metrics": {
+      "loss": 2.5404469742635083,
+      "accuracy": 0.22351694915254236,
+      "macro_f1": 0.1657017260803167,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 8.440471045808125e-07,
+      "test_throughput_samples_sec": 2616.0721037637272
     }
   },
   {
@@ -1593,6 +2562,63 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.6820297307152118,
       "test_throughput_samples_sec": 5554.295362689697
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr10/seed2",
+    "metrics": {
+      "loss": 2.924293699911085,
+      "accuracy": 0.11811440677966102,
+      "macro_f1": 0.0744741235825955,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 8839.134921543064
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr10/seed0",
+    "metrics": {
+      "loss": 2.9194404876838296,
+      "accuracy": 0.12579449152542374,
+      "macro_f1": 0.06826271609593469,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 7653.745696017283
+    }
+  },
+  {
+    "dataset": "20newsgroups",
+    "mode": "real",
+    "strategy": "backprop",
+    "strategy_variant": "backprop_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/20newsgroups/real/backprop_float_lr10/seed1",
+    "metrics": {
+      "loss": 2.920374211618456,
+      "accuracy": 0.125,
+      "macro_f1": 0.07400494853637143,
+      "sample_count": 3776.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 8134.906024094237
     }
   },
   {
@@ -3422,6 +4448,66 @@
   {
     "dataset": "california_housing",
     "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr15/seed2",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 85521.2625799975
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr15/seed0",
+    "metrics": {
+      "loss": NaN,
+      "mae": NaN,
+      "rmse": NaN,
+      "r2": NaN,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 83711.82750727209
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr15",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr15/seed1",
+    "metrics": {
+      "loss": NaN,
+      "mae": NaN,
+      "rmse": NaN,
+      "r2": NaN,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 86024.69305727826
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
     "strategy": "ternary_dfa",
     "strategy_variant": "ternary_dfa_step",
     "flip": "ternary",
@@ -3483,6 +4569,246 @@
     "dataset": "california_housing",
     "mode": "real",
     "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau010/seed2",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.4074353448275862,
+      "test_throughput_samples_sec": 71510.2237273044
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau010/seed0",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.37974137931034485,
+      "test_throughput_samples_sec": 78382.79117877291
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau010",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau010/seed1",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 1.0,
+      "test_throughput_samples_sec": 83103.53009816242
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "structured",
+    "strategy_variant": "structured_hadamard_float_clip1",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/structured_hadamard_float_clip1/seed2",
+    "metrics": {
+      "loss": 0.8927926072707543,
+      "mae": 0.6759535074234009,
+      "rmse": 0.944877028465271,
+      "r2": 0.3484998156328324,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 102693.23120030676
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "structured",
+    "strategy_variant": "structured_hadamard_float_clip1",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/structured_hadamard_float_clip1/seed0",
+    "metrics": {
+      "loss": 0.9169194996356964,
+      "mae": 0.6921460628509521,
+      "rmse": 0.9575591683387756,
+      "r2": 0.33089357532496577,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 102452.74834914967
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "structured",
+    "strategy_variant": "structured_hadamard_float_clip1",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/structured_hadamard_float_clip1/seed1",
+    "metrics": {
+      "loss": 0.8971364259719848,
+      "mae": 0.6734828948974609,
+      "rmse": 0.9471728205680847,
+      "r2": 0.34532998317365615,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 99819.63360051872
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau005/seed2",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.03329741379310345,
+      "test_throughput_samples_sec": 69450.53110458633
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau005/seed0",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.036530172413793104,
+      "test_throughput_samples_sec": 85811.38282630275
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau005",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau005/seed1",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 1.0,
+      "test_throughput_samples_sec": 82035.16464948314
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau002/seed2",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0047413793103448275,
+      "test_throughput_samples_sec": 79729.19060457135
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau002/seed0",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 1.0,
+      "test_throughput_samples_sec": 75254.61884719183
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_ternary_epoch_tau002",
+    "flip": "ternary",
+    "flip_schedule": "per_epoch",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_ternary_epoch_tau002/seed1",
+    "metrics": {
+      "loss": 6.776906995978438,
+      "mae": 2.1194611838691544,
+      "rmse": 2.603249314986645,
+      "r2": -3.945332552365871,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.007004310344827586,
+      "test_throughput_samples_sec": 71848.89238367273
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
     "strategy_variant": "dfa_float",
     "flip": "off",
     "flip_schedule": "off",
@@ -3537,6 +4863,66 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.0,
       "test_throughput_samples_sec": 139202.98328132057
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr06/seed2",
+    "metrics": {
+      "loss": NaN,
+      "mae": NaN,
+      "rmse": NaN,
+      "r2": NaN,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 84140.2708928369
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr06/seed0",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 89112.86302620305
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr06",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr06/seed1",
+    "metrics": {
+      "loss": NaN,
+      "mae": NaN,
+      "rmse": NaN,
+      "r2": NaN,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 90329.64087041125
     }
   },
   {
@@ -3657,6 +5043,66 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.0,
       "test_throughput_samples_sec": 160006.92952993716
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr10/seed2",
+    "metrics": {
+      "loss": NaN,
+      "mae": NaN,
+      "rmse": NaN,
+      "r2": NaN,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 89510.1697969199
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr10/seed0",
+    "metrics": {
+      "loss": 5.6338844982727165,
+      "mae": 2.064829359110445,
+      "rmse": 2.3735805228120483,
+      "r2": -3.111231336376772,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 87127.56787038452
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_lr10",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_lr10/seed1",
+    "metrics": {
+      "loss": 5.63225576394331,
+      "mae": 2.0645408647498344,
+      "rmse": 2.37323740151366,
+      "r2": -3.110042795217339,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 88526.02110669081
     }
   },
   {
@@ -3837,6 +5283,66 @@
       "samples_per_step": 64.0,
       "ternary_zero_ratio": 0.0,
       "test_throughput_samples_sec": 158769.77847844927
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_clip1",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 2,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_clip1/seed2",
+    "metrics": {
+      "loss": 0.7542895822795407,
+      "mae": 0.6345636892440935,
+      "rmse": 0.8684984641779977,
+      "r2": 0.4495700136697972,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 84896.36867619355
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_clip1",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 0,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_clip1/seed0",
+    "metrics": {
+      "loss": 0.7712405043110561,
+      "mae": 0.6413956071242303,
+      "rmse": 0.8782029972113828,
+      "r2": 0.4372003667844534,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 87534.71745781472
+    }
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "strategy": "dfa",
+    "strategy_variant": "dfa_float_clip1",
+    "flip": "off",
+    "flip_schedule": "off",
+    "seed": 1,
+    "run_dir": "runs/bench/california_housing/real/dfa_float_clip1/seed1",
+    "metrics": {
+      "loss": 0.7809717349819352,
+      "mae": 0.6457761363377494,
+      "rmse": 0.8837260519991109,
+      "r2": 0.4300991668063753,
+      "sample_count": 4160.0,
+      "samples_per_step": 64.0,
+      "ternary_zero_ratio": 0.0,
+      "test_throughput_samples_sec": 85372.88505864698
     }
   },
   {
