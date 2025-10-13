@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+ternary_dfa_experiment.py
+feedflipnets.egg-info/PKG-INFO
+feedflipnets.egg-info/SOURCES.txt
+feedflipnets.egg-info/dependency_links.txt
+feedflipnets.egg-info/requires.txt
+feedflipnets.egg-info/top_level.txt
+tests/test_datasets_smoke.py
+tests/test_training_loops.py

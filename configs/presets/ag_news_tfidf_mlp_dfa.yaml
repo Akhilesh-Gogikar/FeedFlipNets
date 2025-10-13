@@ -1,0 +1,23 @@
+offline: true
+data:
+  name: ag_news
+  options:
+    seed: 13
+    val_split: 0.2
+    test_split: 0.2
+    tfidf_max_features: 30000
+    svd_dim: 2048
+model:
+  hidden: [512, 128]
+  quant: det
+  strategy: dfa
+train:
+  seed: 13
+  batch_size: 64
+  epochs: 6
+  eval_every: 1
+  lr: 0.05
+  optimizer: sgd
+  flip: ternary
+  flip_schedule: per_epoch
+  run_dir: runs/ag-news-tfidf-mlp-dfa

@@ -203,6 +203,9 @@ VARIANTS: Sequence[VariantConfig] = (
 
 DATASETS: Sequence[DatasetConfig] = (
     DatasetConfig(name="mnist", preset="mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
+    DatasetConfig(
+        name="fashion_mnist", preset="fashion_mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)
+    ),
     DatasetConfig(name="ucr", preset="ucr_gunpoint_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
     DatasetConfig(
         name="california_housing",
@@ -210,9 +213,25 @@ DATASETS: Sequence[DatasetConfig] = (
         modes=(MODE_OFFLINE, MODE_REAL),
     ),
     DatasetConfig(
+        name="adult",
+        preset="adult_mlp_dfa",
+        modes=(MODE_OFFLINE, MODE_REAL),
+        # Encourage reporting of both classification and regression-style metrics
+        train_overrides={
+            "metrics": "accuracy,precision,recall,f1,mae,r2",
+            "alignment_probe_steps": 8,
+        },
+    ),
+    DatasetConfig(
         name="20newsgroups",
         preset="20newsgroups_bow_mlp_dfa",
         modes=(MODE_OFFLINE, MODE_REAL),
+    ),
+    DatasetConfig(
+        name="ag_news",
+        preset="ag_news_tfidf_mlp_dfa",
+        modes=(MODE_OFFLINE, MODE_REAL),
+        train_overrides={"alignment_probe_steps": 8},
     ),
 )
 

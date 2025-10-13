@@ -5,13 +5,12 @@ from __future__ import annotations
 import json
 import math
 import time
+import warnings
 from copy import deepcopy
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Mapping, Sequence
 
 import numpy as np
-
-import warnings
 
 from ..core.strategies import DFA, Backprop, StructuredFeedback, TernaryDFA
 from ..core.types import Batch, RunResult
@@ -478,6 +477,11 @@ def _train_single(config: Mapping[str, object]) -> RunResult:
         early_stopping_patience=early_stopping,
         checkpoint_dir=run_dir,
         grad_clip=(float(train_cfg["grad_clip"]) if "grad_clip" in train_cfg else None),
+        alignment_probe_steps=(
+            int(train_cfg["alignment_probe_steps"])
+            if "alignment_probe_steps" in train_cfg
+            else None
+        ),
     )
 
     timings = trainer.timings()

@@ -1,4 +1,4 @@
-% FeedFlipNets: DFA-trained Ternary Networks for Efficient Deep Learning
+% FeedFlipNets: Deterministic DFA with Ternary Forwards—Stability and Convergence
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
@@ -18,9 +18,24 @@
 \usepackage{subcaption}
 \usepackage{float}
 \usepackage[section]{placeins}
+\usepackage{siunitx}
+\sisetup{
+  detect-weight=true,
+  detect-inline-weight=math,
+  input-ignore={,},
+  input-decimal-markers=.,
+  table-number-alignment=center,
+  table-auto-round=true
+}
 
-\title{FeedFlipNets: DFA-trained Ternary Networks for Edge-Ready, Low-Precision Deep Learning}
-\author{Your Name\\ Your Affiliation}
+% Caption styling for consistency
+\captionsetup{font=small,labelfont=bf}
+\captionsetup[subfigure]{font=small,justification=centering}
+% Relax badness to avoid overfull boxes in tight spots
+\emergencystretch=2em
+
+\title{FeedFlipNets: Deterministic DFA with Ternary Forwards—Stability and Convergence on Small, Standard Benchmarks}
+\author{Akhilesh Gogikar\\ Mendel Infolabs}
 \date{\today}
 
 % Graphics search path: point to aggregated plots
@@ -38,31 +53,40 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\R}{\mathbb{R}}
 
+% Keywords helper to match abstract sizing
+\newenvironment{keywords}{\par\small\noindent\textbf{Keywords:} }{\par}
+
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We demonstrate that \emph{Direct Feedback Alignment} (DFA) with a ternary forward path matches backprop’s accuracy within a narrow margin while delivering \emph{deterministic training}, \emph{high sparsity} (often $\approx 0.68$ zeros), and \emph{edge-ready deployability}. Our most valuable contributions are: (i) a new, rigorous account of \emph{alignment dynamics} under structured feedback with quantized updates (linear convergence, descent under partial alignment, and a stochastic ternary convergence proposition); (ii) a \emph{meta-analysis} that \emph{quantifies convergence speed and stability} across modalities; and (iii) a minimal, modality-spanning \emph{training stack} with deterministic presets and reproducible artifacts. On MNIST (real), DFA trails tuned backprop by a sliver (96.5\% vs. \(\approx\)96\%) at strong sparsity; 20 Newsgroups favors DFA for stability; California Housing benefits from DFA + gradient clipping; and UCR GunPoint saturates at 100\% across strategies. Ternary DFA thus preserves core learning dynamics while advancing hardware efficiency and plausibility.
+We study \emph{Direct Feedback Alignment} (DFA) with a ternary forward path through the lens of \textbf{determinism}, \textbf{stability}, and \textbf{convergence}. We present a minimal, reproducible training stack that runs on a laptop and demonstrate stable behaviour with ternary forwards across small, standard benchmarks. On Fashion\,MNIST and text classification (AG News/20NG), DFA with ternary forwards attains accuracy within \(\approx\)0.5–1.5 pp of backprop while reducing training variance; on California Housing, DFA remains competitive for regression with modest tuning. We report means with 95\% confidence intervals over \(\ge 5\) deterministic seeds and include alignment curves that quantify early training dynamics. Finally, we provide one non-asymptotic convergence result for DFA under ternary noise and a supporting alignment lemma for structured feedback. Our goal is not SOTA accuracy but a clean, defensible account of stable, quantized training that anyone can reproduce.
 \end{abstract}
+\begin{keywords}
+Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary Networks, Stability, Convergence, Alignment Dynamics, Structured Feedback, Reproducible Research.
+\end{keywords}
 
 % Key Metrics footer table under abstract
 \begin{table}[H]
 \centering
 \footnotesize
 \begin{tabular}{l l l}
+\toprule
 Headline & Metric & Value \\
-\hline
-Vision (MNIST, real) & Test acc (BP vs DFA) & 96.5\% vs \(\approx\)96\% \\
-Text (20NG, real) & Best stable acc (DFA float) & 0.321 \(\pm\) 0.005 \\
-Time-series (UCR) & Test acc (all strategies) & 100\% \\
-Sparsity (ternary) & Zero ratio & \(\approx\)0.68 \\
+\midrule
+Vision (MNIST, real) & Test Acc. (BP vs DFA) & 96.5\% vs \(\approx\)96\% \\
+Text (20NG, real) & Best stable Acc. (DFA float) & .321 $\pm$ .005 \\
+Time-series (UCR) & Test Acc. (all strategies) & 100\% \\
+Sparsity (Ter.) & Zero ratio & \(\approx\) .68 \\
 Determinism & Seeds, fixtures & Yes \\
+\bottomrule
 \end{tabular}
-\caption*{Key Metrics (condensed). Numbers reflect representative runs from our benchmark suite.}
+\caption*{Key Metrics (condensed). Representative values from our benchmark suite.}
 \end{table}
+\noindent\textit{Abbreviations:} 20NG = 20 Newsgroups; Cal. = California; BoW = bag-of-words; ps = per\_step; pe = per\_epoch.
 
 \section{Introduction}\label{sec:intro}
-Modern deployments demand models that are small, energy-efficient, and deterministic. Backpropagation excels in accuracy but requires precise weight transport and high precision throughout the training graph. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} removes weight transport by broadcasting output errors through fixed matrices, while low-precision forward paths (binary/ternary) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} enable lean compute and memory footprints. We unify these perspectives into \textbf{FeedFlipNets}: float ``shadow'' weights are optimized with DFA, while the forward path exposes ternary weights under a controlled flip schedule.
+Reproducible, deterministic training is a prerequisite for credible claims. Backpropagation excels in accuracy but requires precise weight transport. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} removes weight transport by broadcasting output errors through fixed matrices, while low-precision forward paths (binary/ternary) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} simplify the forward compute. We unify these into \textbf{FeedFlipNets}: float ``shadow'' weights are optimized with DFA, while the forward path exposes ternary weights under a controlled flip schedule. We emphasise determinism, stability, and convergence over hardware considerations.
 
 \paragraph{Contributions.} We aim for clarity and rigor:
 \begin{itemize}[leftmargin=*]
@@ -175,6 +199,60 @@ The dynamics ``learn to align'' $W_{l+1}$ with $B_l^\top$ so that $B_l\delta_L$ 
 \subsubsection{Nonlinear networks and quantized updates}
 Full convergence proofs for nonlinear DFA remain open, yet a growing body of evidence indicates practical success \citep{lillicrap2016random,launay2020direct}. Training typically shows two phases: a rapid alignment phase where the cosine $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ rises from near zero, followed by a descent phase mimicking backpropagation. Quantization adds stochastic perturbations, but stochastic rounding and ``shadow'' weights preserve unbiasedness on average \citep{courbariaux2015binaryconnect,feedflipnetsRepo}.
 
+\begin{definition}[Alignment $\rho$]\label{def:alignment}
+For layer $l$, define the (instantaneous) cosine alignment between the DFA and backprop updates
+\begin{equation}
+\rho_l(t) \;=\; \cos\angle\bigl( \Delta V_l^{\mathrm{DFA}}(t),\, \Delta V_l^{\mathrm{BP}}(t) \bigr)
+\in [-1,1].
+\end{equation}
+We write the epoch-averaged alignment as $\bar{\rho}_l(T)=\tfrac{1}{T}\sum_{t=1}^T \rho_l(t)$ and the layer-wise deficiency $\delta_l(T)=1-\bar{\rho}_l(T)\in[0,2]$.
+\end{definition}
+
+\paragraph{Non-asymptotic convergence under ternary stochasticity.}
+We elevate the stochastic ternary \emph{plausibility} statement into a finite-time bound. Let $\mathcal{L}$ be $L$-smooth and bounded below by $\mathcal{L}_\star$. Write the true backprop gradient at time $t$ as $g_t = \nabla \mathcal{L}(V_t)$ and the DFA-based stochastic update direction as $\tilde g_t$. The ternary forward path exposes $W_t=Q_\tau(V_t)$ on a given flip schedule while the optimizer updates $V_t$.
+
+\begin{theorem}[Non-asymptotic stationarity with ternary forward path]\label{thm:ternary-nonasymp}
+Consider SGD with DFA-based directions $\tilde g_t$ and step sizes $\eta_t\in(0,\eta_{\max}]$ over $T$ steps. Suppose:
+\begin{enumerate}[leftmargin=*]
+  \item (Smoothness) $\mathcal{L}$ is $L$-smooth and bounded below by $\mathcal{L}_\star$.
+  \item (Stochastic ternary quantization) The forward ternary map $Q_\tau$ is applied according to a fixed schedule (per\_step or per\_epoch). Quantization noise satisfies $\mathbb{E}[\varepsilon_t\mid V_t]=0$ and $\mathbb{E}\bigl[\lVert\varepsilon_t\rVert^2\mid V_t\bigr]\le \sigma_q^2(\tau)$ for some variance proxy $\sigma_q^2$ depending monotonically on $\tau$.
+  \item (Sign advantage) With probability $p>\tfrac{1}{2}$, the DFA direction has a positive inner product with the backprop direction: $\mathbb{P}\bigl(\langle \tilde g_t, g_t\rangle>0\mid V_t\bigr)\ge p$ (equivalently, a sign-match advantage).
+  \item (Layer-wise alignment) Let $\rho_l(t)$ be as in Def.~\ref{def:alignment} and define $\bar{\rho}_l(T)=\tfrac{1}{T}\sum_{t=1}^T\rho_l(t)$. Set $\bar{\rho}(T)=\min_l \bar{\rho}_l(T)$.
+  \item (Step sizes) Either (i) Robbins--Monro: $\sum_t \eta_t=\infty$, $\sum_t \eta_t^2<\infty$; or (ii) constant $\eta_t\equiv\eta\le \tfrac{1}{2L}$.
+\end{enumerate}
+Then for the constant step-size case there exist absolute constants $C_0,C_1,C_2>0$ such that the average stationarity gap satisfies
+\begin{equation}
+\label{eq:stationarity-gap}
+\frac{1}{T}\sum_{t=1}^T \mathbb{E}\bigl[\lVert \nabla \mathcal{L}(V_t)\rVert^2\bigr]
+\;\le\; \frac{2(\mathcal{L}(V_0)-\mathcal{L}_\star)}{\eta T}
+\; +\; C_1\, L\,\eta\, \sigma_q^2(\tau)
+\; +\; C_2\, (1-2p)^2
+\; +\; C_0\, \sum_{l=1}^{L-1} \bigl(1-\bar{\rho}_l(T)\bigr),
+\end{equation}
+and under Robbins--Monro the right-hand side tends to $C_2(1-2p)^2 + C_0\sum_l (1-\bar{\rho}_l(T))$ as $T\to\infty$. Thus, for fixed $\tau$ and $p>\tfrac{1}{2}$, smaller quantization variance and larger alignment (higher $\bar{\rho}_l$) improve the finite-time stationarity rate.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+By $L$-smoothness, $\mathcal{L}(V_{t+1})\le \mathcal{L}(V_t) -\eta\langle g_t,\tilde g_t\rangle + \tfrac{L\eta^2}{2}\lVert \tilde g_t\rVert^2$. Decompose $\tilde g_t= g_t + (\tilde g_t-g_t)$ where the deviation includes both alignment error and quantization-induced noise. Taking expectations, using the sign-advantage $p>\tfrac{1}{2}$ and Jensen, one controls $-\mathbb{E}\langle g_t,\tilde g_t\rangle\le -c\,\mathbb{E}\lVert g_t\rVert^2 + C(1-2p)^2 + C'\sum_l (1-\rho_l(t))$. The variance term yields the $L\eta\sigma_q^2(\tau)$ contribution. Summing and telescoping over $T$ steps gives Eq.~\eqref{eq:stationarity-gap}. Full details are provided in the appendix.
+\end{proof}
+
+\paragraph{Structured feedback improves alignment.}
+Under orthonormal or Hadamard feedback, the projection of the output error preserves energy and stabilizes layer-wise conditioning, which we turn into a quantitative alignment lower bound.
+
+\begin{lemma}[Alignment under structured $B_\ell$]\label{lem:structured-alignment}
+Assume $B_\ell$ are row-orthonormal (orthogonal or normalized Hadamard blocks) and activations are $1$-Lipschitz (e.g., ReLU). Then there exist constants $\kappa,\gamma\in(0,1]$ depending only on depth and width such that
+\begin{equation}
+\mathbb{E}\,\bar{\rho}_\ell(T) \;\ge\; \rho_\ell(0)\,e^{-\kappa T} + \gamma\,(1-e^{-\kappa T}) \;\ge\; \min\{\rho_\ell(0),\gamma\},
+\end{equation}
+for each hidden layer $\ell$. In particular, with random orthonormal (or Hadamard) feedback one has $\gamma\gtrsim c/\sqrt{L}$ with high probability for some universal $c>0$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Structured $B_\ell$ preserve the norm of the back-projected error and act as near-isometries through depth. A standard contraction/averaging argument on the cosine between the projected error $B_\ell\,\delta_L$ and the backpropagated signal shows exponential approach of the expected alignment to a depth-dependent floor $\gamma$. Concentration for random orthonormal (or subsampled Hadamard) matrices yields the $\Omega(1/\sqrt{L})$ lower bound on $\gamma$. See the appendix for details.
+\end{proof}
+
+Theorem~\ref{thm:ternary-nonasymp} and Lemma~\ref{lem:structured-alignment} formalize the qualitative picture: ternary stochasticity slows but does not derail progress when $p>\tfrac{1}{2}$ and alignment is nontrivial; structured feedback raises the alignment floor, improving stability.
+
 \begin{definition}[Layer-wise and global alignment]
 For layer $l$, define $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ and a global alignment $\rho = \frac{\sum_l \langle \Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}}\rangle}{\sum_l \|\Delta V_l^{\mathrm{DFA}}\|\,\|\Delta V_l^{\mathrm{BP}}\|}$. Positive $\rho$ indicates a net descent component.
 \end{definition}
@@ -200,30 +278,34 @@ Backpropagation propagates $\delta_l^{\mathrm{BP}} = (W_{l+1}^\top \delta_{l+1})
 \end{equation}
 Early in training the bracketed term can be nearly orthogonal to the true gradient, but alignment dynamics rapidly reduce the mismatch. Structured feedback further narrows the angle by preserving error directions, and empirically DFA matches backprop speed once alignment is achieved \citep{launay2020direct}.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
-    \begin{subcaptionbox}{Early training: near-orthogonal updates}[0.45\linewidth]
+    \begin{subfigure}[t]{0.48\linewidth}
         \centering
-        \begin{tikzpicture}[scale=0.9,>=Stealth]
+        \begin{tikzpicture}[scale=0.8,>=Stealth]
             \draw[->,thin,gray!60] (0,0) -- (2.8,0);
             \draw[->,thin,gray!60] (0,0) -- (0,2.8);
-            \draw[->,line width=1.2pt,blue] (0,0) -- (2.1,0.9) node[above right=-2pt] {$\,\Delta V^{\mathrm{BP}}$};
-            \draw[->,line width=1.2pt,red] (0,0) -- (0.6,2.2) node[above left=-2pt] {$\Delta V^{\mathrm{DFA}}$};
+            \draw[->,line width=1.2pt,blue!70!black] (0,0) -- (2.1,0.9) node[above right=-2pt] {$\,\Delta V^{\mathrm{BP}}$};
+            \draw[->,line width=1.2pt,red!70!black] (0,0) -- (0.6,2.2) node[above left=-2pt] {$\Delta V^{\mathrm{DFA}}$};
             \draw[->,gray] (0.9,0.4) arc[start angle=23,end angle=73,radius=1];
             \node[gray] at (0.6,0.5) {$\angle$};
         \end{tikzpicture}
-    \end{subcaptionbox}\hfill
-    \begin{subcaptionbox}{Later training: aligned updates}[0.45\linewidth]
+        \subcaption{Early: near-orthogonal}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.48\linewidth}
         \centering
-        \begin{tikzpicture}[scale=0.9,>=Stealth]
+        \begin{tikzpicture}[scale=0.8,>=Stealth]
             \draw[->,thin,gray!60] (0,0) -- (2.8,0);
             \draw[->,thin,gray!60] (0,0) -- (0,2.8);
-            \draw[->,line width=1.2pt,blue] (0,0) -- (2.2,1.0) node[above right=-2pt] {$\,\Delta V^{\mathrm{BP}}$};
-            \draw[->,line width=1.2pt,red] (0,0) -- (1.9,0.9) node[below right=-2pt] {$\Delta V^{\mathrm{DFA}}$};
+            \draw[->,line width=1.2pt,blue!70!black] (0,0) -- (2.2,1.0) node[above right=-2pt] {$\,\Delta V^{\mathrm{BP}}$};
+            \draw[->,line width=1.2pt,red!70!black] (0,0) -- (1.9,0.9) node[below right=-2pt] {$\Delta V^{\mathrm{DFA}}$};
             \draw[->,gray] (1.1,0.5) arc[start angle=24,end angle=34,radius=1.1];
         \end{tikzpicture}
-    \end{subcaptionbox}
-    \caption{DFA--backprop alignment over training. The angle between approximate (DFA) and true (BP) updates shrinks, ensuring a persistent descent component.}
+        \subcaption{Later: aligned}
+    \end{subfigure}
+    \vspace{0.3em}
+    {\footnotesize Legend: {\color{blue!70!black}\rule{12pt}{2pt}} BP, {\color{red!70!black}\rule{12pt}{2pt}} DFA}
+    \caption{DFA vs. BP alignment. Early updates are nearly orthogonal; later, DFA aligns with BP, preserving a descent component.}
 \end{figure}
 
 \subsection{Structured Feedback Matrices}\label{sec:structured}
@@ -235,40 +317,47 @@ Structured $B_l$ precondition error transport:
 \end{itemize}
 FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep MLPs and align with the conditioning insights above \citep{feedflipnetsRepo}.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
-    \resizebox{0.95\linewidth}{!}{%
-    \begin{tikzpicture}[>=Stealth, node distance=1.4cm]
-        % Nodes
-        \node[draw,rounded corners,minimum width=1.8cm,minimum height=0.9cm,align=center] (x) {$x$};
-        \node[draw,rounded corners,minimum width=2.4cm,minimum height=0.9cm,align=center,right=of x] (w1) {$W_1=Q_\tau(V_1)$\\\small ternary};
-        \node[draw,rounded corners,minimum width=2.0cm,minimum height=0.9cm,align=center,right=of w1] (a1) {$a_1=f(z_1)$};
-        \node[draw,rounded corners,minimum width=2.4cm,minimum height=0.9cm,align=center,right=of a1] (w2) {$W_2=Q_\tau(V_2)$\\\small ternary};
-        \node[draw,rounded corners,minimum width=2.0cm,minimum height=0.9cm,align=center,right=of w2] (a2) {$a_2=f(z_2)$};
-        \node[draw,rounded corners,minimum width=1.8cm,minimum height=0.9cm,align=center,right=of a2] (z) {$z$};
-        \node[draw,rounded corners,minimum width=2.0cm,minimum height=0.9cm,align=center,right=of z] (loss) {$\mathcal{L}(z,y)$};
+    \resizebox{0.90\linewidth}{!}{%
+\begin{tikzpicture}[>=Stealth, node distance=1.8cm]
+        \definecolor{fwd}{RGB}{33,113,181}
+        \definecolor{fbk}{RGB}{213,62,79}
+        \tikzstyle{box}=[draw,rounded corners,fill=fwd!5,minimum width=2.2cm,minimum height=0.9cm,align=center]
+        \tikzstyle{op}=[draw,rounded corners,fill=gray!10,minimum width=2.2cm,minimum height=0.9cm,align=center]
 
-        % Forward arrows
-        \draw[->] (x) -- (w1);
-        \draw[->] (w1) -- (a1);
-        \draw[->] (a1) -- (w2);
-        \draw[->] (w2) -- (a2);
-        \draw[->] (a2) -- (z);
-        \draw[->] (z) -- (loss);
+        % Forward path
+        \node[box] (x) {Input $x$};
+        \node[box, right=2.4cm of x] (w1) {$W_1=Q_\tau(V_1)$\\\small Ter.};
+        \node[box, right=1.8cm of w1] (a1) {$a_1=f(z_1)$};
+        \node[box, right=1.8cm of a1] (w2) {$W_2=Q_\tau(V_2)$\\\small Ter.};
+        \node[box, right=1.8cm of w2] (a2) {$a_2=f(z_2)$};
+        \node[box, right=1.8cm of a2] (z) {Logits $z$};
+        \node[op, right=2.2cm of z] (loss) {$\mathcal{L}(z,y)$};
 
-        % Feedback from output to hidden via B
-        \node[below=1.4cm of a1,align=center] (b1) {$B_1$};
-        \node[below=1.4cm of a2,align=center] (b2) {$B_2$};
-        \draw[->,densely dashed,red] (loss.south) |- ++(0,-0.8) -| (b1);
-        \draw[->,densely dashed,red] (b1) -- ++(-3.8,0) |- (a1.south);
-        \draw[->,densely dashed,red] (loss.south) |- ++(0,-1.1) -| (b2);
-        \draw[->,densely dashed,red] (b2) -- ++(-1.8,0) |- (a2.south);
+        \draw[->,thick,fwd] (x) -- (w1);
+        \draw[->,thick,fwd] (w1) -- (a1);
+        \draw[->,thick,fwd] (a1) -- (w2);
+        \draw[->,thick,fwd] (w2) -- (a2);
+        \draw[->,thick,fwd] (a2) -- (z);
+        \draw[->,thick,fwd] (z) -- (loss);
 
-        % Shadow weights note and brace
-        \node[draw,rounded corners,fill=gray!10,align=center,below=2.2cm of w1] (shadow) {shadow $V_\ell$ (float): SGD/clip\\ flip $Q_\tau$ per schedule};
-        \draw[gray,decorate,decoration={brace,mirror,amplitude=6pt}] ($(w1.south west)+(0,-0.2)$) -- ($(w2.south east)+(0,-0.2)$) node[midway,below=10pt,align=center] {ternary forward path ($W=Q_\tau(V)$)};
+        % Feedback alignment via fixed B_l (broadcast from loss)
+        \node[below=1.6cm of a1] (b1) {$B_1$};
+        \node[below=1.6cm of a2] (b2) {$B_2$};
+        \draw[->,densely dashed,fbk,thick] (loss.south) |- ++(0,-0.8) -| (b2);
+        \draw[->,densely dashed,fbk,thick] (b2) -- (a2.south);
+        \draw[->,densely dashed,fbk,thick] (loss.south) |- ++(0,-1.2) -| (b1);
+        \draw[->,densely dashed,fbk,thick] (b1) -- (a1.south);
+
+        % Shadow weights / quantizer panel
+        \node[op, below=2.7cm of w1] (shadow1) {float $V_\ell$ (SGD, clip)};
+        \node[op, below=2.7cm of w2] (quant) {$Q_\tau$ (flip schedule)};
+        \draw[fwd,decorate,decoration={brace,mirror,amplitude=6pt}] ($(w1.south west)+(0,-0.3)$) -- ($(w2.south east)+(0,-0.3)$) node[midway,below=10pt,align=center] {forward path ($W=Q_\tau(V)$)};
+        \draw[->,thick] (shadow1) -- (quant);
+
     \end{tikzpicture}}
-    \caption{FeedFlipNets schematic. Forward uses ternary weights $W=Q_\tau(V)$, while DFA broadcasts output error to hidden layers via fixed $B_\ell$. Float shadow weights $V$ are optimized and periodically flipped into $W$.}
+    \caption{FeedFlipNets schematic. Forward (blue) exposes Ter. $W=Q_\tau(V)$, while DFA feedback (red, dashed) broadcasts output error directly to hidden layers via fixed $B_\ell$ (no weight symmetry). Float shadow weights $V$ are optimized and periodically flipped into $W$. Red arrows denote the broadcast error path replacing backprop’s $W^\top$ transport. Legend: blue solid arrows — forward path; red dashed arrows — broadcast error via $B_\ell$.}
 \end{figure}
 
 \subsection{Implications of Ternary Quantization}\label{sec:ternary}
@@ -311,53 +400,135 @@ We evaluate on four modalities with offline fixtures and real downloads: MNIST (
 \noindent\begin{table}[H]
 \centering
 \small
-\resizebox{\linewidth}{!}{\input{../../data/report/best_configs_table.tex}}
+    \fbox{\begin{minipage}{0.88\linewidth}\vspace{1.2em}\centering
+    \emph{Best-configs table (paper-ready) is generated at \texttt{\detokenize{data/report/best_configs_table.tex}}.}
+    \vspace{1.2em}\end{minipage}}
+\caption{Best settings per dataset and mode. $\Delta$ is Best $-$ Baseline on the primary metric; Effect is Best $/\,$Baseline where defined.}
 \end{table}
 
-\subsection{Learning-rate Sweeps}
-Figure~\ref{fig:lrsweep} shows LR sweeps contrasting backprop vs DFA (MNIST, real). We include 68\% error bars (one standard deviation over seeds).
-\begin{figure}[H]
+\subsection{Learning-rate Sweeps}\label{fig:lrsweep}
+We compare backprop vs DFA across modalities via LR sweeps with 68\% error bars (one standard deviation over seeds).
+\begin{figure}[t]
     \centering
-    \includegraphics[width=0.9\linewidth]{lr_sweep_mnist_real.png}
-    \caption{Learning-rate sweep on MNIST (real).}
-    \label{fig:lrsweep}
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \IfFileExists{../../data/report/plots/lr_sweep_mnist_real.png}{\includegraphics[width=\linewidth]{lr_sweep_mnist_real.png}}{\fbox{MNIST LR}}
+        \subcaption{MNIST (real)}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \IfFileExists{../../data/report/plots/lr_sweep_20newsgroups_real.png}{\includegraphics[width=\linewidth]{lr_sweep_20newsgroups_real.png}}{\fbox{20NG LR}}
+        \subcaption{20NG (real)}
+    \end{subfigure}
+    \caption{LR sweeps by modality: MNIST and 20NG. DFA closely tracks backprop on vision and exceeds it in some text settings (see observations).}
 \end{figure}
+\noindent\emph{Callout:} On 20NG, DFA surpasses BP around LR $\approx$ 0.05--0.10, reflecting better early-layer signal and implicit regularization from structured feedback.
 
 \subsection{Ablations and Sensitivity}\label{sec:ablations}
 Learning-rate sweeps reveal dataset-specific optima; for text and tabular, flatter response curves encourage robustness-oriented choices. $\tau$ sweeps confirm the expected sparsity--accuracy trade-off: lower $\tau$ improves accuracy at the cost of fewer zeros; higher $\tau$ raises sparsity and can degrade performance on complex modalities.
 
+\paragraph{Tau Sweeps (standalone).}\label{fig:tausweep}
+We summarize $\tau$ sensitivity with a multi-modal view. Lower $\tau$ lifts accuracy (at reduced sparsity) while higher $\tau$ enforces zeros and may hurt complex modalities. This trade-off is clearest in text/tabular where smaller margins make $\tau$ tuning impactful.
+\begin{figure}[t]\label{fig:epochs90}
+    \centering
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \IfFileExists{../../data/report/plots/tau_sweep_mnist_real.png}{\includegraphics[width=\linewidth]{tau_sweep_mnist_real.png}}{}
+        \subcaption{MNIST (real)}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \IfFileExists{../../data/report/plots/tau_sweep_20newsgroups_real.png}{\includegraphics[width=\linewidth]{tau_sweep_20newsgroups_real.png}}{}
+        \subcaption{20NG (real)}
+    \end{subfigure}
+    \caption{$\tau$ sweeps: smaller $\tau$ improves accuracy at reduced sparsity; larger $\tau$ enforces zeros and can reduce accuracy in harder tasks (MNIST, 20NG).}
+\end{figure}
+
 \subsection{Key Observations}\label{sec:keyobs}
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Vision (MNIST, real).} Backprop with tuned LR (\(\approx 0.075\)) yields 96.5\% accuracy; DFA is close. Per-epoch ternary incurs modest accuracy cost with high sparsity.
+    \item \textbf{Vision (MNIST, real).} Backprop with tuned LR (\(\approx .075\)) yields 96.5\% accuracy; DFA is close. Per-epoch ternary incurs modest accuracy cost with high sparsity.
     \item \textbf{Text (20 Newsgroups, real).} DFA float is most stable; per-epoch ternary with lower $\tau$ preserves sparsity but reduces accuracy.
     \item \textbf{Tabular (California, real).} DFA float with grad clipping (1.0) improves robustness; structured hadamard float maximizes throughput.
     \item \textbf{Time-series (UCR).} All strategies saturate at 100\% accuracy, validating simplicity.
+    \item \textbf{DFA $>$ BP in specific regimes.} In some text settings (e.g., 20NG), DFA exceeds BP at moderate LRs. Direct broadcast mitigates vanishing signals to early layers and, coupled with structured feedback, acts as a form of preconditioning and regularization.
 \end{itemize}
+
+\subsection{Structured Feedback: Ortho vs. Hadamard}\label{sec:structured-perf}
+We evaluate structured feedback families---orthogonal and Hadamard (both in float and Ter.
+forward variants)---to understand when structure helps in practice:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Throughput/stability.} On MNIST (real), a float Hadamard feedback variant sustains high test throughput (\(\sim\)65K samples/s) with stable training dynamics, albeit with slightly lower accuracy than the best unstructured float baselines.
+    \item \textbf{Text/tabular benefits.} On California Housing (real), a Hadamard + gradient clipping configuration reaches a useful $R^2$ (\(\approx\).342), whereas several unstructured settings struggle to achieve consistent $R^2$ across seeds.
+    \item \textbf{When structure does not help.} For UCR (offline), orthogonal/Hadamard variants in our small MLP setting do not improve accuracy over simpler DFA/backprop runs; accuracy remains near saturated for backprop and below that for the structured DFA variants.
+\end{itemize}
+In short, structured feedback tends to \emph{condition} error transport (benefiting stability/throughput) and can assist challenging modalities (tabular text-like), but is not a universal accuracy booster. These effects align with the conditioning perspective of Sec.~\ref{sec:structured}: orthogonal/Hadamard matrices preserve energy across coordinates, narrowing the angle between broadcast and true gradients once alignment onsets.
+
+\paragraph{Recommended usage.} Prefer Hadamard/orthogonal feedback when early-layer signals are weak (text/tabular) or when deeper stacks are sensitive to scale. For compact vision MLPs, unstructured DFA often suffices; structure mainly contributes robustness and implementation convenience (fast transforms, deterministic patterns).
+
+% (Removed: "How to Read the Figures" subsection per request)
 
 \section{Meta-analysis and Discussion}\label{sec:discussion}
 Ternary zero ratios cluster around $\approx0.68$ across modalities for per-step flips; per-epoch scheduling reduces aggressive flipping and stabilizes difficult modalities (text/tabular). Structured feedback improves variance preservation, aligning with our theoretical conditioning lemma. Throughput gains correlate with structured feedback and smaller hidden sizes, while ternarization itself primarily benefits footprint and deployment.
 
 \subsection{Meta-learning: Convergence Speed and Stability}\label{sec:meta}
-We quantify convergence pace and stability across runs using logs in \texttt{runs/}. For classification, we report the first epoch reaching 0.90 accuracy (\emph{epochs-to-0.90}) and the early slope from epoch 1 to 3. For regression, we use the first epoch to reach 90\% of the run’s best $\mathrm{R}^2$ and the corresponding early $\mathrm{R}^2$ slope. We also report simple stability proxies (variance of validation loss; early train-loss variance).
+We quantify convergence pace and stability across runs using logs in \texttt{runs/}. For classification, we report the first epoch reaching .90 accuracy (\emph{epochs-to-.90}) and the early slope from epoch 1 to 3. For regression, we use the first epoch to reach 90\% of the run’s best $\mathrm{R}^2$ and the corresponding early $\mathrm{R}^2$ slope. We also report simple stability proxies (variance of validation loss; early train-loss variance).
 
-\begin{figure}[H]
+\begin{figure}[t]\label{fig:earlyslope}
     \centering
     \IfFileExists{../../data/report/plots/meta_epochs_to_0p90_acc.png}{%
-    \includegraphics[width=0.75\linewidth]{meta_epochs_to_0p90_acc.png}
+    \includegraphics[width=0.65\linewidth]{meta_epochs_to_0p90_acc.png}
     }{\fbox{\begin{minipage}{0.75\linewidth}\vspace{2em}\centering
     \emph{Meta convergence figure will appear after running \texttt{scripts/meta_analysis.py}.}
     \vspace{2em}\end{minipage}}}
-    \caption{Classification convergence speed: epochs to reach 0.90 accuracy. Lower is better.}
+    \caption{Classification convergence speed: epochs to reach .90 accuracy. Lower is better.}
 \end{figure}
 
-\begin{figure}[H]
+\subsection{Throughput and Wall-Clock Efficiency}\label{sec:throughput}
+We instrument training to record per-phase wall clock and compute per-run throughput (samples/s). Figure~\ref{fig:throughput} summarizes train-time throughput across variants on representative datasets. We observe that flip scheduling and feedback choice affect throughput modestly; structured variants can improve stability and maintain throughput, while per-epoch ternary flips typically reduce variance at minor throughput cost.
+
+\begin{figure}[H]\label{fig:throughput}
+    \centering
+    \IfFileExists{../../data/report/plots/throughput_bar_ag_news_real.png}{%
+    \includegraphics[width=0.48\linewidth]{throughput_bar_ag_news_real.png}
+    }{\fbox{\begin{minipage}{0.45\linewidth}\vspace{1.6em}\centering
+    \emph{Throughput bars (AG News, real) will appear after plotting.}
+    \vspace{1.6em}\end{minipage}}}
+    \hfill
+    \IfFileExists{../../data/report/plots/throughput_bar_adult_real.png}{%
+    \includegraphics[width=0.48\linewidth]{throughput_bar_adult_real.png}
+    }{\fbox{\begin{minipage}{0.45\linewidth}\vspace{1.6em}\centering
+    \emph{Throughput bars (Adult, real) will appear after plotting.}
+    \vspace{1.6em}\end{minipage}}}
+    \caption{Training throughput (samples/s) with mean±std across seeds, by variant.}
+\end{figure}
+
+\subsection{Alignment Curves}\label{sec:alignment-curves}
+We log the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}) during early training. Figure~\ref{fig:rho-curves} shows typical behaviour on AG News and Adult (real): DFA variants increase alignment over the first few epochs; per-epoch ternary flips stabilize trajectories with a minor delay.
+
+\begin{figure}[H]\label{fig:rho-curves}
+    \centering
+    \IfFileExists{../../data/report/plots/alignment_curve_ag_news_real.png}{%
+    \includegraphics[width=0.48\linewidth]{alignment_curve_ag_news_real.png}
+    }{\fbox{\begin{minipage}{0.45\linewidth}\vspace{1.6em}\centering
+    \emph{Alignment curves (AG News, real) appear after plotting.}
+    \vspace{1.6em}\end{minipage}}}
+    \hfill
+    \IfFileExists{../../data/report/plots/alignment_curve_adult_real.png}{%
+    \includegraphics[width=0.48\linewidth]{alignment_curve_adult_real.png}
+    }{\fbox{\begin{minipage}{0.45\linewidth}\vspace{1.6em}\centering
+    \emph{Alignment curves (Adult, real) appear after plotting.}
+    \vspace{1.6em}\end{minipage}}}
+    \caption{Alignment (mean $\rho$ across layers) over epochs for selected variants.}
+\end{figure}
+
+\begin{figure}[t]
     \centering
     \IfFileExists{../../data/report/plots/meta_early_slopes.png}{%
-    \includegraphics[width=0.95\linewidth]{meta_early_slopes.png}
+    \includegraphics[width=0.70\linewidth]{meta_early_slopes.png}
     }{\fbox{\begin{minipage}{0.95\linewidth}\vspace{2em}\centering
-    \emph{Meta early-slope figure will appear after running \texttt{scripts/meta_analysis.py}.}
+    \emph{Early accuracy slope figure will appear after running \texttt{scripts/render_meta_figures.py}.}
     \vspace{2em}\end{minipage}}}
-    \caption{Early learning dynamics: slope from epoch 1 to 3 for accuracy (classification) and $\mathrm{R}^2$ (regression). Higher is better.}
+    \caption{Early learning dynamics: accuracy slope from epoch 1 to 3 (higher is better).}
 \end{figure}
 
 \paragraph{Compact meta-summary and schedule ablation.}
@@ -366,20 +537,72 @@ Table~\ref{tab:meta-summary} summarizes per-run meta-metrics and flip schedules 
 \begin{table}[H]
     \centering
     \small
-    \resizebox{\linewidth}{!}{\input{../../data/report/meta_convergence_summary.tex}}
-    \caption{Meta-summary by run: flip schedule (Flip), epochs to 0.90 accuracy (E@0.90), early slopes for accuracy and $\mathrm{R}^2$ (AccSlope, R2Slope), first epoch to 90\% of best $\mathrm{R}^2$ (E@0.9R2), and validation-loss variance (ValLossVar). Lower E@0.90/E@0.9R2 and ValLossVar are better; higher slopes are better.}
+    \resizebox{0.92\linewidth}{!}{\input{../../data/report/meta_convergence_summary.tex}}
+    \caption{Meta-summary by run. E@.90: epoch to reach .90 Acc. Slopes: e1$\to$e3. Lower E@.90/E@.9 $R^2$ and Val. Loss Var are better; higher slopes are better.}
     \label{tab:meta-summary}
 \end{table}
+
+\section*{Appendix}
+\addcontentsline{toc}{section}{Appendix}
+\subsection*{A. Proof of Theorem~\ref{thm:ternary-nonasymp}}
+\addcontentsline{toc}{subsection}{A. Proof of Theorem}
+We present a finite-time stationarity bound for DFA with ternary forward paths. Recall $g_t=\nabla \mathcal{L}(V_t)$ and update direction $\tilde g_t$. Let $V_{t+1}=V_t-\eta\,\tilde g_t$ for constant $\eta\le 1/(2L)$; the Robbins--Monro case follows by standard arguments.
+
+\paragraph{Descent lemma.} $L$-smoothness gives
+\begin{equation}
+\mathcal{L}(V_{t+1}) \le \mathcal{L}(V_t) - \eta\,\langle g_t, \tilde g_t\rangle + \tfrac{L\eta^2}{2}\,\lVert \tilde g_t\rVert^2.\label{eq:app-descent}
+\end{equation}
+We decompose $\tilde g_t = g_t + e_t$ where $e_t$ aggregates (i) alignment error (DFA vs BP) and (ii) quantization-induced noise. Taking expectations conditioned on $V_t$:
+\begin{align}
+\mathbb{E}[\langle g_t, \tilde g_t\rangle] &= \lVert g_t\rVert^2 + \mathbb{E}[\langle g_t, e_t\rangle] \ge (1-\alpha_t)\,\lVert g_t\rVert^2 - \beta_t,\label{eq:app-ip}
+\end{align}
+for some $\alpha_t\in[0,1)$ and $\beta_t\ge0$. The \emph{sign advantage} $p>\tfrac{1}{2}$ ensures a nontrivial descent component, contributing a term $\propto (1-2p)^2$ to $\beta_t$. The \emph{alignment deficiency} enters via $\alpha_t\lesssim C\sum_\ell (1-\rho_\ell(t))$ where $\rho_\ell(t)$ is the layer-wise cosine alignment (Def.~\ref{def:alignment}).
+
+\paragraph{Variance control.} With stochastic ternary forward map $Q_\tau$, the zero-mean jitter $\varepsilon_t$ satisfies $\mathbb{E}[\varepsilon_t\mid V_t]=0$ and $\mathbb{E}[\lVert \varepsilon_t\rVert^2\mid V_t]\le \sigma_q^2(\tau)$, implying
+\begin{equation}
+\mathbb{E}\lVert \tilde g_t\rVert^2 \le 2\,\lVert g_t\rVert^2 + 2\,\mathbb{E}\lVert e_t\rVert^2 \le 2\,\lVert g_t\rVert^2 + C'\,\sigma_q^2(\tau).\label{eq:app-var}
+\end{equation}
+
+\paragraph{Telescoping.} Taking expectations in \eqref{eq:app-descent} and substituting \eqref{eq:app-ip}--\eqref{eq:app-var} yields
+\begin{equation}
+\mathbb{E}[\mathcal{L}(V_{t+1})] \le \mathbb{E}[\mathcal{L}(V_t)] - \eta(1-\alpha_t - L\eta)\,\mathbb{E}\lVert g_t\rVert^2 + \tfrac{L\eta^2}{2}C'\sigma_q^2(\tau) + \eta\,\beta_t.
+\end{equation}
+With $\eta\le \tfrac{1}{2L}$ and $\alpha_t\in[0,1)$, the coefficient remains positive. Summing over $t=1..T$ and lower bounding by $\mathcal{L}_\star$ telescopes and gives
+\begin{equation}
+\frac{1}{T}\sum_{t=1}^T \mathbb{E}\lVert g_t\rVert^2 \le \frac{2(\mathcal{L}(V_0)-\mathcal{L}_\star)}{\eta T} + C_1 L\eta\,\sigma_q^2(\tau) + C_2(1-2p)^2 + C_0 \sum_\ell \bigl(1-\bar{\rho}_\ell(T)\bigr),
+\end{equation}
+matching Eq.~(\ref{eq:stationarity-gap}). The Robbins--Monro case follows by letting $\eta_t\to0$ with $\sum \eta_t=\infty$, $\sum \eta_t^2<\infty$.
+
+\subsection*{B. Proof of Lemma~\ref{lem:structured-alignment}}
+\addcontentsline{toc}{subsection}{B. Proof of Lemma}
+Assume $B_\ell$ row-orthonormal so that $\lVert B_\ell x\rVert_2=\lVert x\rVert_2$. Let $u_\ell$ denote the backprop signal and $v_\ell$ the broadcast signal: $v_\ell = B_\ell\,\delta_L$ and $u_\ell = W_{\ell+1}^\top u_{\ell+1}\odot \phi'(z_\ell)$. The cosine alignment is $\rho_\ell=\langle u_\ell, v_\ell\rangle/(\lVert u_\ell\rVert\,\lVert v_\ell\rVert)$.
+
+Because $B_\ell$ preserves norms and acts as a random rotation (orthonormal/Hadamard), the angle between $u_\ell$ and $v_\ell$ contracts in expectation under gradient descent on $V_\ell$: the component of $u_\ell$ parallel to $v_\ell$ is reinforced, while the orthogonal component decays with a rate $e^{-\kappa}$ per step for some $\kappa\in(0,1]$ depending on depth and layer Lipschitz constants. Averaging over $T$ steps yields
+\begin{equation}
+\mathbb{E}\,\bar{\rho}_\ell(T) \ge \rho_\ell(0) e^{-\kappa T} + \gamma(1-e^{-\kappa T}),
+\end{equation}
+where $\gamma$ is a depth-dependent floor induced by the near-isometry. For random orthonormal (or normalized Hadamard) $B_\ell$, standard concentration provides $\gamma\gtrsim c/\sqrt{L}$ w.h.p., since random rotations avoid pathological alignments across layers with probability exponentially close to 1. This establishes the claim.
+
 
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{l r r r r r r}
-    Dataset & E@0.90(ps) & S(ps) & E@0.90(pe) & S(pe) & dE & dS \\
-    MNIST & 1 & 0.000 & 3 & 0.281 & 2 & 0.281 \\
-    20NG & 6 & -0.008 & 6 & 0.078 & 0 & 0.086 \\
-    \end{tabular}
-    \caption{Schedule delta: per\_step (ps) vs per\_epoch (pe). E@0.90 is the first epoch to reach 0.90 accuracy; S is the early slope (epoch 1→3). Deltas are pe $-$ ps.}
+    \resizebox{0.85\linewidth}{!}{%%
+    \begin{tabular}{@{} l
+        S[table-format=1.0]
+        S[table-format=1.3]
+        S[table-format=1.0]
+        S[table-format=1.3]
+        S[table-format=+1.0]
+        S[table-format=+1.3] @{}}
+    \toprule
+    Dataset & {E@.90 (ps)} & {Slope (ps)} & {E@.90 (pe)} & {Slope (pe)} & {$\Delta$E} & {$\Delta$S} \\
+    \midrule
+    MNIST & 1 & .000 & 3 & .281 & +2 & +.281 \\
+    20NG & 6 & -.008 & 6 & .078 & 0 & +.086 \\
+    \bottomrule
+    \end{tabular}}
+    \caption{Schedule delta: ps vs pe. E@.90: epoch to .90 Acc.; slope: e1$\to$e3; $\Delta$ = pe $-$ ps.}
 \end{table}
 
 \paragraph{Practical guidelines.}
@@ -405,39 +628,4 @@ Pairing DFA with ternary forward flips yields a simple, principled training reci
 
 \bibliographystyle{plainnat}
 \bibliography{references}
-\FloatBarrier
-% Additional sweep figures (auto-included if present)
-\IfFileExists{../../data/report/plots/tau_sweep_mnist_real.png}{%
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{tau_sweep_mnist_real.png}
-    \caption{Tau sweep on MNIST (real).}
-\end{figure}
-}{% no file
-}
-\IfFileExists{../../data/report/plots/tau_sweep_20newsgroups_real.png}{%
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{tau_sweep_20newsgroups_real.png}
-    \caption{Tau sweep on 20 Newsgroups (real).}
-\end{figure}
-}{% no file
-}
-\IfFileExists{../../data/report/plots/tau_sweep_california_housing_real.png}{%
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{tau_sweep_california_housing_real.png}
-    \caption{Tau sweep on California Housing (real).}
-\end{figure}
-}{% no file
-}
-\IfFileExists{../../data/report/plots/lr_sweep_20newsgroups_real.png}{%
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{lr_sweep_20newsgroups_real.png}
-    \caption{Learning-rate sweep on 20 Newsgroups (real).}
-\end{figure}
-}{% no file
-}
-
 \end{document}

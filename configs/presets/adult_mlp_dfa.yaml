@@ -1,0 +1,23 @@
+offline: true
+data:
+  name: adult
+  options:
+    seed: 17
+    val_split: 0.2
+    test_split: 0.2
+    one_hot: false
+model:
+  hidden: [128, 64]
+  quant: det
+  strategy: dfa
+train:
+  seed: 17
+  batch_size: 64
+  epochs: 6
+  eval_every: 1
+  lr: 0.02
+  optimizer: sgd
+  flip: ternary
+  flip_schedule: per_epoch
+  metrics: "accuracy,precision,recall,f1,mae,r2"
+  run_dir: runs/adult-mlp-dfa
