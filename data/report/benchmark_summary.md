@@ -34,7 +34,7 @@ Aggregated over seeds with mean ± std.
 | california_housing | offline | R² | 0.0840 ± 0.0556 | dfa_float | off (off) | 3 |
 | california_housing | offline | Zero Ratio | 0.2186 ± 0.2010 | structured_hadamard_ternary | ternary (per_step) | 3 |
 | california_housing | offline | Test Throughput (samples/s) | 87757.7091 ± 1022.0328 | backprop_float | off (off) | 3 |
-| california_housing | real | R² | nan ± nan | dfa_float_lr15 | off (off) | 3 |
+| california_housing | real | R² | 0.5561 ± 0.0065 | dfa_float | off (off) | 5 |
 | california_housing | real | Zero Ratio | 0.5957 ± 0.3504 | dfa_ternary_epoch_tau010 | ternary (per_epoch) | 3 |
 | california_housing | real | Test Throughput (samples/s) | 161174.3075 ± 1014.8411 | structured_hadamard_float | off (off) | 3 |
 | fashion_mnist | offline | Accuracy | 1.0000 | dfa_float_lr15 | off (off) | 5 |
@@ -66,20 +66,20 @@ Aggregated over seeds with mean ± std.
 
 | Dataset | Mode | Primary | Best (μ±95% CI) | Variant | Flip | n | Baseline (μ±σ) | Δ | Effect Size |
 |---|---|---|---|---|---|---:|---|---:|---:|
-| 20newsgroups | offline | accuracy | 0.3906 ± 0.0771 | backprop_ternary_step | ternary (per_step) | 3 | 0.1771 ± 0.0722 | 0.2135 | 3.043 |
-| 20newsgroups | real | accuracy | 0.3206 ± 0.0052 | dfa_float_lr15 | off (off) | 3 | 0.3206 ± 0.0046 | 0.0000 | 0.000 |
-| adult | offline | accuracy | 0.6438 ± 0.0782 | dfa_ternary_epoch_tau005 | ternary (per_epoch) | 5 | 0.5422 ± 0.1061 | 0.1016 | 1.037 |
-| adult | real | accuracy | 0.8595 ± 0.0003 | dfa_float | off (off) | 3 | 0.8595 ± 0.0002 | 0.0000 | 0.000 |
-| ag_news | offline | accuracy | 0.4813 ± 0.1613 | dfa_ternary_epoch_tau005 | ternary (per_epoch) | 5 | 0.4125 ± 0.0704 | 0.0688 | 0.493 |
+| 20newsgroups | offline | accuracy | 0.2083 ± 0.0974 | structured_orth_ternary | ternary (per_step) | 3 | 0.1771 ± 0.0722 | 0.0312 | 0.393 |
+| 20newsgroups | real | accuracy | 0.0576 ± 0.0046 | structured_orth_ternary | ternary (per_step) | 3 | 0.3206 ± 0.0046 | -0.2630 | -60.619 |
+| adult | offline | accuracy | 0.5422 ± 0.0930 | backprop_float | off (off) | 5 | 0.5422 ± 0.1061 | 0.0000 | 0.000 |
+| adult | real | accuracy | 0.8565 ± 0.0016 | backprop_float | off (off) | 3 | 0.8595 ± 0.0002 | -0.0030 | -3.004 |
+| ag_news | offline | accuracy | 0.4125 ± 0.0617 | backprop_float | off (off) | 5 | 0.4125 ± 0.0704 | 0.0000 | 0.000 |
 | ag_news | real | accuracy | 0.9005 ± 0.0009 | backprop_float | off (off) | 2 | 0.9005 ± 0.0007 | 0.0000 | 0.000 |
-| california_housing | offline | r2 | 0.0840 ± 0.0629 | dfa_float | off (off) | 3 | 0.0840 ± 0.0556 | 0.0000 | 0.000 |
-| california_housing | real | r2 | nan ± nan | dfa_float_lr15 | off (off) | 3 | nan ± nan | nan | 0.000 |
-| fashion_mnist | offline | accuracy | 1.0000 | dfa_float_lr15 | off (off) | 5 | 1.0000 | 0.0000 | 0.000 |
-| fashion_mnist | real | accuracy | 0.8703 ± 0.0016 | backprop_float | off (off) | 5 | 0.8703 ± 0.0018 | 0.0000 | 0.000 |
-| mnist | offline | accuracy | 1.0000 | ternary_dfa_step | ternary (per_step) | 3 | 1.0000 | 0.0000 | 0.000 |
-| mnist | real | accuracy | 0.9649 ± 0.0001 | backprop_float_lr15 | off (off) | 3 | 0.9649 ± 0.0001 | 0.0000 | 0.000 |
-| ucr | offline | accuracy | 1.0000 | ternary_dfa_step | ternary (per_step) | 3 | 1.0000 | 0.0000 | 0.000 |
-| ucr | real | accuracy | 1.0000 | ternary_dfa_step | ternary (per_step) | 3 | 1.0000 | 0.0000 | 0.000 |
+| california_housing | offline | r2 | -17612.4954 ± 13248.4946 | structured_orth_ternary | ternary (per_step) | 3 | 0.0840 ± 0.0556 | -17612.5794 | -2.127 |
+| california_housing | real | r2 | -3213.7032 ± 2108.6654 | structured_orth_ternary | ternary (per_step) | 3 | 0.5561 ± 0.0065 | -3214.2592 | -2.439 |
+| fashion_mnist | offline | accuracy | 0.8234 ± 0.1270 | structured_orth_ternary | ternary (per_step) | 5 | 1.0000 | -0.1766 | -1.724 |
+| fashion_mnist | real | accuracy | 0.2047 | structured_orth_ternary | ternary (per_step) | 1 | 0.8703 ± 0.0018 | -0.6656 | -511.720 |
+| mnist | offline | accuracy | 0.8021 ± 0.0640 | structured_orth_ternary | ternary (per_step) | 3 | 1.0000 | -0.1979 | -4.952 |
+| mnist | real | accuracy | 0.3391 ± 0.0360 | structured_orth_ternary | ternary (per_step) | 3 | 0.9649 ± 0.0001 | -0.6258 | -27.849 |
+| ucr | offline | accuracy | 0.7969 | structured_orth_ternary | ternary (per_step) | 3 | 1.0000 | -0.2031 | 0.000 |
+| ucr | real | accuracy | 0.7969 | structured_orth_ternary | ternary (per_step) | 3 | 1.0000 | -0.2031 | 0.000 |
 
 ## 20newsgroups (offline)
 
@@ -582,7 +582,7 @@ Aggregated over seeds with mean ± std.
 | backprop_ternary_step | ternary (per_step) | train_throughput_samples_sec | 48291.9444 ± 3572.3750 | 3 |
 | dfa_float | off (off) | loss | 0.6083 ± 0.0089 | 5 |
 | dfa_float | off (off) | mae | 0.5668 ± 0.0035 | 5 |
-| dfa_float | off (off) | r2 | 0.5561 ± 0.0065 | 5 |
+| dfa_float | off (off) | r2 | 0.5561 ± 0.0065 **(best)** | 5 |
 | dfa_float | off (off) | rmse | 0.7799 ± 0.0057 | 5 |
 | dfa_float | off (off) | sample_count | 4160.0000 | 5 |
 | dfa_float | off (off) | samples_per_step | 64.0000 | 5 |
@@ -598,33 +598,33 @@ Aggregated over seeds with mean ± std.
 | dfa_float_clip1 | off (off) | ternary_zero_ratio | 0.0000 | 3 |
 | dfa_float_clip1 | off (off) | test_throughput_samples_sec | 85934.6571 ± 1406.0270 | 3 |
 | dfa_float_clip1 | off (off) | train_throughput_samples_sec | 34962.1641 ± 898.8530 | 3 |
-| dfa_float_lr06 | off (off) | loss | nan ± nan | 3 |
-| dfa_float_lr06 | off (off) | mae | nan ± nan | 3 |
-| dfa_float_lr06 | off (off) | r2 | nan ± nan | 3 |
-| dfa_float_lr06 | off (off) | rmse | nan ± nan | 3 |
-| dfa_float_lr06 | off (off) | sample_count | 4160.0000 | 3 |
-| dfa_float_lr06 | off (off) | samples_per_step | 64.0000 | 3 |
-| dfa_float_lr06 | off (off) | ternary_zero_ratio | 0.0000 | 3 |
-| dfa_float_lr06 | off (off) | test_throughput_samples_sec | 87860.9249 ± 3279.1137 | 3 |
-| dfa_float_lr06 | off (off) | train_throughput_samples_sec | 40233.2679 ± 3197.2653 | 3 |
-| dfa_float_lr10 | off (off) | loss | nan ± nan | 3 |
-| dfa_float_lr10 | off (off) | mae | nan ± nan | 3 |
-| dfa_float_lr10 | off (off) | r2 | nan ± nan | 3 |
-| dfa_float_lr10 | off (off) | rmse | nan ± nan | 3 |
-| dfa_float_lr10 | off (off) | sample_count | 4160.0000 | 3 |
-| dfa_float_lr10 | off (off) | samples_per_step | 64.0000 | 3 |
-| dfa_float_lr10 | off (off) | ternary_zero_ratio | 0.0000 | 3 |
-| dfa_float_lr10 | off (off) | test_throughput_samples_sec | 88387.9196 ± 1197.2894 | 3 |
-| dfa_float_lr10 | off (off) | train_throughput_samples_sec | 42219.6992 ± 1067.4997 | 3 |
-| dfa_float_lr15 | off (off) | loss | nan ± nan | 3 |
-| dfa_float_lr15 | off (off) | mae | nan ± nan | 3 |
-| dfa_float_lr15 | off (off) | r2 | nan ± nan | 3 |
-| dfa_float_lr15 | off (off) | rmse | nan ± nan | 3 |
-| dfa_float_lr15 | off (off) | sample_count | 4160.0000 | 3 |
-| dfa_float_lr15 | off (off) | samples_per_step | 64.0000 | 3 |
-| dfa_float_lr15 | off (off) | ternary_zero_ratio | 0.0000 | 3 |
-| dfa_float_lr15 | off (off) | test_throughput_samples_sec | 85085.9277 ± 1216.3363 | 3 |
-| dfa_float_lr15 | off (off) | train_throughput_samples_sec | 41150.8806 ± 728.9819 | 3 |
+| dfa_float_lr06 | off (off) | loss | 5.6339 | 1 |
+| dfa_float_lr06 | off (off) | mae | 2.0648 | 1 |
+| dfa_float_lr06 | off (off) | r2 | -3.1112 | 1 |
+| dfa_float_lr06 | off (off) | rmse | 2.3736 | 1 |
+| dfa_float_lr06 | off (off) | sample_count | 4160.0000 | 1 |
+| dfa_float_lr06 | off (off) | samples_per_step | 64.0000 | 1 |
+| dfa_float_lr06 | off (off) | ternary_zero_ratio | 0.0000 | 1 |
+| dfa_float_lr06 | off (off) | test_throughput_samples_sec | 89112.8630 | 1 |
+| dfa_float_lr06 | off (off) | train_throughput_samples_sec | 42729.9537 | 1 |
+| dfa_float_lr10 | off (off) | loss | 5.6331 ± 0.0012 | 2 |
+| dfa_float_lr10 | off (off) | mae | 2.0647 ± 0.0002 | 2 |
+| dfa_float_lr10 | off (off) | r2 | -3.1106 ± 0.0008 | 2 |
+| dfa_float_lr10 | off (off) | rmse | 2.3734 ± 0.0002 | 2 |
+| dfa_float_lr10 | off (off) | sample_count | 4160.0000 | 2 |
+| dfa_float_lr10 | off (off) | samples_per_step | 64.0000 | 2 |
+| dfa_float_lr10 | off (off) | ternary_zero_ratio | 0.0000 | 2 |
+| dfa_float_lr10 | off (off) | test_throughput_samples_sec | 87826.7945 ± 988.8558 | 2 |
+| dfa_float_lr10 | off (off) | train_throughput_samples_sec | 42703.2768 ± 935.9633 | 2 |
+| dfa_float_lr15 | off (off) | loss | 5.6339 | 1 |
+| dfa_float_lr15 | off (off) | mae | 2.0648 | 1 |
+| dfa_float_lr15 | off (off) | r2 | -3.1112 | 1 |
+| dfa_float_lr15 | off (off) | rmse | 2.3736 | 1 |
+| dfa_float_lr15 | off (off) | sample_count | 4160.0000 | 1 |
+| dfa_float_lr15 | off (off) | samples_per_step | 64.0000 | 1 |
+| dfa_float_lr15 | off (off) | ternary_zero_ratio | 0.0000 | 1 |
+| dfa_float_lr15 | off (off) | test_throughput_samples_sec | 85521.2626 | 1 |
+| dfa_float_lr15 | off (off) | train_throughput_samples_sec | 40522.3364 | 1 |
 | dfa_ternary_epoch | ternary (per_epoch) | loss | 5.6339 | 3 |
 | dfa_ternary_epoch | ternary (per_epoch) | mae | 2.0648 | 3 |
 | dfa_ternary_epoch | ternary (per_epoch) | r2 | -3.1112 | 3 |

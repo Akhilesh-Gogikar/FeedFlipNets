@@ -7,7 +7,7 @@
 | ag_news | offline | accuracy | 0.4813 ± 0.1840 | dfa_ternary_epoch_tau005 | ternary (per_epoch) | 5 | 0.4125 ± 0.0704 | 0.0688 | 0.493 |  |
 | ag_news | real | accuracy | 0.9005 ± 0.0007 | backprop_float | off (off) | 2 | 0.9005 ± 0.0007 | 0.0000 | 0.000 |  |
 | california_housing | offline | r2 | 0.0840 ± 0.0556 | dfa_float | off (off) | 3 | 0.0840 ± 0.0556 | 0.0000 | 0.000 |  |
-| california_housing | real | r2 | nan ± nan | dfa_float_lr15 | off (off) | 3 | — | — | — |  |
+| california_housing | real | r2 | 0.5561 ± 0.0065 | dfa_float | off (off) | 5 | 0.5561 ± 0.0065 | 0.0000 | 0.000 |  |
 | fashion_mnist | offline | accuracy | 1.0000 | dfa_float_lr15 | off (off) | 5 | 1.0000 | 0.0000 | — | saturated |
 | fashion_mnist | real | accuracy | 0.8703 ± 0.0018 | backprop_float | off (off) | 5 | 0.8703 ± 0.0018 | 0.0000 | 0.000 |  |
 | mnist | offline | accuracy | 1.0000 | ternary_dfa_step | ternary (per_step) | 3 | 1.0000 | 0.0000 | — | saturated |

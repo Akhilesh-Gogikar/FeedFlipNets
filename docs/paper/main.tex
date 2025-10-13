@@ -60,7 +60,7 @@
 \maketitle
 
 \begin{abstract}
-We study \emph{Direct Feedback Alignment} (DFA) with a ternary forward path through the lens of \textbf{determinism}, \textbf{stability}, and \textbf{convergence}. We present a minimal, reproducible training stack that runs on a laptop and demonstrate stable behaviour with ternary forwards across small, standard benchmarks. On Fashion\,MNIST and text classification (AG News/20NG), DFA with ternary forwards attains accuracy within \(\approx\)0.5–1.5 pp of backprop while reducing training variance; on California Housing, DFA remains competitive for regression with modest tuning. We report means with 95\% confidence intervals over \(\ge 5\) deterministic seeds and include alignment curves that quantify early training dynamics. Finally, we provide one non-asymptotic convergence result for DFA under ternary noise and a supporting alignment lemma for structured feedback. Our goal is not SOTA accuracy but a clean, defensible account of stable, quantized training that anyone can reproduce.
+We study \emph{Direct Feedback Alignment} (DFA) with an optional ternary forward path through the lens of \textbf{determinism}, \textbf{stability}, and \textbf{convergence}. We present a minimal, reproducible training stack that runs on a laptop and report up-to-date results across small, standard benchmarks. In float precision, DFA closely tracks backprop on MNIST and AG\,News (within \(\approx\)0.1–1.4 pp when tuned); on 20 Newsgroups, DFA (float) reaches \(\approx\)0.321\,Acc. and outperforms our backprop baselines. Ternary-forward variants trade accuracy for sparsity (typical zero ratios \(\approx\)0.5–0.75) while maintaining stable training. On California Housing, DFA (float) achieves \(R^2\,\approx\,0.56\) and structured Hadamard feedback provides a competitive alternative with simpler tuning. We report means with uncertainty over deterministic seeds and include alignment/throughput plots and schedule ablations that capture early dynamics. Finally, we sketch a non-asymptotic stationarity bound for DFA under ternary noise and an alignment lemma for structured feedback. Our goal is not SOTA, but a clean, defensible account of stable, quantized training that anyone can reproduce.
 \end{abstract}
 \begin{keywords}
 Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary Networks, Stability, Convergence, Alignment Dynamics, Structured Feedback, Reproducible Research.
@@ -74,10 +74,11 @@ Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary N
 \toprule
 Headline & Metric & Value \\
 \midrule
-Vision (MNIST, real) & Test Acc. (BP vs DFA) & 96.5\% vs \(\approx\)96\% \\
+Vision (MNIST, real) & Test Acc. (BP vs DFA float) & 96.49\% vs 95.14\% \\
 Text (20NG, real) & Best stable Acc. (DFA float) & .321 $\pm$ .005 \\
+AG News (real) & Test Acc. (BP vs DFA float) & 90.05\% vs 89.98\% \\
 Time-series (UCR) & Test Acc. (all strategies) & 100\% \\
-Sparsity (Ter.) & Zero ratio & \(\approx\) .68 \\
+Sparsity (Ternary) & Zero ratio (typical) & \(\approx\) .5–.75 \\
 Determinism & Seeds, fixtures & Yes \\
 \bottomrule
 \end{tabular}
@@ -400,10 +401,8 @@ We evaluate on four modalities with offline fixtures and real downloads: MNIST (
 \noindent\begin{table}[H]
 \centering
 \small
-    \fbox{\begin{minipage}{0.88\linewidth}\vspace{1.2em}\centering
-    \emph{Best-configs table (paper-ready) is generated at \texttt{\detokenize{data/report/best_configs_table.tex}}.}
-    \vspace{1.2em}\end{minipage}}
-\caption{Best settings per dataset and mode. $\Delta$ is Best $-$ Baseline on the primary metric; Effect is Best $/\,$Baseline where defined.}
+\resizebox{0.98\linewidth}{!}{\input{../../data/report/best_configs_table.tex}}
+\caption{Best settings per dataset and mode (auto-generated). $\Delta$ is Best $-$ Baseline on the primary metric; Effect is standardized difference where defined. Rows with incomplete metrics are omitted.}
 \end{table}
 
 \subsection{Learning-rate Sweeps}\label{fig:lrsweep}
@@ -446,11 +445,12 @@ We summarize $\tau$ sensitivity with a multi-modal view. Lower $\tau$ lifts accu
 
 \subsection{Key Observations}\label{sec:keyobs}
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Vision (MNIST, real).} Backprop with tuned LR (\(\approx .075\)) yields 96.5\% accuracy; DFA is close. Per-epoch ternary incurs modest accuracy cost with high sparsity.
-    \item \textbf{Text (20 Newsgroups, real).} DFA float is most stable; per-epoch ternary with lower $\tau$ preserves sparsity but reduces accuracy.
-    \item \textbf{Tabular (California, real).} DFA float with grad clipping (1.0) improves robustness; structured hadamard float maximizes throughput.
-    \item \textbf{Time-series (UCR).} All strategies saturate at 100\% accuracy, validating simplicity.
-    \item \textbf{DFA $>$ BP in specific regimes.} In some text settings (e.g., 20NG), DFA exceeds BP at moderate LRs. Direct broadcast mitigates vanishing signals to early layers and, coupled with structured feedback, acts as a form of preconditioning and regularization.
+    \item \textbf{Vision (MNIST, real).} Backprop (LR \(\approx .075\)) reaches 96.49\% test accuracy; DFA (float) attains \(\approx\)95.1\% with LR tuning. Ternary-forward variants yield high sparsity but substantially lower accuracy.
+    \item \textbf{Text (20 Newsgroups, real).} DFA (float) is most stable and outperforms our backprop baselines (\(\approx\).321 Acc.). Per-epoch ternary preserves sparsity at a further accuracy cost.
+    \item \textbf{AG News (real).} DFA (float) closely matches backprop (\(\approx\)90.0\% vs 90.1\%).
+    \item \textbf{Tabular (California, real).} DFA (float) reaches \(R^2\,\approx\,.56\) with simple tuning; structured Hadamard (float) provides a competitive alternative and stable throughput.
+    \item \textbf{Time-series (UCR).} All strategies saturate at 100\% accuracy.
+    \item \textbf{When DFA $>$ BP.} In text (e.g., 20NG), DFA exceeds backprop at moderate LRs; direct broadcast mitigates vanishing early-layer signals and, with structured feedback, acts as preconditioning/regularization.
 \end{itemize}
 
 \subsection{Structured Feedback: Ortho vs. Hadamard}\label{sec:structured-perf}

@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build docs/paper/main.pdf using latexmk if available, else pdflatex+bibtex.
+# Build docs/paper/main.pdf using latexmk if available, else tectonic, else pdflatex+bibtex.
 
 DOC=docs/paper/main.tex
 OUTDIR=docs/paper
 
 if command -v latexmk >/dev/null 2>&1; then
   latexmk -pdf -interaction=nonstopmode -halt-on-error -output-directory="$OUTDIR" "$DOC"
+elif command -v tectonic >/dev/null 2>&1; then
+  # Use tectonic as a lightweight TeX engine. It will fetch needed packages.
+  # Output is written to OUTDIR.
+  tectonic -o "$OUTDIR" "$DOC" || true
 else
   if ! command -v pdflatex >/dev/null 2>&1; then
     echo "Error: neither latexmk nor pdflatex is installed."

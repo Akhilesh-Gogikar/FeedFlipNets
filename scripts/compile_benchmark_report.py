@@ -221,7 +221,10 @@ def _best_by_dataset(summary: Sequence[SummaryRecord]) -> Dict[str, SummaryRecor
             continue
         key = (record.dataset, record.mode)
         current = best.get(key)
-        if current is None:
+        # Skip non-finite means when considering bests
+        if not math.isfinite(record.mean):
+            continue
+        if current is None or not math.isfinite(current.mean):
             best[key] = record
             continue
         if record.metric == "r2":
@@ -284,14 +287,17 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             variants = [v for (ds, md, v), _ in by_variant.items() if ds == dataset and md == mode]
 
             def _rec(variant: str, metric: str) -> SummaryRecord | None:
-                return by_variant.get((dataset, mode, variant), {}).get(metric)
+                rec = by_variant.get((dataset, mode, variant), {}).get(metric)
+                if rec is None or not math.isfinite(rec.mean):
+                    return None
+                return rec
 
             # Best overall for primary metric
             best_rec: SummaryRecord | None = None
             for v in variants:
                 r = _rec(v, primary)
-                if r and (best_rec is None or r.mean > best_rec.mean):
-                    best_rec = r
+            if r and (best_rec is None or r.mean > best_rec.mean):
+                best_rec = r
             # Best baseline among flip-off variants
             base_rec: SummaryRecord | None = None
             for v in variants:
@@ -475,6 +481,10 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                 "note": note,
             }
         )
+    # Drop rows with non-finite best means to avoid NaNs in paper tables
+    best_rows_csv = [
+        r for r in best_rows_csv if math.isfinite(float(r.get("best_mean", float("nan"))))
+    ]
     if best_rows_csv:
         out_csv = REPORT_DIR / "best_configs.csv"
         with out_csv.open("w", newline="", encoding="utf-8") as handle:
@@ -545,7 +555,14 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
 
         # Best Configs — LaTeX table (paper-ready)
         def _tex_escape(s: str) -> str:
-            return s.replace("_", "\\_")
+            # Minimal escaping for LaTeX tabular
+            if s is None:
+                return ""
+            s = str(s)
+            s = s.replace("_", "\\_")
+            # Normalize unicode em dash to LaTeX command
+            s = s.replace("—", "\\textemdash{}")
+            return s
 
         tex_path = REPORT_DIR / "best_configs_table.tex"
         # 11 columns: l l l c l l r c c c l (use plain \hline for portability)
@@ -564,12 +581,16 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                     f"{float(row['baseline_mean']):.4f} \\pm {float(row['baseline_std']):.4f}"
                 )
             else:
-                base_label = "—"
-            delta_str = f"{float(row['delta']):.4f}" if math.isfinite(float(row["delta"])) else "—"
+                base_label = "\\textemdash{}"
+            delta_str = (
+                f"{float(row['delta']):.4f}"
+                if math.isfinite(float(row["delta"]))
+                else "\\textemdash{}"
+            )
             effect_str = (
                 f"{float(row['effect_size']):.3f}"
                 if math.isfinite(float(row["effect_size"]))
-                else "—"
+                else "\\textemdash{}"
             )
             flip_label = f"{row['best_flip']} ({row['best_flip_schedule']})"
             rows_tex.append(
@@ -589,13 +610,13 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                         "&",
                         str(row["n"]),
                         "&",
-                        base_label,
+                        _tex_escape(base_label),
                         "&",
-                        delta_str,
+                        _tex_escape(delta_str),
                         "&",
-                        effect_str,
+                        _tex_escape(effect_str),
                         "&",
-                        _tex_escape(str(row["note"])),
+                        _tex_escape(str(row["note"])) if row.get("note") else "",
                         "\\\\",
                     ]
                 )

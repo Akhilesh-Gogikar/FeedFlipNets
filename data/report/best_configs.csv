@@ -6,7 +6,7 @@ adult,real,accuracy,0.8595452069716775,0.0002358456981984398,dfa_float,off,off,3
 ag_news,offline,accuracy,0.48125,0.18401713150546609,dfa_ternary_epoch_tau005,ternary,per_epoch,5,0.4125,0.07039925203793006,0.06875000000000003,0.49347949560099924,True,
 ag_news,real,accuracy,0.900532581453634,0.000664574042468545,backprop_float,off,off,2,0.900532581453634,0.000664574042468545,0.0,0.0,True,
 california_housing,offline,r2,0.08400654625864083,0.055593608604244255,dfa_float,off,off,3,0.08400654625864083,0.055593608604244255,0.0,0.0,True,
-california_housing,real,r2,nan,nan,dfa_float_lr15,off,off,3,nan,nan,nan,nan,True,
+california_housing,real,r2,0.5560693541742685,0.006489659246827842,dfa_float,off,off,5,0.5560693541742685,0.006489659246827842,0.0,0.0,True,
 fashion_mnist,offline,accuracy,1.0,0.0,dfa_float_lr15,off,off,5,1.0,0.0,0.0,nan,True,saturated
 fashion_mnist,real,accuracy,0.8703339041095891,0.0018395915946898642,backprop_float,off,off,5,0.8703339041095891,0.0018395915946898642,0.0,0.0,True,
 mnist,offline,accuracy,1.0,0.0,ternary_dfa_step,ternary,per_step,3,1.0,0.0,0.0,nan,True,saturated

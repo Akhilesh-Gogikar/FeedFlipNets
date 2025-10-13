@@ -13671,11 +13671,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "loss",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 5.6338844982727165,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -13685,11 +13685,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "mae",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 2.064829359110445,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -13699,11 +13699,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "r2",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": -3.111231336376772,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -13713,11 +13713,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "rmse",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 2.3735805228120483,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -13729,7 +13729,7 @@
     "metric": "sample_count",
     "mean": 4160.0,
     "std": 0.0,
-    "count": 3,
+    "count": 1,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -13743,7 +13743,7 @@
     "metric": "samples_per_step",
     "mean": 64.0,
     "std": 0.0,
-    "count": 3,
+    "count": 1,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -13757,7 +13757,7 @@
     "metric": "ternary_zero_ratio",
     "mean": 0.0,
     "std": 0.0,
-    "count": 3,
+    "count": 1,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -13769,11 +13769,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "test_throughput_samples_sec",
-    "mean": 85085.92771484928,
-    "std": 1216.336341934892,
-    "count": 3,
-    "sem": 702.2521144412347,
-    "ci95": 1376.41414430482
+    "mean": 85521.2625799975,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -13783,11 +13783,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "train_throughput_samples_sec",
-    "mean": 41150.88063472156,
-    "std": 728.9819153289069,
-    "count": 3,
-    "sem": 420.8779050495134,
-    "ci95": 824.9206938970462
+    "mean": 40522.336441548294,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14553,11 +14553,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "loss",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 5.6338844982727165,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14567,11 +14567,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "mae",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 2.064829359110445,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14581,11 +14581,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "r2",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": -3.111231336376772,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14595,11 +14595,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "rmse",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 2.3735805228120483,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14611,7 +14611,7 @@
     "metric": "sample_count",
     "mean": 4160.0,
     "std": 0.0,
-    "count": 3,
+    "count": 1,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -14625,7 +14625,7 @@
     "metric": "samples_per_step",
     "mean": 64.0,
     "std": 0.0,
-    "count": 3,
+    "count": 1,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -14639,7 +14639,7 @@
     "metric": "ternary_zero_ratio",
     "mean": 0.0,
     "std": 0.0,
-    "count": 3,
+    "count": 1,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -14651,11 +14651,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "test_throughput_samples_sec",
-    "mean": 87860.92492981708,
-    "std": 3279.1137411977074,
-    "count": 3,
-    "sem": 1893.1972011838973,
-    "ci95": 3710.6665143204386
+    "mean": 89112.86302620305,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14665,11 +14665,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "train_throughput_samples_sec",
-    "mean": 40233.267856383485,
-    "std": 3197.2652628786323,
-    "count": 3,
-    "sem": 1845.9419601936181,
-    "ci95": 3618.0462419794912
+    "mean": 42729.95369272043,
+    "std": 0.0,
+    "count": 1,
+    "sem": 0.0,
+    "ci95": 0.0
   },
   {
     "dataset": "california_housing",
@@ -14931,11 +14931,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "loss",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 5.633070131108013,
+    "std": 0.0011516890890745585,
+    "count": 2,
+    "sem": 0.000814367164703178,
+    "ci95": 0.001596159642818229
   },
   {
     "dataset": "california_housing",
@@ -14945,11 +14945,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "mae",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 2.0646851119301397,
+    "std": 0.0002039963187217716,
+    "count": 2,
+    "sem": 0.00014424718030525693,
+    "ci95": 0.00028272447339830356
   },
   {
     "dataset": "california_housing",
@@ -14959,11 +14959,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "r2",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": -3.1106370657970555,
+    "std": 0.0008404255135542457,
+    "count": 2,
+    "sem": 0.0005942705797163937,
+    "ci95": 0.0011647703362441318
   },
   {
     "dataset": "california_housing",
@@ -14973,11 +14973,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "rmse",
-    "mean": NaN,
-    "std": NaN,
-    "count": 3,
-    "sem": NaN,
-    "ci95": NaN
+    "mean": 2.3734089621628542,
+    "std": 0.00024262339685983243,
+    "count": 2,
+    "sem": 0.0001715606491941024,
+    "ci95": 0.0003362588724204407
   },
   {
     "dataset": "california_housing",
@@ -14989,7 +14989,7 @@
     "metric": "sample_count",
     "mean": 4160.0,
     "std": 0.0,
-    "count": 3,
+    "count": 2,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -15003,7 +15003,7 @@
     "metric": "samples_per_step",
     "mean": 64.0,
     "std": 0.0,
-    "count": 3,
+    "count": 2,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -15017,7 +15017,7 @@
     "metric": "ternary_zero_ratio",
     "mean": 0.0,
     "std": 0.0,
-    "count": 3,
+    "count": 2,
     "sem": 0.0,
     "ci95": 0.0
   },
@@ -15029,11 +15029,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "test_throughput_samples_sec",
-    "mean": 88387.91959133174,
-    "std": 1197.289441401235,
-    "count": 3,
-    "sem": 691.2553812908998,
-    "ci95": 1354.8605473301636
+    "mean": 87826.79448853766,
+    "std": 988.855766564451,
+    "count": 2,
+    "sem": 699.2266181531448,
+    "ci95": 1370.4841715801638
   },
   {
     "dataset": "california_housing",
@@ -15043,11 +15043,11 @@
     "flip": "off",
     "flip_schedule": "off",
     "metric": "train_throughput_samples_sec",
-    "mean": 42219.69915616293,
-    "std": 1067.4996932326171,
-    "count": 3,
-    "sem": 616.3212352476944,
-    "ci95": 1207.989621085481
+    "mean": 42703.27677388493,
+    "std": 935.9633090743268,
+    "count": 2,
+    "sem": 661.8260027882569,
+    "ci95": 1297.1789654649835
   },
   {
     "dataset": "california_housing",
