@@ -55,7 +55,7 @@ Modern deployments demand models that are small, energy-efficient, and determini
     \item \textbf{Comprehensive evaluation:} cross-modality benchmarks that surface accuracy--sparsity--throughput trade-offs, highlighting regimes where ternary DFA shines or requires mitigation (clipping, schedules, structure).
 \end{itemize}
 
-FeedFlipNets shows that relaxing weight transport and precision can preserve core learning dynamics while improving deployability, offering an attractive blueprint for edge-ready training.
+FeedFlipNets shows that relaxing weight transport and precision can preserve core learning dynamics while improving deployability. In short: near-BP accuracy, deterministic training, and strong sparsity with explicit convergence/stability evidence—an attractive blueprint for edge-ready training.
 
 \section{Motivation}\label{sec:motivation}
 Low-precision networks can drastically reduce memory, bandwidth, and compute, enabling edge deployments and green AI. DFA further simplifies backward graphs and removes weight-symmetry requirements. Combined, they promise reliable training flows that are easier to port and maintain across devices. This motivates a study balancing three axes: (i) accuracy under quantization, (ii) deterministic and reproducible training, and (iii) deployability via ternary weights.
@@ -343,6 +343,17 @@ We quantify convergence pace and stability across runs using logs in \texttt{run
     \vspace{2em}\end{minipage}}}
     \caption{Early learning dynamics: slope from epoch 1 to 3 for accuracy (classification) and $\mathrm{R}^2$ (regression). Higher is better.}
 \end{figure}
+
+\paragraph{Compact meta-summary and schedule ablation.}
+Table~\ref{tab:meta-summary} summarizes per-run meta-metrics and flip schedules parsed from configs. Although our current sweep includes \texttt{per\_step} and \texttt{off}, the interface supports \texttt{per\_epoch} and can be extended to compare schedules directly on larger sweeps.
+
+\begin{table}[H]
+    \centering
+    \small
+    \resizebox{\linewidth}{!}{\input{../../data/report/meta_convergence_summary.tex}}
+    \caption{Meta-summary by run: flip schedule (Flip), epochs to 0.90 accuracy (E@0.90), early slopes for accuracy and $\mathrm{R}^2$ (AccSlope, R2Slope), first epoch to 90\% of best $\mathrm{R}^2$ (E@0.9R2), and validation-loss variance (ValLossVar). Lower E@0.90/E@0.9R2 and ValLossVar are better; higher slopes are better.}
+    \label{tab:meta-summary}
+\end{table}
 
 \paragraph{Practical guidelines.}
 \begin{itemize}[leftmargin=*]
