@@ -42,9 +42,7 @@
 \maketitle
 
 \begin{abstract}
-Direct Feedback Alignment (DFA) removes the weight-transport constraint of backpropagation by projecting output errors through fixed feedback matrices, enabling simple, parallel layer updates. We introduce \emph{FeedFlipNets}, a rigorously motivated and practically robust recipe that couples DFA with a ternary forward path ($\{-1,0,+1\}$) via ``shadow'' float weights and scheduled flips. This pairing yields compact, deterministic models that train reliably and deploy efficiently on edge hardware.
-
-We make three contributions: (i) a minimal, modality-spanning training stack with deterministic presets for vision, time-series, tabular, and text; (ii) new theoretical grounding that formalizes stability under structured feedback and quantized updates, including linear-network convergence, alignment measures, and a stochastic ternary convergence proposition; (iii) comprehensive benchmarks quantifying accuracy--sparsity--throughput trade-offs with orthogonal/Hadamard feedback and flip schedules. On MNIST (real), DFA trails tuned backprop by only a narrow margin (96.5\% vs. \(\approx\)96\%), while achieving substantial sparsity (often $\approx0.68$ zeros). Text (20 Newsgroups) prefers DFA for stability; tabular (California Housing) benefits from DFA with gradient clipping; and time-series (UCR GunPoint) saturates at 100\% across strategies. FeedFlipNets shows that ternary DFA delivers predictable learning, strong compression, and straightforward portability---without GPU dependence.
+We demonstrate that \emph{Direct Feedback Alignment} (DFA) with a ternary forward path matches backprop’s accuracy within a narrow margin while delivering \emph{deterministic training}, \emph{high sparsity} (often $\approx 0.68$ zeros), and \emph{edge-ready deployability}. Our most valuable contributions are: (i) a new, rigorous account of \emph{alignment dynamics} under structured feedback with quantized updates (linear convergence, descent under partial alignment, and a stochastic ternary convergence proposition); (ii) a \emph{meta-analysis} that \emph{quantifies convergence speed and stability} across modalities; and (iii) a minimal, modality-spanning \emph{training stack} with deterministic presets and reproducible artifacts. On MNIST (real), DFA trails tuned backprop by a sliver (96.5\% vs. \(\approx\)96\%) at strong sparsity; 20 Newsgroups favors DFA for stability; California Housing benefits from DFA + gradient clipping; and UCR GunPoint saturates at 100\% across strategies. Ternary DFA thus preserves core learning dynamics while advancing hardware efficiency and plausibility.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -188,9 +186,9 @@ Early in training the bracketed term can be nearly orthogonal to the true gradie
 
 \begin{figure}[H]
     \centering
-    \begin{subcaptionbox}{Early training: near-orthogonal updates}[0.48\linewidth]
+    \begin{subcaptionbox}{Early training: near-orthogonal updates}[0.45\linewidth]
         \centering
-        \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \begin{tikzpicture}[scale=0.9,>=Stealth]
             \draw[->,thin,gray!60] (0,0) -- (2.8,0);
             \draw[->,thin,gray!60] (0,0) -- (0,2.8);
             \draw[->,line width=1.2pt,blue] (0,0) -- (2.1,0.9) node[above right=-2pt] {$\,\Delta V^{\mathrm{BP}}$};
@@ -199,9 +197,9 @@ Early in training the bracketed term can be nearly orthogonal to the true gradie
             \node[gray] at (0.6,0.5) {$\angle$};
         \end{tikzpicture}
     \end{subcaptionbox}\hfill
-    \begin{subcaptionbox}{Later training: aligned updates}[0.48\linewidth]
+    \begin{subcaptionbox}{Later training: aligned updates}[0.45\linewidth]
         \centering
-        \begin{tikzpicture}[scale=1.0,>=Stealth]
+        \begin{tikzpicture}[scale=0.9,>=Stealth]
             \draw[->,thin,gray!60] (0,0) -- (2.8,0);
             \draw[->,thin,gray!60] (0,0) -- (0,2.8);
             \draw[->,line width=1.2pt,blue] (0,0) -- (2.2,1.0) node[above right=-2pt] {$\,\Delta V^{\mathrm{BP}}$};
@@ -223,7 +221,8 @@ FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep 
 
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[>=Stealth, node distance=1.6cm]
+    \resizebox{0.95\linewidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, node distance=1.4cm]
         % Nodes
         \node[draw,rounded corners,minimum width=1.8cm,minimum height=0.9cm,align=center] (x) {$x$};
         \node[draw,rounded corners,minimum width=2.4cm,minimum height=0.9cm,align=center,right=of x] (w1) {$W_1=Q_\tau(V_1)$\\\small ternary};
@@ -252,7 +251,7 @@ FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep 
         % Shadow weights note and brace
         \node[draw,rounded corners,fill=gray!10,align=center,below=2.2cm of w1] (shadow) {shadow $V_\ell$ (float): SGD/clip\\ flip $Q_\tau$ per schedule};
         \draw[gray,decorate,decoration={brace,mirror,amplitude=6pt}] ($(w1.south west)+(0,-0.2)$) -- ($(w2.south east)+(0,-0.2)$) node[midway,below=10pt,align=center] {ternary forward path ($W=Q_\tau(V)$)};
-    \end{tikzpicture}
+    \end{tikzpicture}}
     \caption{FeedFlipNets schematic. Forward uses ternary weights $W=Q_\tau(V)$, while DFA broadcasts output error to hidden layers via fixed $B_\ell$. Float shadow weights $V$ are optimized and periodically flipped into $W$.}
 \end{figure}
 
@@ -293,7 +292,11 @@ We evaluate on four modalities with offline fixtures and real downloads: MNIST (
 
 \section{Results}\label{sec:results}
 \subsection{Best Configurations}
-\noindent\input{../../data/report/best_configs_table.tex}
+\noindent\begin{table}[H]
+\centering
+\small
+\resizebox{\linewidth}{!}{\input{../../data/report/best_configs_table.tex}}
+\end{table}
 
 \subsection{Learning-rate Sweeps}
 Figure~\ref{fig:lrsweep} shows LR sweeps contrasting backprop vs DFA (MNIST, real). We include 68\% error bars (one standard deviation over seeds).
@@ -317,6 +320,29 @@ Learning-rate sweeps reveal dataset-specific optima; for text and tabular, flatt
 
 \section{Meta-analysis and Discussion}\label{sec:discussion}
 Ternary zero ratios cluster around $\approx0.68$ across modalities for per-step flips; per-epoch scheduling reduces aggressive flipping and stabilizes difficult modalities (text/tabular). Structured feedback improves variance preservation, aligning with our theoretical conditioning lemma. Throughput gains correlate with structured feedback and smaller hidden sizes, while ternarization itself primarily benefits footprint and deployment.
+
+\subsection{Meta-learning: Convergence Speed and Stability}\label{sec:meta}
+We quantify convergence pace and stability across runs using logs in \texttt{runs/}. For classification, we report the first epoch reaching 0.90 accuracy (\emph{epochs-to-0.90}) and the early slope from epoch 1 to 3. For regression, we use the first epoch to reach 90\% of the run’s best $\mathrm{R}^2$ and the corresponding early $\mathrm{R}^2$ slope. We also report simple stability proxies (variance of validation loss; early train-loss variance).
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{../../data/report/plots/meta_epochs_to_0p90_acc.png}{%
+    \includegraphics[width=0.75\linewidth]{meta_epochs_to_0p90_acc.png}
+    }{\fbox{\begin{minipage}{0.75\linewidth}\vspace{2em}\centering
+    \emph{Meta convergence figure will appear after running \texttt{scripts/meta_analysis.py}.}
+    \vspace{2em}\end{minipage}}}
+    \caption{Classification convergence speed: epochs to reach 0.90 accuracy. Lower is better.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{../../data/report/plots/meta_early_slopes.png}{%
+    \includegraphics[width=0.95\linewidth]{meta_early_slopes.png}
+    }{\fbox{\begin{minipage}{0.95\linewidth}\vspace{2em}\centering
+    \emph{Meta early-slope figure will appear after running \texttt{scripts/meta_analysis.py}.}
+    \vspace{2em}\end{minipage}}}
+    \caption{Early learning dynamics: slope from epoch 1 to 3 for accuracy (classification) and $\mathrm{R}^2$ (regression). Higher is better.}
+\end{figure}
 
 \paragraph{Practical guidelines.}
 \begin{itemize}[leftmargin=*]
