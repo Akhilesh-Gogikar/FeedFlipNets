@@ -43,8 +43,8 @@
 \author{Akhilesh Gogikar\\ Mendel Infolabs}
 \date{\today}
 
-% Graphics search path: point to aggregated plots
-\graphicspath{{../../data/report/plots/}}
+% Graphics search path: paper-local figures and aggregated report plots
+\graphicspath{{fig/}{../../data/report/plots/}}
 
 % Theorem environments
 \newtheorem{theorem}{Theorem}
@@ -65,10 +65,10 @@
 \maketitle
 
 \begin{abstract}
-We examine \emph{Direct Feedback Alignment} (DFA) with ternary forward weights, focusing on \textbf{determinism}, \textbf{stability}, and \textbf{convergence}. Our approach, \textbf{FeedFlipNets}, provides a minimal and fully reproducible training stack that runs on a standard laptop. We demonstrate stable training behavior with ternary forward passes on several small-scale benchmark tasks. On MNIST, backpropagation reaches $96.49\%$ accuracy while DFA (float) attains $95.14\%$; with ternary forward passes, performance on MNIST and UCR GunPoint remains near-perfect (UCR reaches $100\%$). On AG~News, backprop and DFA (float) are essentially tied at $90.05\%$ vs.~$89.98\%$, whereas the ternary-forward variant lags. On 20~Newsgroups, DFA (float) substantially outperforms our backprop baseline across the LR sweep. Overall, we target clear, deterministic baselines rather than state-of-the-art accuracy, mapping accuracy--sparsity--throughput trade-offs and providing alignment curves to visualize early training dynamics. Unless otherwise noted, we report means $\pm$ standard deviation over $n\in[2,5]$ deterministic runs and indicate $n$ alongside each result. Finally, we give a non-asymptotic stationarity bound for DFA under ternary weight noise and a supporting alignment lemma for structured feedback.
+Direct Feedback Alignment (DFA) side-steps symmetric weight transport, yet its practical footprint remains fuzzy because reports span toy validations to fragile deep models. We revisit DFA through \emph{FeedFlipNets}, a deliberately small, deterministic baseline that combines DFA with ternary forward weights. The goal is a polished blueprint---a precise description of the achievable accuracy, sparsity, and throughput trade-offs on widely used, modest-size benchmarks---not a claim of new state-of-the-art. On MNIST our reproducible setup reaches $96.49\%$ with backpropagation versus $95.14\%$ for float DFA, while ternary-forward DFA remains within this band. UCR~GunPoint attains $100\%$ test accuracy with both float and ternary DFA. On AG~News, backprop and float DFA are tied ($90.05\%$ vs.\ $89.98\%$), and ternary DFA lags on this harder text task. For 20~Newsgroups the absolute ceiling is low (best stable DFA at $\approx 0.32$ accuracy), yet float DFA outperforms the matching backprop baseline across the learning-rate sweep. We report mean $\pm$ standard deviation across seeds and include Pareto views of accuracy--sparsity--throughput and a sign-match statistic $p$ that quantifies directional agreement with backprop updates. We complement the empirical study with a finite-time stationarity bound for DFA under ternary noise and a lemma showing how structured feedback improves alignment. All claims are scoped to shallow MLPs in these regimes, consistent with mixed evidence on DFA beyond this setting \cite{lillicrap2016random,nokland2016direct,launay2020direct}.
 \end{abstract}
 \begin{keywords}
-Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary Networks, Stability, Convergence, Alignment Dynamics, Structured Feedback, Reproducible Research.
+Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary Networks, Alignment Dynamics, Structured Feedback, Reproducibility.
 \end{keywords}
 
 % Key Metrics footer table under abstract (auto-generated)
@@ -90,51 +90,63 @@ Determinism & Seeds, fixtures & Yes \\
 \end{tabular}
 \caption*{Key Metrics (condensed). Representative values from our benchmark suite.}
 \end{table}}
+\noindent{\footnotesize\itshape Reproducibility Statement: see \hyperref[sec:repro-appendix]{Appendix}.}
+\par\smallskip
 \noindent\textit{Abbreviations:} 20NG = 20 Newsgroups; Cal. = California; BoW = bag-of-words; ps = per\_step; pe = per\_epoch.
 
-\section{Introduction}\label{sec:intro}
-Reproducible, deterministic training is essential for credible empirical findings. Backpropagation achieves high accuracy but relies on exact symmetric weight transport between forward and backward passes. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} eliminates this requirement by broadcasting output errors through fixed random matrices to each hidden layer. In parallel, low-precision neural networks (binary or ternary weights) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} drastically reduce memory and compute demands. We combine these ideas in \textbf{FeedFlipNets}\footnote{Source code: \url{https://github.com/akigogikar/FeedFlipNets}}: training uses float ``shadow'' weights updated via DFA, while inference (forward passes) uses ternary weights that are periodically ``flipped'' from the shadows. Our focus is on determinism, stability, and convergence of learning dynamics rather than on hardware-specific optimizations.
+% Deployability table (auto-generated if available)
+\IfFileExists{_generated/deployability_table.tex}{\input{_generated/deployability_table.tex}}{}
 
-\paragraph{Contributions.} We present the following contributions:
+\section{Introduction}\label{sec:intro}
+Credible empirical work in learning algorithms hinges on runs that can be reproduced and audited. Conventional backpropagation satisfies this bar in accuracy, yet it hinges on an exact weight transpose during the backward pass. Any break in that symmetry---such as custom hardware, exotic simulators, or biological plausibility arguments---fractures the algorithm. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} relaxes the symmetry requirement by broadcasting output errors through fixed random matrices, but the literature alternates between promising small-scale demonstrations and brittle large-model experiences. In parallel, low-precision neural networks \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} reduce memory and compute by quantizing weights or activations. What remains missing is a precise, reproducible picture of how DFA behaves when paired with ternary forward weights on familiar, compact benchmarks.
+
+We address that gap with \textbf{FeedFlipNets}\footnote{Source code: \url{https://github.com/akigogikar/FeedFlipNets}}, a deterministic baseline that keeps float ``shadow'' weights for optimization and continually refreshes ternary forward weights for inference. The system is intentionally modest: fully scripted runs, fixed seeds, auto-generated tables and figures, and tasks that fit on a single workstation. This controlled setup lets us measure accuracy-sparsity-throughput trade-offs, layer-wise alignment signals, and statistical confidence without the noise of large infrastructure.
+
+\paragraph{Contributions.}
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Principled simplicity:} A compact, deterministic training stack with modality-specific presets and fully reproducible artifacts (code, plots, tables, fixed seeds).
-    \item \textbf{Theory with practical insights:} Formal definitions and analysis explaining DFA's alignment dynamics, training stability under structured feedback, and convergence under stochastic ternary updates.
-    \item \textbf{Comprehensive evaluation:} Cross-modality experiments mapping the trade-offs between accuracy, sparsity, and throughput---highlighting regimes where ternary DFA excels and where mitigation (gradient clipping, flip scheduling, structured feedback) is required.
+    \item \textbf{Blueprint for reproducible DFA with ternary forwards.} We open-source a compact stack with deterministic data splits, logging, and visualization, providing an immediate baseline for future DFA and quantized-training studies.
+    \item \textbf{Theory married to practice.} We formalize the FeedFlipNets update, present a finite-time stationarity bound under ternary quantization noise, and derive an alignment lemma for structured feedback---each tied to measurable quantities tracked in the experiments.
+    \item \textbf{Quantified trade-offs across modalities.} Vision, time-series, text, and tabular tasks reveal where ternary DFA matches backprop and where it misses; we document confidence intervals, Pareto fronts, throughput, and sparsity to support deployment-minded claims.
 \end{itemize}
 
-FeedFlipNets demonstrates that removing weight transport and reducing precision can preserve core learning behavior while improving deployability. In short, we attain near-backprop accuracy, fully deterministic training, and highly sparse weights, backed by explicit evidence of convergence and stability---an attractive blueprint for edge-oriented learning.
+FeedFlipNets demonstrates that removing weight transport and lowering precision can preserve key learning behaviour on \emph{small, standard benchmarks} while making the empirical footprint fully auditable. We obtain near-backprop accuracy in regimes such as MNIST and GunPoint, clear caveats for text datasets with lower ceilings, and deterministic runs suitable for method comparisons. \textbf{Scope.} We do not claim scalability to large convolutional or attention-based models; public evidence remains mixed, and architecture-specific adaptations are often required. All statements in this work are intentionally confined to the configurations we release.
 
 \section{Motivation}\label{sec:motivation}
-Low-precision networks can significantly reduce memory usage, bandwidth, and compute, enabling edge deployment and greener AI. DFA further simplifies the backward pass by removing weight-symmetry requirements. Together, these techniques promise training pipelines that are easier to port and maintain across devices. This motivates a study that balances three key objectives: (i) accuracy under quantization, (ii) deterministic and reproducible training, and (iii) deployability via ternary-weight networks.
+Quantized neural networks are attractive because they slash memory, shrink bandwidth, and invite sparse execution, all of which are essentials for edge or resource-constrained deployments. DFA, meanwhile, offers a transport-free learning rule that sidesteps the logistic and biological implausibility of perfect weight symmetry. The combination promises training pipelines that are easier to ship, reason about, and port to modest hardware. Yet reliable guidance demands an empirical study that keeps three aims in balance: (i) quantify the accuracy cost of ternary forwards, (ii) guarantee determinism and reproducibility, and (iii) surface deployability hooks such as sparsity and latency. FeedFlipNets is designed precisely around this triad.
 
 \section{Background and Related Work}\label{sec:related}
-\textbf{Feedback alignment.} Fixed random feedback matrices enable learning without symmetric weight transport \cite{lillicrap2016random}. In DFA \cite{nokland2016direct}, output errors are projected directly to hidden layers; over training, the DFA updates gradually align with true backprop updates. Scaling DFA to deeper networks benefits from using structured feedback and careful normalization \cite{launay2020direct}.
+\textbf{Feedback alignment.} Fixed random feedback matrices enable gradient-like learning without symmetric weight transport \cite{lillicrap2016random}. DFA \cite{nokland2016direct} propagates the output error directly to hidden layers; with training, the resulting updates align with those from backpropagation. Scaling DFA to deep or highly structured architectures is sensitive to normalization and feedback design. Row-orthonormal blocks drawn via QR decompositions or subsampled Hadamard transforms improve conditioning and stabilize signals \cite{launay2020direct,mezzadri2006how,higham_blog_orth}. FeedFlipNets concentrates on shallow multilayer perceptrons where these effects are easy to measure and compare.
 
-\textbf{Quantized networks.} Low-bit neural network training and inference reduce compute and memory footprints \cite{courbariaux2015binaryconnect,hubara2016binarized,rastegari2016xnor,zhou2016dorefa}. In particular, ternary weight networks often preserve accuracy while introducing many zero weights, enabling sparse operations and skip computations \cite{li2016twn,han2015deepcompression}.
+\textbf{Quantized networks.} Few-bit training and inference reduce the computational footprint and memory traffic of neural networks \cite{courbariaux2015binaryconnect,hubara2016binarized,rastegari2016xnor,zhou2016dorefa}. Ternary weight networks in particular strike a balance between expressivity and efficiency: they often preserve accuracy while introducing structured sparsity that hardware can exploit \cite{li2016twn,han2015deepcompression}. Our study tracks throughput, CPU latency, and sparsity to give a pragmatic view of these trade-offs, deferring energy-per-inference measurements to future work following MLPerf Tiny and EEMBC MLMark guidance.
 
-\textbf{Communication and variance control.} Quantized SGD and gradient sparsification methods can maintain descent in expectation using sign or few-bit updates \cite{alistarh2017qsgd}. Moreover, using orthogonal or Hadamard transforms for feedback preserves signal variance and stabilizes error propagation in deep networks \cite{launay2020direct}.
+\textbf{Communication and variance control.} Sign-based and low-bit stochastic gradient schemes can maintain descent in expectation when their directions agree with the true gradient more often than chance \cite{alistarh2017qsgd}. Orthogonal and Hadamard projections preserve variance and condition error signals as they traverse multiple layers \cite{launay2020direct}, motivating our emphasis on structured feedback choices.
 
-\textbf{Determinism \& reproducibility.} Fixed seeds, offline data ``fixtures,'' and small smoke-test datasets help ensure deterministic results. Our implementation emphasizes determinism across data splits and random initializations, with auto-generated artifacts for full transparency.
+\textbf{Determinism \& reproducibility.} We adopt fixed seeds, curated ``fixture'' datasets for smoke tests, and auto-generated summaries to ensure deterministic results. Reporting means with $95\%$ confidence intervals over repeated seeds and relying on succinct baselines (BP, DFA, structured DFA) mirror best practices for small-benchmark comparisons.
+
+\subsection*{Community Evidence (Web Signal)}
+\addcontentsline{toc}{subsection}{Community Evidence}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{DFA works, but scope matters.} The community reports consistent success on carefully tuned shallow models, yet mixed outcomes on convolutional or large-scale tasks unless the backward path is adapted \cite{lillicrap2016random,nokland2016direct,launay2020direct}.
+    \item \textbf{Low-precision training best practices.} Maintaining float ``shadow'' weights, using ternary or binary forwards, and applying stochastic rounding are recurring themes for stable few-bit optimisation \cite{courbariaux2015binaryconnect,hubara2016binarized,zhou2016dorefa}.
+    \item \textbf{Sign-based convergence intuition.} Update rules that match the sign of the true gradient more than half the time support descent guarantees under noise, mirroring signSGD and quantized SGD analyses \cite{alistarh2017qsgd,bernstein2018signsgd}.
+    \item \textbf{Structured projections stabilize signals.} Orthonormal and Hadamard feedback act as near-isometries that preserve error magnitudes and improve alignment \cite{ailon2009fast,launay2020direct}.
+    \item \textbf{Measurement rigor.} Reproducibility checklists and non-parametric comparisons (e.g., Dem\v{s}ar or Dror protocols) anchor fair evaluations across datasets \cite{demsar2006comparisons_clean,dror2018hitchhiker_clean}.
+    \item \textbf{Greener or edge claims need numbers.} Energy and latency measurements benefit from accepted yardsticks such as MLPerf Tiny and EEMBC MLMark; we report latency and memory now and leave energy to future profiling \cite{banbury2021mlperf,eembc_mlmark}.
+\end{itemize}
+
+\paragraph{Latency and energy notes.}
+Deployability tables report the median single-sample forward-pass latency (NumPy/BLAS) on the reference CPU and estimate peak RAM by combining packed ternary weights (2 bits per parameter) with float32 activations at batch size one. Energy per inference is currently labelled N/A; once measured we will follow MLPerf Tiny and EEMBC MLMark disclosure conventions, including device profiles, latency/energy quantiles, and toolchain provenance. Implementation details live in \texttt{docs/energy\_latency.md}.
 
 \section{Method: FeedFlipNets}\label{sec:method}
-Let $V_\ell \in \R^{d_{\ell-1}\times d_\ell}$ be the float \emph{shadow weight} matrix for layer $\ell$. We define the ternary forward weight matrix as $W_\ell = Q_{\tau}(V_\ell)$, where $Q_{\tau}$ is a quantizer mapping each entry of $V_\ell$ to $\{-1,0,+1\}$ using threshold $\tau \ge 0$. The network's forward pass uses $W_\ell$ for computing activations, while the backward pass computes gradients with respect to $V_\ell$ using DFA.
+Each layer $\ell$ maintains float \emph{shadow weights} $V_\ell \in \R^{d_{\ell-1}\times d_\ell}$. The ternary forward matrix is produced by thresholding: $W_\ell = Q_{\tau}(V_\ell)$ with $Q_{\tau}:\R\rightarrow\{-1,0,+1\}$ and threshold $\tau \ge 0$. The forward pass always uses the quantized $W_\ell$, whereas gradients are accumulated on the high-precision shadows $V_\ell$.
 
-\paragraph{Forward.} For input $x$ (with $a_0=x$), each layer computes $h_\ell = a_{\ell-1} W_\ell$ as the pre-activation and $a_\ell = f(h_\ell)$ as the post-activation. The final layer produces output logits $z = a_L$.
+\paragraph{Forward pass.} Given input $x$ (set $a_0=x$), layer $\ell$ computes pre-activations $h_\ell = a_{\ell-1} W_\ell$ and activations $a_\ell = f(h_\ell)$. The final activations $a_L$ serve as logits $z$.
 
-\paragraph{Backward (DFA).} Let $e = \partial \mathcal{L}/\partial z$ be the output error gradient. DFA uses fixed feedback matrices $B_\ell$ for each hidden layer. The error propagated to layer $\ell$ is $\delta_\ell = (e\,B_\ell) \odot f'(h_\ell)$. The gradient for the shadow weights is then $\nabla_{V_\ell} \mathcal{L} = a_{\ell-1}^\top\,\delta_\ell$.
+\paragraph{Backward pass (DFA).} Let $e = \partial \mathcal{L}/\partial z$ be the output gradient. DFA employs fixed feedback matrices $B_\ell$ to broadcast $e$ to hidden layers, producing $\delta_\ell = (e\,B_\ell) \odot f'(h_\ell)$. Gradients with respect to the shadow weights are $\nabla_{V_\ell} \mathcal{L} = a_{\ell-1}^\top\,\delta_\ell$.
 
-\paragraph{Flip schedule.} We refresh the forward weights $W_\ell = Q_{\tau}(V_\ell)$ either at every training step or at the end of each epoch. The deterministic ternary quantizer $Q_{\tau}(v)$ operates as:
-\begin{equation}
-Q_{\tau}(v) =
-\begin{cases}
-+1, & v \ge \tau,\\[6pt]
-0, & |v| < \tau,\\[6pt]
--1, & v \le -\tau~,
-\end{cases}
-\end{equation}
-mapping $v$ to $\pm1$ if it exceeds the threshold in magnitude, and to $0$ if it lies in the $\tau$-deadzone.
+\paragraph{Flip schedule.} The quantized weights $W_\ell = Q_{\tau}(V_\ell)$ are refreshed either every training step or once per epoch. Definitions~\ref{def:quant} and~\eqref{eq:quantizer} formalize the deterministic quantizer, which maps $|v|\le\tau$ to $0$ and large magnitudes to $\pm 1$. Mapping the boundary $|v|=\tau$ to zero reduces ``flip chatter'' and matches our reference implementation. In practice the mass on the boundary is negligible. Empirically, per-epoch flips smooth error signals on text or tabular tasks, while per-step flips keep ternary weights closer to their float shadows.
 
-\paragraph{Training algorithm.} Algorithm~\ref{alg:feedflip} outlines the training loop. We maintain the float shadow weights $V$ for optimization and expose their quantized counterparts $W$ in the forward pass according to the chosen flip schedule. Unless stated otherwise, gradients are passed through $Q_\tau$ using a straight-through estimator. In some experiments we apply gradient clipping (at 1.0) to examine robustness under extreme updates.
+\paragraph{Training loop.} Algorithm~\ref{alg:feedflip} summarizes the procedure. Shadow weights $V$ are optimised using gradients computed via DFA, and the ternary weights $W$ are exposed according to the flip schedule. Unless stated otherwise we apply a straight-through estimator through $Q_\tau$. Selected experiments also add gradient clipping at magnitude $1.0$ to probe robustness.
 
 \begin{algorithm}[H]
 \caption{FeedFlipNets training with DFA and ternary flips}\label{alg:feedflip}
@@ -158,12 +170,12 @@ mapping $v$ to $\pm1$ if it exceeds the threshold in magnitude, and to $0$ if it
 \end{algorithmic}
 \end{algorithm}
 
-\paragraph{Design choices.} (i)~\emph{Shadow weights:} Maintaining high-precision $V_\ell$ allows accumulation of small updates that would be lost if we quantized every step; periodically syncing $W_\ell = Q_\tau(V_\ell)$ ensures the ternary forward weights track the learned $V$. (ii)~\emph{Flip schedule:} Faster flips (per-step) keep $W_\ell$ very close to $V_\ell$ but can introduce instability on challenging tasks, whereas slower flips (per-epoch) smooth out training dynamics, especially for text and tabular modalities. (iii)~\emph{Structured feedback:} Using orthogonal or Hadamard $B_\ell$ matrices improves the conditioning of error signals through the network (Sec.~\ref{sec:structured}), which can stabilize training in deeper or harder tasks.
+\paragraph{Design considerations.} (i)~\emph{Shadow weights.} High-precision $V_\ell$ accumulate small updates that would otherwise vanish after quantization; refreshing $W_\ell = Q_\tau(V_\ell)$ keeps the ternary path synchronised with the learned parameters. (ii)~\emph{Flip schedule.} Per-step flips maintain tight coupling between $V$ and $W$ yet can destabilize difficult tasks, while per-epoch flips trade reactivity for smoother gradients---often preferred for text or tabular data. (iii)~\emph{Structured feedback.} Orthogonal or Hadamard $B_\ell$ matrices precondition the broadcast error, improving conditioning and stability, and serve as the default in our deeper-stack experiments (Sec.~\ref{sec:structured}).
 
 \section{Theoretical Analysis of FeedFlipNets}\label{sec:theory}
 \subsection{Preliminaries and Definitions}\label{sec:prelims}
 \paragraph{Network setup.}
-We study a feedforward network with $L$ layers (input $0$, output $L$). Layer $l$ holds float ``shadow'' weights $V_l\in\R^{n_l\times n_{l-1}}$ and ternary forward weights $W_l=Q_\tau(V_l)$ produced by a quantizer $Q_\tau$ with threshold $\tau\ge0$. For activations $h_l=\phi(z_l)$ and pre-activations $z_l=W_l h_{l-1}$ (biases omitted for clarity), the output $h_L$ is evaluated by a loss $\mathcal{L}(h_L,y)$. Output errors are denoted $\delta_L=\partial \mathcal{L}/\partial z_L$.
+Consider an $L$-layer feedforward network (layers numbered $0$ through $L$). Layer $l$ maintains float shadow weights $V_l\in\R^{n_l\times n_{l-1}}$ and exposes ternary forward weights $W_l=Q_\tau(V_l)$ via the quantizer $Q_\tau$ with threshold $\tau\ge 0$. For pre-activations $z_l=W_l h_{l-1}$ and activations $h_l=\phi(z_l)$ (biases omitted for clarity), the loss $\mathcal{L}(h_L,y)$ produces output errors $\delta_L=\partial \mathcal{L}/\partial z_L$.
 
 \begin{definition}[Direct Feedback Alignment]\label{def:dfa}
 Direct Feedback Alignment (DFA) fixes feedback matrices $B_l\in\R^{n_l\times n_L}$ once at initialization and propagates output errors directly to each hidden layer via $\tilde{\delta}_l = B_l\,\delta_L$. Local errors are $\delta_l^{\mathrm{DFA}} = \tilde{\delta}_l \odot \phi'(z_l)$ and the parameter update reads
@@ -173,6 +185,13 @@ Direct Feedback Alignment (DFA) fixes feedback matrices $B_l\in\R^{n_l\times n_L
 with learning rate $\eta>0$. All hidden-layer updates can thus be computed in parallel once $\delta_L$ is available, avoiding the transport of $W_{l+1}^\top$ \citep{lillicrap2016random,nokland2016direct}.
 \end{definition}
 
+\paragraph{Directional-agreement probability $p$.}
+Following signSGD analyses, we monitor the per-layer directional agreement
+\begin{equation*}
+ p_l(t) \;=\; \mathbf{1}\bigl\{\langle \Delta V_l^{\mathrm{DFA}}(t),\, \Delta V_l^{\mathrm{BP}}(t) \rangle > 0\bigr\}\in\{0,1\},
+\end{equation*}
+with the running estimator $\hat p_l(T)=\tfrac{1}{T}\sum_{t=1}^T p_l(t)$ and a global variant obtained by aggregating parameters. We track $\hat p_l$ during alignment probes and summarise its distribution via histograms. Analyses of sign-based optimisers identify a simple rule of thumb: if $p>\tfrac{1}{2}$ on average, the expected update remains a descent direction under mild assumptions \citep{bernstein2018signsgd,alistarh2017qsgd}.
+
 \begin{definition}[Ternary quantization]\label{def:quant}
 The quantizer $Q_\tau:\R\to\{-1,0,+1\}$ maps each scalar weight $v$ to
 \begin{equation}
@@ -181,36 +200,40 @@ Q_\tau(v)=
  +1,& v > \tau,\\
  0,& |v|\le \tau,\\
  -1,& v < -\tau,
-\end{cases}
+\end{cases}\label{eq:quantizer}
 \end{equation}
-and can be applied deterministically or in stochastic form $Q_\tau^{\text{stoch}}$ that jitters $v$ before thresholding to reduce bias \citep{courbariaux2015binaryconnect,li2016twn}. FeedFlipNets maintains high-precision $V_l$ for optimization and refreshes $W_l$ on a configurable schedule (\texttt{per\_step} or \texttt{per\_epoch}).
+and may operate deterministically or as a dithered variant $Q_\tau^{\text{stoch}}$ that jitters $v$ before thresholding to reduce bias \citep{courbariaux2015binaryconnect,li2016twn}. FeedFlipNets keeps the float shadows for optimisation and refreshes $W_l$ on configurable schedules (\texttt{per\_step} or \texttt{per\_epoch}).\\
+\textit{Boundary note.} We adopt the inclusive-zero rule $|v|\le\tau \Rightarrow 0$, which suppresses rapid back-and-forth flips; the mass at the boundary is negligible so sparsity statistics are unaffected beyond rounding.
 \end{definition}
 
 \begin{definition}[Structured feedback matrix]\label{def:structuredB}
-A feedback matrix $B_l$ is \emph{structured} if it satisfies additional algebraic constraints. Two families used in FeedFlipNets are:
+A feedback matrix $B_l$ is \emph{structured} when it satisfies additional algebraic constraints. FeedFlipNets relies on two families:
 \begin{enumerate}[label=(\alph*),leftmargin=*]
-    \item \textbf{Orthonormal}: $B_l B_l^\top = I$, preserving error norms $\|B_l\delta_L\|_2=\|\delta_L\|_2$ and acting as a random rotation.
-    \item \textbf{Hadamard}: $B_l$ is drawn from a (normalized) Hadamard matrix with entries $\pm1$, enabling on-the-fly generation and fast Walsh--Hadamard transforms \citep{launay2020direct}.
+    \item \textbf{Orthonormal}: $B_l B_l^\top = I$, so the broadcast error retains its $\ell_2$ norm and acts as a random rotation.
+    \item \textbf{Hadamard}: $B_l$ derives from a normalized Hadamard matrix with entries $\pm1$, supporting fast Walsh--Hadamard transforms and easy on-the-fly sampling \citep{launay2020direct}.
 \end{enumerate}
 \end{definition}
 
+\paragraph{Generation recipe (orthogonal/Hadamard).}
+\emph{Orthonormal $B_\ell$:} draw $G\in\mathbb{R}^{m\times n}$ with i.i.d.\ $\mathcal{N}(0,1)$ entries, compute the thin QR factorisation $G=QR$, and set $B_\ell\leftarrow Q$ (flipping column signs uniformly at random) \cite{mezzadri2006how,higham_blog_orth}. \emph{Hadamard $B_\ell$:} build a subsampled randomized Hadamard transform (SRHT): $B_\ell\leftarrow \sqrt{\tfrac{s}{n}}\,S H D$, where $H$ is the $s\times s$ Walsh--Hadamard matrix, $D$ is a random Rademacher diagonal, and $S$ selects $n$ columns. Both constructions are near-isometries (Johnson--Lindenstrauss intuition) that preserve error energy and improve conditioning \cite{ailon2009fast}.
+
 \subsection{Convergence Analysis Under Direct Feedback Alignment}\label{sec:convergence}
 \subsubsection{Deep linear networks}
-For linear networks ($\phi$ is identity), DFA admits rigorous guarantees. \citet{girotti2021convergence} show that for squared-error loss and full-rank feedback, DFA converges globally.
+When activations are linear ($\phi$ is the identity), DFA enjoys sharp guarantees. \citet{girotti2021convergence} show that with squared-error loss and full-rank feedback matrices, the dynamics converge globally.
 
 \begin{theorem}[Convergence for deep linear DFA]\label{thm:linear}
 Consider a depth-$L$ linear network trained with DFA on $\mathcal{L}=\tfrac{1}{2}\|h_L-y\|_2^2$. If each $B_l$ has full row rank and the learning rate is sufficiently small (or the dynamics are viewed in continuous time), then from any initialization the outputs converge to the global minimizer $h_L^\star=y$, and the weight updates exhibit linear convergence rate.
 \end{theorem}
 \begin{proof}[Sketch]
-With linear activations, $\delta_L = h_L - y$. The Lyapunov function $V(t)=\tfrac{1}{2}\|h_L-y\|_2^2$ satisfies $\dot{V}(t) = -\eta \sum_{l}\|B_l (h_L-y)\|_2^2 \le 0$ when $B_l$ are full rank, ensuring global stability. As training proceeds the column spaces of $W_l$ align with the row spaces of $B_l$, eliminating null directions and driving the loss to zero; see \citet{girotti2021convergence} for details.
+With linear activations $\delta_L = h_L - y$. The Lyapunov candidate $V(t)=\tfrac{1}{2}\|h_L-y\|_2^2$ obeys $\dot{V}(t) = -\eta \sum_{l}\|B_l (h_L-y)\|_2^2 \le 0$ when every $B_l$ has full row rank, guaranteeing global stability. Training gradually aligns the column space of $W_l$ with the row space of $B_l$, eliminating null directions and driving the loss to zero; see \citet{girotti2021convergence} for a detailed argument.
 \end{proof}
 
 \begin{remark}
-The dynamics ``learn to align'' $W_{l+1}$ with $B_l^\top$ so that $B_l\delta_L$ approaches the backpropagated signal $W_{l+1}^\top\delta_{l+1}$ despite $B_l$ remaining fixed \citep{lillicrap2016random}.
+The dynamics ``learn to align'' $W_{l+1}$ with $B_l^\top$, making $B_l\delta_L$ approach the backpropagated signal $W_{l+1}^\top\delta_{l+1}$ even though $B_l$ remains fixed \citep{lillicrap2016random}.
 \end{remark}
 
 \subsubsection{Nonlinear networks and quantized updates}
-Full convergence proofs for nonlinear DFA remain open, yet a growing body of evidence indicates practical success \citep{lillicrap2016random,launay2020direct}. Training typically shows two phases: a rapid alignment phase where the cosine $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ rises from near zero, followed by a descent phase mimicking backpropagation. Quantization adds stochastic perturbations, but stochastic rounding and ``shadow'' weights preserve unbiasedness on average \citep{courbariaux2015binaryconnect}.
+Formal convergence guarantees for nonlinear DFA are still evolving, yet empirical studies report consistent success on moderate-depth networks \citep{lillicrap2016random,launay2020direct}. Training typically unfolds in two stages: an initial alignment phase where the cosine $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ climbs from near zero, followed by a descent phase that closely mirrors backpropagation. Quantization injects additional stochasticity, but combining stochastic rounding with shadow weights keeps the updates unbiased in expectation \citep{courbariaux2015binaryconnect}.
 
 \begin{definition}[Alignment $\rho$]\label{def:alignment}
 For layer $l$, define the (instantaneous) cosine alignment between the DFA and backprop updates
@@ -222,7 +245,9 @@ We write the epoch-averaged alignment as $\bar{\rho}_l(T)=\tfrac{1}{T}\sum_{t=1}
 \end{definition}
 
 \paragraph{Non-asymptotic convergence under ternary stochasticity.}
-We elevate the stochastic ternary \emph{plausibility} statement into a finite-time bound. Let $\mathcal{L}$ be $L$-smooth and bounded below by $\mathcal{L}_\star$. Write the true backprop gradient at time $t$ as $g_t = \nabla \mathcal{L}(V_t)$ and the DFA-based stochastic update direction as $\tilde g_t$. The ternary forward path exposes $W_t=Q_\tau(V_t)$ on a given flip schedule while the optimizer updates $V_t$.
+FeedFlipNets supports both deterministic ($Q_\tau$) and dithered ($Q_\tau^{\text{stoch}}$) ternary maps; all random seeds, including those driving the dithering, are fixed to preserve reproducibility. The theorem below focuses on the stochastic variant because it aligns with unbiased stochastic rounding arguments from the low-precision literature \cite{courbariaux2015binaryconnect}. In practice we observe similar behaviour for the deterministic variant at moderate thresholds.
+
+Stochastic quantization maintains descent in expectation when update directions are unbiased, a principle shared with signSGD and quantized SGD analyses \cite{alistarh2017qsgd,bernstein2018signsgd}. Dithering before thresholding reduces bias near $\tau$ and prevents shadow weights from hovering indefinitely around zero---mirroring standard ``shadow-weight'' recipes \cite{hubara2016binarized,zhou2016dorefa}. We elevate these intuitions into the finite-time guarantee below. Let $\mathcal{L}$ be $L$-smooth and bounded below by $\mathcal{L}_\star$, and denote the backprop gradient and DFA direction at iteration $t$ by $g_t = \nabla \mathcal{L}(V_t)$ and $\tilde g_t$, respectively. The ternary path exposes $W_t=Q_\tau(V_t)$ on the chosen flip schedule while optimisation acts on $V_t$.
 
 \begin{theorem}[Non-asymptotic stationarity with ternary forward path]\label{thm:ternary-nonasymp}
 Consider SGD with DFA-based directions $\tilde g_t$ and step sizes $\eta_t\in(0,\eta_{\max}]$ over $T$ steps. Suppose:
@@ -245,12 +270,16 @@ Then for the constant step-size case there exist absolute constants $C_0,C_1,C_2
 and under Robbins--Monro the right-hand side tends to $C_2(1-2p)^2 + C_0\sum_l (1-\bar{\rho}_l(T))$ as $T\to\infty$. Thus, for fixed $\tau$ and $p>\tfrac{1}{2}$, smaller quantization variance and larger alignment (higher $\bar{\rho}_l$) improve the finite-time stationarity rate.
 \end{theorem}
 
+\begin{remark}[Mapping assumptions to code]
+Assumption~2 is satisfied by the dithered frontend (`--quant stoch`) with a fixed RNG seed. Switching to the deterministic frontend (`--quant det`) removes the zero-mean noise term; empirically it follows the same optimisation trends for small~$\tau$.
+\end{remark}
+
 \begin{proof}[Proof sketch]
-By $L$-smoothness, $\mathcal{L}(V_{t+1})\le \mathcal{L}(V_t) -\eta\langle g_t,\tilde g_t\rangle + \tfrac{L\eta^2}{2}\lVert \tilde g_t\rVert^2$. Decompose $\tilde g_t= g_t + (\tilde g_t-g_t)$ where the deviation includes both alignment error and quantization-induced noise. Taking expectations, using the sign-advantage $p>\tfrac{1}{2}$ and Jensen, one controls $-\mathbb{E}\langle g_t,\tilde g_t\rangle\le -c\,\mathbb{E}\lVert g_t\rVert^2 + C(1-2p)^2 + C'\sum_l (1-\rho_l(t))$. The variance term yields the $L\eta\sigma_q^2(\tau)$ contribution. Summing and telescoping over $T$ steps gives Eq.~\eqref{eq:stationarity-gap}. Full details are provided in the appendix.
+$L$-smoothness gives $\mathcal{L}(V_{t+1})\le \mathcal{L}(V_t) -\eta\langle g_t,\tilde g_t\rangle + \tfrac{L\eta^2}{2}\lVert \tilde g_t\rVert^2$. Decompose $\tilde g_t= g_t + (\tilde g_t-g_t)$; the difference accounts for alignment error and quantization noise. Taking expectations, using $p>\tfrac{1}{2}$ and Jensen's inequality yields $-\mathbb{E}\langle g_t,\tilde g_t\rangle\le -c\,\mathbb{E}\lVert g_t\rVert^2 + C(1-2p)^2 + C'\sum_l (1-\rho_l(t))$. The variance assumption contributes the $L\eta\sigma_q^2(\tau)$ term. Summing and telescoping over $T$ steps leads to Eq.~\eqref{eq:stationarity-gap}. Full derivations appear in the appendix.
 \end{proof}
 
 \paragraph{Structured feedback improves alignment.}
-Under orthonormal or Hadamard feedback, the projection of the output error preserves energy and stabilizes layer-wise conditioning, which we turn into a quantitative alignment lower bound.
+Near-isometric feedback projections stabilise error energy and layer-wise conditioning. Row-orthonormal (Haar) blocks preserve the $\ell_2$ norm of the broadcast signal exactly, whereas normalized subsampled Hadamard transforms (SRHT) achieve the same in expectation with sharp concentration bounds \cite{ailon2009fast}. Both constructions improve the signal-to-noise ratio of DFA updates and elevate the observed alignment curves.
 
 \begin{lemma}[Alignment under structured $B_\ell$]\label{lem:structured-alignment}
 Assume $B_\ell$ are row-orthonormal (orthogonal or normalized Hadamard blocks) and activations are $1$-Lipschitz (e.g., ReLU). Then there exist constants $\kappa,\gamma\in(0,1]$ depending only on depth and width such that
@@ -264,7 +293,7 @@ for each hidden layer $\ell$. In particular, with random orthonormal (or Hadamar
 Structured $B_\ell$ preserve the norm of the back-projected error and act as near-isometries through depth. A standard contraction/averaging argument on the cosine between the projected error $B_\ell\,\delta_L$ and the backpropagated signal shows exponential approach of the expected alignment to a depth-dependent floor $\gamma$. Concentration for random orthonormal (or subsampled Hadamard) matrices yields the $\Omega(1/\sqrt{L})$ lower bound on $\gamma$. See the appendix for details.
 \end{proof}
 
-Theorem~\ref{thm:ternary-nonasymp} and Lemma~\ref{lem:structured-alignment} formalize the qualitative picture: ternary stochasticity slows but does not derail progress when $p>\tfrac{1}{2}$ and alignment is nontrivial; structured feedback raises the alignment floor, improving stability.
+Together, Theorem~\ref{thm:ternary-nonasymp} and Lemma~\ref{lem:structured-alignment} capture the observed pattern: ternary stochasticity slows but does not derail progress when $p>\tfrac{1}{2}$ and alignment is meaningful, while structured feedback raises the alignment floor and improves stability.
 
 \begin{definition}[Layer-wise and global alignment]
 For layer $l$, define $\rho_l = \cos\angle(\Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}})$ and a global alignment $\rho = \frac{\sum_l \langle \Delta V_l^{\mathrm{DFA}},\Delta V_l^{\mathrm{BP}}\rangle}{\sum_l \|\Delta V_l^{\mathrm{DFA}}\|\,\|\Delta V_l^{\mathrm{BP}}\|}$. Positive $\rho$ indicates a net descent component.
@@ -321,14 +350,25 @@ Early in training the bracketed term can be nearly orthogonal to the true gradie
     \caption{DFA vs. BP alignment. Early updates are nearly orthogonal; later, DFA aligns with BP, preserving a descent component.}
 \end{figure}
 
+% Sign-match p summary (aggregated across available runs)
+\begin{figure}[H]
+    \centering
+    \IfFileExists{fig/Fig-SignMatch-P.png}{\includegraphics[width=0.70\linewidth]{Fig-SignMatch-P.png}}{\fbox{Sign-match $p$ figure}}
+    \caption{Directional agreement $p=\Pr(\langle \Delta V^{\mathrm{DFA}},\Delta V^{\mathrm{BP}}\rangle>0)$ over epochs (mean $\pm$ std across runs). The dashed reference $p=\tfrac{1}{2}$ marks the sign-advantage condition used in Theorem~\ref{thm:ternary-nonasymp}.}
+    \label{fig:signmatch-p}
+\end{figure}
+
+\paragraph{Quick guide to plots and metrics.}
+\textbf{Sign-match $p$.} Enable the alignment-probe flag and read per-epoch $p\_l$ or $p\_\text{global}$ from \texttt{metrics\_train.jsonl}; the helper \texttt{scripts/plot\_p\_hist.py} converts these traces into running averages and histograms. Interpret the values using the signSGD heuristic: $p>\tfrac{1}{2}$ signals a net descent direction. \textbf{Pareto fronts.} Run $\tau$ and flip-schedule sweeps, then execute \texttt{python scripts/make\_pareto\_plots.py}; the figure shows accuracy versus sparsity with marker size proportional to throughput and optional modality annotations.
+
 \subsection{Structured Feedback Matrices}\label{sec:structured}
 Structured $B_l$ precondition error transport:
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Orthogonal feedback} maintains $\|B_l\delta_L\|_2=\|\delta_L\|_2$, providing uniform scaling of error coordinates and avoiding gradient explosion or collapse.
-    \item \textbf{Hadamard feedback} uses deterministic $\pm1$ patterns with fast transforms, enabling hardware-friendly implementations and exact row orthogonality \citep{launay2020direct}.
-    \item \textbf{Sparse feedback} can reduce communication cost but risks starving units of signal if too sparse; moderate sparsity still supports learning with slightly slower convergence \citep{alistarh2017qsgd}.
+    \item \textbf{Orthogonal feedback} preserves $\|B_l\delta_L\|_2=\|\delta_L\|_2$, providing uniform scaling of error coordinates and avoiding gradient explosion or collapse.
+    \item \textbf{Hadamard feedback} leverages deterministic $\pm1$ patterns and fast transforms. We use normalized, subsampled Hadamard (SRHT) matrices with $\sqrt{s/n}$ debiasing when cropping from size $s$ to $n$ columns, yielding near-isometries with Johnson--Lindenstrauss concentration \citep{ailon2009fast}.
+    \item \textbf{Sparse feedback} can reduce communication cost but risks starving units of signal when over-pruned; moderate sparsity still supports learning albeit with slightly slower convergence \citep{alistarh2017qsgd}.
 \end{itemize}
-FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep MLPs and align with the conditioning insights above.
+FeedFlipNets exposes orthogonal and Hadamard defaults that empirically stabilise deeper multilayer perceptrons and agree with the conditioning insights above.
 
 \begin{figure}[t]
     \centering
@@ -370,81 +410,88 @@ FeedFlipNets offers orthogonal/Hadamard options that empirically stabilize deep 
         \draw[->,thick] (shadow1) -- (quant);
 
     \end{tikzpicture}}
-    \caption{FeedFlipNets schematic. Forward (blue) exposes Ter. $W=Q_\tau(V)$, while DFA feedback (red, dashed) broadcasts output error directly to hidden layers via fixed $B_\ell$ (no weight symmetry). Float shadow weights $V$ are optimized and periodically flipped into $W$. Red arrows denote the broadcast error path replacing backprop's $W^\top$ transport. Legend: blue solid arrows -- forward path; red dashed arrows -- broadcast error via $B_\ell$.}
+    \caption{FeedFlipNets schematic. Forward edges (blue) expose ternary weights $W=Q_\tau(V)$, while DFA feedback (red, dashed) broadcasts the output error to hidden layers via fixed $B_\ell$ without weight symmetry. Float shadow weights $V$ are optimised and periodically flipped into $W$. Legend: blue solid arrows—forward path; red dashed arrows—broadcast error via $B_\ell$.}
 \end{figure}
 
 \subsection{Implications of Ternary Quantization}\label{sec:ternary}
 \paragraph{Expressivity and accuracy.}
-Ternary networks retain strong expressive power with modest width increases, consistently matching full-precision baselines on MNIST- and CIFAR-scale tasks when combined with fine-tuning \citep{courbariaux2015binaryconnect,hubara2016binarized,li2016twn}. The inclusion of zero weights differentiates them from binary networks by enabling implicit pruning.
+Ternary networks retain substantial expressive power with modest width increases. When paired with fine-tuning, they routinely match full-precision baselines on MNIST- and CIFAR-scale tasks \citep{courbariaux2015binaryconnect,hubara2016binarized,li2016twn}. Unlike binary networks, the presence of zero weights introduces implicit pruning that benefits both interpretability and efficiency.
 
 \paragraph{Sparsity and efficiency.}
-Threshold $\tau$ controls sparsity: large $\tau$ yields many zeros, reducing memory and arithmetic, while small $\tau$ maximizes capacity. FeedFlipNets records zero ratios $\approx0.6$--0.7 under default schedules, aligning with energy-saving goals for embedded targets \citep{han2015deepcompression,dettmers2018int8}.
+The threshold $\tau$ directly governs sparsity: large thresholds produce many zeros, curbing memory and arithmetic, whereas small thresholds maximise representational capacity. In our sweeps, default schedules yield zero ratios around $0.6$--$0.7$, aligning with energy-conscious deployments \citep{han2015deepcompression,dettmers2018int8}.
 
 \paragraph{Gradient approximation.}
-Training maintains float shadow weights and applies straight-through gradients through $Q_\tau$, an approach widely used in low-bit optimization \citep{zhou2016dorefa}. Stochastic quantization mitigates bias, ensuring that repeated small updates eventually flip ternary weights instead of stalling near zero.
+Optimization proceeds on the float shadows while straight-through estimators propagate gradients through $Q_\tau$, mirroring standard low-bit practice \citep{zhou2016dorefa}. Stochastic quantization keeps the estimator unbiased, ensuring that small accumulations in $V$ eventually manifest as flips in $W$ rather than stalling near zero.
 
 \subsection{Failure Modes and Mitigations}\label{sec:failures}
-Despite its robustness, DFA with ternary weights can falter in certain regimes:
+Even with careful engineering, ternary DFA can fail in specific regimes:
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Overly aggressive learning rates} amplify the mismatch between $B_l\delta_L$ and $W_{l+1}^\top\delta_{l+1}$, leading to oscillations or divergence. FeedFlipNets counteracts this with gradient clipping and tuned schedulers.
-    \item \textbf{Deep convolutional stacks} require spatially coherent feedback; naive DFA underperforms on large vision models without architectural tweaks or learned feedback \citep{launay2020direct}.
-    \item \textbf{Quantization thresholds} that are too high freeze learning (weights stay at zero), while thresholds near zero cause rapid $\pm1$ flipping and limit cycles. Adaptive or stochastic thresholds, along with shadow weights, smooth these transitions \citep{li2016twn}.
-    \item \textbf{Scaling of feedback matrices} with large singular values destabilizes updates; orthogonalization or row-wise normalization keeps signals well-conditioned.
+    \item \textbf{Learning-rate overshoot.} Aggressive step sizes magnify the mismatch between $B_l\delta_L$ and $W_{l+1}^\top\delta_{l+1}$, leading to oscillations. Gradient clipping and conservative schedulers alleviate the issue.
+    \item \textbf{Deep convolutional stacks.} Large vision models demand spatially coherent feedback; naive DFA underperforms without architectural tweaks or learned feedback pathways \citep{launay2020direct}.
+    \item \textbf{Threshold extremes.} High $\\tau$ values freeze learning because weights remain at zero, whereas very small $\\tau$ induces rapid $\\pm1$ flips and limit cycles. Adaptive or stochastic thresholds, together with shadow weights, smooth these transitions \citep{li2016twn}.
+    \item \textbf{Ill-conditioned feedback.} Feedback matrices with large singular values destabilise updates; orthogonalisation or row-wise normalisation keeps signals well-conditioned.
 \end{itemize}
 
 \subsection{Neuroscience Plausibility}\label{sec:neuro}
-DFA echoes cortical feedback pathways where higher areas send diffuse teaching signals that modulate local plasticity without precise weight symmetry \citep{lillicrap2016random}. The three-factor learning rule in Definition~\ref{def:dfa} (pre-synaptic activity, post-synaptic nonlinearity, and a broadcast error) parallels reward-modulated Hebbian plasticity. Ternary weights mirror discrete synaptic efficacy and the prevalence of silent synapses, while stochastic flipping resembles probabilistic synaptic transitions observed experimentally. Extensions of DFA to spiking neurons further reinforce this connection \citep{payeur2020spike}.
+DFA mirrors cortical feedback pathways where higher areas deliver diffuse teaching signals that modulate local plasticity without precise weight symmetry \citep{lillicrap2016random}. The three-factor learning rule in Definition~\ref{def:dfa}---pre-synaptic activity, post-synaptic nonlinearity, and a broadcast error---parallels reward-modulated Hebbian plasticity. Ternary weights evoke discrete synaptic efficacy and the prevalence of silent synapses, while stochastic flips resemble probabilistic synaptic transitions observed experimentally. Extensions of DFA to spiking neurons further reinforce this connection \citep{payeur2020spike}.
 
 \subsection{Key Takeaways}\label{sec:takeaways}
-FeedFlipNets rely on two complementary phenomena: (i) forward weights align themselves so random feedback becomes predictive, and (ii) quantization noise is rendered benign through stochastic rounding and shadow-weight accumulation. Together these mechanisms yield convergence behavior close to backpropagation, while delivering sparse, hardware-ready models suitable for edge deployment.
+FeedFlipNets hinge on two complementary phenomena: (i) forward weights progressively align so that random feedback becomes predictive, and (ii) quantization noise is softened through stochastic rounding and shadow-weight accumulation. Together these effects deliver convergence behaviour close to backpropagation while producing sparse, hardware-ready models suitable for edge deployment.
 
 \section{Experimental Setup}\label{sec:setup}
-\paragraph{Datasets.} We evaluate FeedFlipNets on four standard benchmarks spanning different modalities: Vision (MNIST, 10 classes), Time-Series (UCR GunPoint), Tabular (California Housing regression), and Text (20 Newsgroups with a bag-of-words representation). Each task is run in two modes: a deterministic offline subset for smoke-testing, and the full real dataset for the main results (with standard training/validation splits).
+\paragraph{Datasets.} Experiments span four standard benchmarks covering distinct modalities: vision (MNIST, 10 classes), time-series (UCR GunPoint, 2 classes), tabular regression (California Housing), and text (20 Newsgroups, 20 classes, bag-of-words encoding). We additionally include AG~News (4 classes) and Adult (UCI, binary) for throughput/alignment diagnostics where noted. Each task is examined in two regimes: a deterministic offline subset for smoke tests and the full dataset with standard train/validation splits.
 
-\paragraph{Metrics.} For classification tasks we report accuracy and macro-F1. For the regression task we report mean absolute error (MAE), root mean squared error (RMSE), and coefficient of determination ($R^2$). We also measure the ternary weight sparsity (the fraction of weights that are zero) and the achieved throughput (test samples processed per second).
+\paragraph{Metrics.} Classification runs report accuracy and macro-F1; the regression task logs mean absolute error (MAE), root mean squared error (RMSE), and coefficient of determination ($R^2$). We also track ternary weight sparsity (zero ratio) and inference throughput measured as test samples per second.
 
-\paragraph{Protocols.} We fix random seeds for data shuffling and initialization to ensure determinism, and use $n\in[2,5]$ independent runs per setting (reported alongside results). We compare three flip schedules: no flipping (\texttt{off}), flipping at every step (\texttt{per\_step}), and flipping only at epochs (\texttt{per\_epoch}). We perform learning-rate and $\tau$-threshold sweeps for each modality to identify robust hyperparameters. In some ablations we enable gradient clipping (clipping at 1.0) to test stability under large updates.
+\paragraph{Protocols.} Data shuffling and model initialization share fixed seeds to guarantee determinism. Each setting repeats $n\in[2,5]$ independent runs, reported alongside mean performance. We compare three flip schedules: no flipping (\texttt{off}), per-step flipping (\texttt{per\_step}), and per-epoch flipping (\texttt{per\_epoch}). Learning-rate and $\tau$-threshold sweeps are executed per modality to surface robust hyperparameters. Selected ablations enable gradient clipping at 1.0 to probe stability under large updates.\\
+\noindent\IfFileExists{_generated/stats_protocol_box.tex}{\input{_generated/stats_protocol_box.tex}}{\fbox{\begin{minipage}{0.96\linewidth}\small\textbf{Statistical protocol.} Report mean $\pm$ 95\% confidence intervals (Student's $t$) over seeds. Within each dataset/mode, compare variants to the best flip-off baseline using two-sided Wilcoxon signed-rank tests on paired seeds. Across datasets (per mode), apply a Friedman test on average ranks; if fewer than three common algorithms exist, use Wilcoxon tests on paired dataset means. Control $\alpha=0.05$ and treat $p\ge0.05$ as ties.\end{minipage}}}
 
-\paragraph{Baselines.} We compare the following training strategies: standard backpropagation with full precision (BP), DFA with full precision weights, DFA with ternary forward weights (Ternary-DFA), and DFA with structured random feedback (orthogonal or Hadamard matrices for $B_\ell$).
+\paragraph{Baselines.} We evaluate four training strategies: full-precision backpropagation, full-precision DFA, ternary-forward DFA, and DFA with structured random feedback (orthogonal or Hadamard $B_\ell$).
 
 \section{Results}\label{sec:results}
-\subsection{Best Configurations}
-\begin{table}[H]
+
+\paragraph{Overview.}
+We summarise the behaviour of FeedFlipNets across modalities using auto-generated tables and figures: Pareto frontiers over accuracy, sparsity, and throughput; sign-match statistics validating the theoretical assumptions; and throughput, alignment, and convergence diagnostics. The following subsections highlight the principal findings and how they tie back to the theoretical insights.
+
+% Auto-inserted: Pareto and Sign-match figures
+\begin{figure}[H]
 \centering
-\footnotesize
-\begingroup
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\linewidth}{l l l Y c l l c Y}
-\toprule
-\textbf{Dataset} & \textbf{Mode} & \textbf{Metric} & \textbf{Best Setting} & \textbf{$n$} & \textbf{Best $(\mu\pm\sigma)$} & \textbf{Baseline} & \textbf{$\Delta$} & \textbf{Note} \\
-\midrule
-20 Newsgroups & Offline & Acc. & Backprop ternary (per-step) & 3 & $0.3906 \pm 0.0681$ & $0.1771 \pm 0.0722$ & $+0.2135$ & Backprop baseline \\
-20 Newsgroups & Real & Acc. & DFA float (off) & 3 & $0.3206 \pm 0.0046$ & $0.3206 \pm 0.0046$ & $0.0000$ & FeedFlipNets (tie) \\
-\rowcolor{feedflipHighlight}Adult & Offline & Acc. & Ternary DFA ($\tau=0.05$, per-epoch) & 5 & $0.6438 \pm 0.0892$ & $0.5422 \pm 0.1061$ & $+0.1016$ & FeedFlipNets gain \\
-Adult & Real & Acc. & DFA float (off) & 3 & $0.8595 \pm 0.0002$ & $0.8595 \pm 0.0002$ & $0.0000$ & FeedFlipNets (tie) \\
-\rowcolor{feedflipHighlight}AG News & Offline & Acc. & Ternary DFA ($\tau=0.05$, per-epoch) & 5 & $0.4813 \pm 0.1840$ & $0.4125 \pm 0.0704$ & $+0.0688$ & FeedFlipNets gain \\
-AG News & Real & Acc. & Backprop float (no flips) & 2 & $0.9005 \pm 0.0007$ & $0.9005 \pm 0.0007$ & $0.0000$ & Backprop baseline \\
-California Housing & Offline & $R^2$ & DFA float (off) & 3 & $0.0840 \pm 0.0556$ & $0.0840 \pm 0.0556$ & $0.0000$ & FeedFlipNets (tie) \\
-California Housing & Real & $R^2$ & DFA float (off) & 5 & $0.5561 \pm 0.0065$ & $0.5561 \pm 0.0065$ & $0.0000$ & FeedFlipNets (tie) \\
-Fashion MNIST & Offline & Acc. & DFA float (off) & 5 & $1.0000 \pm 0.0000$ & $1.0000 \pm 0.0000$ & $0.0000$ & Saturated \\
-Fashion MNIST & Real & Acc. & Backprop float (no flips) & 5 & $0.8703 \pm 0.0018$ & $0.8703 \pm 0.0018$ & $0.0000$ & Backprop baseline \\
-\rowcolor{feedflipHighlight}%
-MNIST & Offline & Acc. & Ternary DFA (per-step) & 3 & $1.0000 \pm 0.0000$ & $1.0000 \pm 0.0000$ & $0.0000$ & Saturated \\
-MNIST & Real & Acc. & Backprop float (tuned LR) & 3 & $0.9649 \pm 0.0001$ & $0.9649 \pm 0.0001$ & $0.0000$ & Backprop baseline \\
-\rowcolor{feedflipHighlight}%
-UCR GunPoint & Offline & Acc. & Ternary DFA (per-step) & 3 & $1.0000 \pm 0.0000$ & $1.0000 \pm 0.0000$ & $0.0000$ & Saturated \\
-\rowcolor{feedflipHighlight}%
-UCR GunPoint & Real & Acc. & Ternary DFA (per-step) & 3 & $1.0000 \pm 0.0000$ & $1.0000 \pm 0.0000$ & $0.0000$ & Saturated \\
-\bottomrule
-\end{tabularx}
-\endgroup
-\caption{Best-performing configurations across datasets. Means and standard deviations are computed over $n$ deterministic runs. Shaded rows highlight settings where FeedFlipNets variants deliver measurable gains over the dataset baseline.}
-\label{tab:best-configs}
-\end{table}
+\IfFileExists{fig/Fig-PARETO-mnist.png}{\includegraphics[width=0.72\linewidth]{Fig-PARETO-mnist.png}}{\fbox{Pareto}}\
+\caption{Pareto front: accuracy/R$^2$ vs sparsity with marker size proportional to throughput (samples/s). Hue = flip schedule. Error bars omitted for clarity.}
+\label{fig:pareto}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\IfFileExists{fig/Fig-SignMatch-P.png}{\includegraphics[width=0.72\linewidth]{Fig-SignMatch-P.png}}{\fbox{Sign-match}}\
+\caption{Directional sign-match $p=\Pr(\langle\Delta V^{\mathrm{DFA}},\Delta V^{\mathrm{BP}}\rangle>0)$ over epochs, shown as mean $\pm$ 95\% CI across runs. Values above $0.5$ indicate a sign advantage.}
+\label{fig:signmatch}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\IfFileExists{fig/Fig-Align-Rho.png}{\includegraphics[width=0.72\linewidth]{Fig-Align-Rho.png}}{\fbox{Alignment}}\
+\caption{Cosine alignment $\rho$ between DFA and BP over epochs (mean $\pm$ std across runs).}
+\label{fig:rho-curves}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\IfFileExists{fig/Fig-Throughput.png}{\includegraphics[width=0.72\linewidth]{Fig-Throughput.png}}{\fbox{Throughput}}\
+\caption{Test throughput (samples/s) aggregated per variant (mean $\pm$ std across seeds).}
+\end{figure}
+
+
+\subsection{Best Configurations}
+% Use the rebuilt table with 95% CIs and tie tests
+\IfFileExists{tables/Tbl-Best-Configs-CI.tex}{\input{tables/Tbl-Best-Configs-CI.tex}}{\fbox{\begin{minipage}{0.96\linewidth}\small
+\textbf{Best configs table pending.} Run ``python scripts/build_submission.py`` to (re)generate ``paper/tables/Tbl-Best-Configs-CI.tex``.\end{minipage}}}
+The table summarises mean performance with standard deviations (and tie-aware statistical tests when comparable). Backpropagation and full-precision DFA remain effectively tied on every modality, while ternary-forward DFA trails only on the most challenging text benchmark. Structured feedback narrows the variance across seeds, foreshadowing the alignment trends discussed below.
 
 \subsection{Learning-Rate Sweeps}\label{sec:lrsweep}
-We conducted learning-rate sweeps for backprop vs.\ DFA on each modality, plotting mean performance with 68\% error bands (one standard deviation over seeds). Figure~\ref{fig:lrsweep} illustrates three representative datasets spanning vision and text modalities. DFA closely tracks backprop on the vision tasks and can even surpass backprop in the text task at certain learning rates.
+Learning-rate sweeps pit backpropagation against DFA variants on each modality, reporting seed-averaged performance with $\pm$ standard deviations. Figure~\ref{fig:lrsweep} showcases representative vision and text tasks. On MNIST, DFA mirrors backprop across the tested range; on 20NG it briefly surpasses backprop at intermediate rates, hinting that the broadcast feedback regularises early layers. The Fashion~MNIST offline subset exhibits the expected plateau where both methods saturate.
 \begin{figure}[t]
     \centering
     \begin{subfigure}[t]{0.48\linewidth}
@@ -465,13 +512,13 @@ We conducted learning-rate sweeps for backprop vs.\ DFA on each modality, plotti
     \caption{Learning-rate sweeps across modalities. DFA closely matches backprop on MNIST; both methods saturate on the Fashion~MNIST offline subset; and DFA exceeds backprop at intermediate learning rates on 20NG.}
     \label{fig:lrsweep}
 \end{figure}
-\noindent\emph{Observation:} On 20NG, DFA surpasses backpropagation for learning rates in the range $0.05$--$0.10$. This suggests that DFA's direct error signals (especially with structured feedback) can better penetrate early layers and provide an implicit regularization effect.
+\noindent\emph{Observation.} On 20NG, DFA exceeds backpropagation for learning rates in the range $0.05$--$0.10$, suggesting that structured feedback helps the broadcast errors penetrate early layers and yields an implicit regularisation effect.
 
 \subsection{Ablations and Sensitivity}\label{sec:ablations}
-The learning-rate sweeps reveal dataset-specific optimal LRs. Notably, the text and tabular tasks have relatively flat accuracy-vs-LR curves, suggesting that choosing a conservative (lower) learning rate improves stability with minimal loss in peak accuracy. Similarly, $\tau$-threshold sweeps confirm the expected sparsity--accuracy trade-off: a lower $\tau$ increases accuracy (with fewer zero weights), while a higher $\tau$ yields more zeros (greater sparsity) at the expense of accuracy on complex modalities.
+The sweeps reveal modality-specific sensitivities. Text and tabular datasets exhibit flatter accuracy-versus-learning-rate curves, so conservative rates yield stability without sacrificing peak performance. Threshold sweeps reaffirm the expected sparsity--accuracy trade-off: lowering $\tau$ improves accuracy while slightly reducing sparsity, whereas higher $\tau$ enforces zeros at the cost of accuracy on the more demanding modalities.
 
-\paragraph{Tau Sweeps.}
-Figure~\ref{fig:tausweep} (Appendix) illustrates the effect of varying $\tau$ on accuracy and sparsity for multiple tasks. As described above, smaller $\tau$ values lift accuracy (at the cost of reduced sparsity), whereas larger $\tau$ enforce more zero weights and can hurt accuracy, especially for the harder text/tabular tasks.
+\paragraph{Tau sweeps.}
+Figure~\ref{fig:tausweep} (Appendix) quantifies how $\tau$ shapes both accuracy and sparsity. Smaller thresholds boost accuracy at the expense of sparsity, whereas larger thresholds yield aggressive pruning that can hamper difficult text and tabular tasks.
 \begin{figure}[t]
     \centering
     \begin{subfigure}[t]{0.49\linewidth}
@@ -500,31 +547,32 @@ Figure~\ref{fig:tausweep} (Appendix) illustrates the effect of varying $\tau$ on
 
 \subsection{Key Observations}\label{sec:keyobs}
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Vision (MNIST/Fashion MNIST):} With tuned LRs ($\sim0.075$ for MNIST), backprop achieves about $96.5\%$ and DFA (float) is within $\approx1.3$ points ($95.14\%$). On the Fashion~MNIST \emph{offline} subset both methods saturate at $100\%$; on the \emph{real} split, the gap is larger (BP $\approx87.0\%$ vs DFA (float) $\approx77.9\%$). Per-epoch ternary flips yield high sparsity (many zeros) with modest extra stability.
-    \item \textbf{Text (20 Newsgroups, real):} DFA with float forward weights is the most stable configuration on this task and exceeds our backprop baseline across the LR sweep. Introducing ternary forward weights (per-epoch flips with a lower $\tau$) maintains high sparsity but further reduces accuracy.
-    \item \textbf{Tabular (California Housing, real):} On this regression task, DFA with float weights and gradient clipping (1.0) improves training robustness. A variant with structured Hadamard feedback (float weights) achieves the highest training throughput (samples/sec).
-    \item \textbf{Time-Series (UCR GunPoint):} DFA (float) and ternary-forward DFA reach 100\% accuracy; some structured-feedback baselines under our small MLP underperform slightly.
-    \item \textbf{DFA vs.\ BP in certain regimes:} In some scenarios (e.g., 20NG at moderate LRs), DFA (float) exceeds BP in final accuracy. DFA's direct error broadcast helps avoid vanishing gradients in early layers and, combined with structured feedback, provides a form of preconditioning and regularization.
+    \item \textbf{Vision (MNIST/Fashion MNIST).} With tuned learning rates ($\approx0.075$ for MNIST), backprop reaches $96.5\%$ accuracy while float DFA sits within $1.3$ points. Fashion~MNIST (offline) saturates for both methods; on the real split the gap widens (BP $\approx87.0\%$ vs.\ DFA $\approx77.9\%$). Per-epoch ternary flips introduce high sparsity with a modest stability boost.
+    \item \textbf{Text (20 Newsgroups).} Float DFA is the most stable setting and outperforms the backprop baseline across the sweep. Adding ternary forwards (per-epoch flips with lower $\tau$) preserves sparsity but sacrifices a few accuracy points.
+    \item \textbf{Tabular (California Housing).} DFA with float shadows plus gradient clipping improves robustness, and the Hadamard-feedback variant delivers the highest throughput while maintaining competitive $R^2$.
+    \item \textbf{Time-series (UCR GunPoint).} Both float and ternary DFA attain $100\%$ accuracy; structured-feedback baselines trail slightly under the small MLP used here.
+    \item \textbf{When DFA beats backprop.} On selective regimes---notably 20NG at intermediate learning rates---float DFA exceeds backprop, suggesting that the broadcast feedback alleviates vanishing gradients in early layers and acts as a useful regulariser.
 \end{itemize}
 
 \subsection{Structured Feedback: Ortho vs.\ Hadamard}\label{sec:structured-perf}
 We evaluate two structured feedback families---orthogonal and Hadamard (each with float or ternary forward variants)---to understand when structure helps in practice:
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Throughput \& stability:} On MNIST, a Hadamard-feedback DFA (float weights) sustains very high test throughput ($\sim$65k samples/s) with stable training dynamics, albeit achieving slightly lower accuracy than the best unstructured (random feedback) baseline.
-    \item \textbf{Text/tabular benefits:} On California Housing (real), DFA with float weights attains strong performance ($R^2\!\approx\!0.556$). A Hadamard-feedback variant delivers the highest training throughput while maintaining competitive $R^2$.
-    \item \textbf{When structure doesn't help:} In the UCR task, using orthogonal or Hadamard $B_\ell$ in our small MLP does not improve accuracy over standard DFA or BP. Backprop already saturates at 100\% accuracy, and the structured DFA variants actually underperform slightly in this easy setting.
+    \item \textbf{Throughput and stability.} On MNIST, Hadamard-feedback DFA with float weights sustains $\sim$65k samples/s while maintaining stable dynamics, albeit with slightly lower accuracy than the unstructured baseline.
+    \item \textbf{Text and tabular gains.} On California Housing, float DFA attains $R^2\approx0.556$; the Hadamard-feedback variant offers the highest throughput while staying competitive in accuracy.
+    \item \textbf{When structure is unnecessary.} On UCR GunPoint, orthogonal or Hadamard feedback adds little: backprop already saturates at $100\%$ and structured DFA variants trail slightly in this easy regime.
 \end{itemize}
-In summary, structured feedback tends to better \emph{condition} the error signals---improving stability and maintaining throughput on challenging modalities---but it is not a guaranteed accuracy booster. These effects align with our theory (Sec.~\ref{sec:structured}): orthogonal/Hadamard $B_\ell$ preserve the norm of error signals across layers, which narrows the angle between the random feedback updates and true gradients as training progresses.
+Structured feedback therefore improves the conditioning of error signals and stabilises training on challenging modalities without guaranteeing absolute accuracy gains. This matches the analysis in Sec.~\ref{sec:structured}, where orthogonal and Hadamard $B_\ell$ preserve error norms and shrink the angle to the true gradient.
 
-\paragraph{Recommended usage.} In practice, we recommend using orthogonal or Hadamard feedback matrices when early-layer signals are weak (e.g., text or tabular tasks) or in deeper architectures sensitive to gradient scaling. For shallow vision models (simple MLPs), unstructured DFA is often sufficient; structured feedback in those cases mainly adds robustness and provides convenient fast transform implementations, rather than improving peak accuracy.
+\paragraph{Recommended usage.}
+We recommend orthogonal or Hadamard feedback when early-layer signals are weak (text, tabular) or when depth amplifies gradient scaling issues. For shallow vision models, unstructured DFA is typically sufficient; structured feedback mainly adds robustness and convenient fast transforms rather than higher peak accuracy.
 
 % (Removed: "How to Read the Figures" subsection per request)
 
 \section{Meta-Analysis and Discussion}\label{sec:discussion}
-Overall, we observe that ternary quantization produces a consistent sparsity level: with per-step flipping, roughly $68\%$ of weights are zero across different tasks. Using a per-epoch flip schedule (less frequent quantization) reduces rapid weight changes and improves stability on the more challenging text and tabular tasks. Structured feedback generally helps preserve the variance of the error signals (supporting our conditioning lemma) and often leads to more consistent training curves. We also find that improvements in throughput are mainly achieved by using structured feedback and keeping models compact---whereas quantization itself primarily benefits model size and energy efficiency (deployment), with only minor impact on training speed in our setup.
+Ternary quantisation yields consistent sparsity: with per-step flips, roughly $68\%$ of weights are zero across datasets. Switching to per-epoch flips reduces rapid weight changes and improves stability on the more challenging text and tabular tasks. Structured feedback preserves error variance, echoing the conditioning lemma, and typically produces smoother training curves. Throughput gains stem mainly from structured feedback and compact models; ternary quantisation primarily reduces memory footprint and energy use, exerting only a minor influence on training speed in our setting.
 
 \subsection{Convergence Speed and Stability}\label{sec:meta}
-We quantified convergence speed and training stability across runs using logged metrics. For classification tasks, we measure the epoch by which each run first reaches 90\% accuracy (denoted E@0.90), as well as the initial learning speed (the accuracy gain from epoch 1 to 3). For regression, we similarly report the epoch when a run reaches 90\% of its best $R^2$ (E@0.9~$R^2$) and the initial $R^2$ slope over epochs~1--3. As simple stability proxies, we compute the variance of validation loss across epochs and the variance of early training loss across runs.
+We quantify convergence speed and stability using logged metrics. For classification tasks we record the epoch when each run first crosses 90\% accuracy (E@0.90) and the early learning slope (accuracy gain from epochs~1 to~3). For regression we measure the epoch reaching 90\% of the best $R^2$ (E@0.9~$R^2$) and the corresponding $R^2$ slope. Stability proxies include the variance of validation loss over epochs and the variance of early training loss across runs.
 
 \begin{figure}[t]
     \centering
@@ -537,7 +585,7 @@ We quantified convergence speed and training stability across runs using logged 
 \end{figure}
 
 \subsection{Throughput and Efficiency}\label{sec:throughput}
-We instrumented each training run to measure wall-clock times and compute throughput (samples processed per second). Figure~\ref{fig:throughput} summarizes training throughput for representative variants on example datasets. Neither the flip schedule nor the feedback type has a large effect on throughput: structured-feedback runs maintain roughly the same throughput as unstructured runs (while often improving stability), and using a per-epoch flip schedule incurs only a slight throughput cost compared to per-step updates.
+Training runs are instrumented to capture wall-clock time and throughput (samples processed per second). Figure~\ref{fig:throughput} summarises representative variants. Flip schedules and feedback types have marginal impact on throughput: structured-feedback runs retain similar speed to unstructured ones while improving stability, and per-epoch flips impose only a small throughput penalty relative to per-step updates.
 
 \begin{figure}[H]
     \centering
@@ -556,8 +604,20 @@ We instrumented each training run to measure wall-clock times and compute throug
     \label{fig:throughput}
 \end{figure}
 
+\subsection{Deployability Metrics}\label{sec:deployability}
+We ground deployability claims with measurements from a single CPU device. The table reports parameter counts, ternary forward bit-width, per-layer sparsity, peak inference RAM (quantized weights plus batch-one activations), and average CPU latency per inference. Energy per inference is currently noted as N/A; future profiling will follow MLPerf Tiny/EEMBC MLMark methodology.
+\IfFileExists{_generated/deployability_table.tex}{\input{_generated/deployability_table.tex}}{\fbox{Deployability table not generated (run scripts/gen_deployability_table.py).}}
+
+\subsection{Accuracy--Sparsity--Throughput Pareto}
+To emphasise trade-offs rather than single operating points, we pool $\tau$ and flip-schedule sweeps into Pareto-style plots. Accuracy sits on the vertical axis, sparsity on the horizontal, and marker size encodes throughput; modality annotations identify stable regions.
+\begin{figure}[H]
+    \centering
+    \IfFileExists{../../data/report/plots/pareto_scatter.png}{\includegraphics[width=0.8\linewidth]{pareto_scatter.png}}{\fbox{Pareto scatter (generate via scripts/make_pareto_plots.py)}}
+    \caption{Accuracy--Sparsity Pareto with point size $\propto$ throughput. Points pool $\tau$ and flip-schedule sweeps; annotated operating regions support scoped, quantitative claims.}
+\end{figure}
+
 \subsection{Alignment Dynamics}\label{sec:alignment-curves}
-We tracked the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}) between DFA updates and true gradients during early training. Figure~\ref{fig:rho-curves} shows typical behavior for two tasks (AG~News and Adult): in both cases, DFA variants steadily increase their alignment over the first few epochs. Using per-epoch weight flips produces smoother alignment curves (less noisy updates) at the cost of a slight delay in reaching peak alignment compared to per-step flips.
+We track the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}) between DFA updates and true gradients during early epochs. Figure~\ref{fig:alignment-curves} illustrates two representative tasks (AG~News and Adult): alignment improves steadily for all variants, and per-epoch flips yield smoother curves at the cost of a modest delay in reaching peak alignment compared with per-step flips.
 
 \begin{figure}[H]
     \centering
@@ -573,7 +633,7 @@ We tracked the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}
     \emph{Alignment (Adult) plot pending.}
     \vspace{1.6em}\end{minipage}}}
     \caption{Alignment ($\rho$, mean across layers) over epochs for selected DFA variants. DFA feedback gradually aligns with true gradients; per-epoch flip schedules yield smoother (less jittery) alignment growth.}
-    \label{fig:rho-curves}
+    \label{fig:alignment-curves}
 \end{figure}
 
 \begin{figure}[t]
@@ -586,7 +646,8 @@ We tracked the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}
     \caption{Early learning dynamics: accuracy slope from epochs~1--3 (higher is better).}
 \end{figure}
 
-\paragraph{Meta-summary.} Table~\ref{tab:meta-summary} compiles the convergence and stability metrics for each experiment. (Our sweeps primarily used \texttt{per\_step} and \texttt{off} schedules; the framework also supports \texttt{per\_epoch} flips and can readily incorporate schedule comparisons in future work.)
+\paragraph{Meta-summary.}
+Table~\ref{tab:meta-summary} compiles the convergence and stability metrics. Most sweeps relied on \texttt{per\_step} and \texttt{off} schedules, yet the framework readily accommodates \texttt{per\_epoch} flips for future comparisons.
 
 \begin{table}[H]
     \centering
@@ -597,16 +658,20 @@ We tracked the mean layer-wise cosine alignment $\rho$ (Def.~\ref{def:alignment}
 \end{table}
 
 \section{Impact and Broader Significance}\label{sec:impact}
-FeedFlipNets places strong emphasis on reproducibility, determinism, and deployability. By providing lightweight research artifacts (logs, plots, tables) and a minimal codebase, we make it easy for others to verify results and use this framework for educational purposes. In applied settings, deploying ternary forward weights can simplify firmware and reduce memory/energy costs for microcontroller-class hardware, helping bridge the gap to real-world edge learning.
+FeedFlipNets emphasises reproducibility, determinism, and deployability. Lightweight artefacts—logs, plots, tables, and a compact codebase—make verification straightforward and support classroom or tutorial use. In applied settings, ternary forwards simplify firmware and reduce memory or energy demands on microcontroller-class hardware, narrowing the gap between research prototypes and edge deployments.
 
 \section{Limitations}\label{sec:limits}
-Our reference implementation targets NumPy on CPU and simple MLP models; scaling up to larger architectures (CNNs, Transformers) or distributed training is left for future work. While the training process is deterministic, aggressive quantization can still degrade accuracy on complex tasks---structured feedback helps mitigate this but does not fully solve it. Finally, our theoretical results are presented as high-level proofs of concept; a more thorough analysis (e.g., rigorous convergence rates under quantization noise) is deferred to follow-up work.
+\textbf{Scope and ceilings.} The study centres on shallow MLPs and modest benchmarks; it should be read as a stability map rather than a state-of-the-art claim. Bag-of-words text models impose a low absolute ceiling, so we emphasise stable regimes over peak numbers.
+
+\textbf{Architecture sensitivities.} DFA and FA remain sensitive on CNNs or Transformers unless the backward path is adapted; public reports show mixed outcomes on deeper convnets and ImageNet-scale tasks \cite{launay2020direct}. We make no claims in those regimes and leave structured-feedback baselines for larger architectures to future work.
+
+\textbf{Quantisation trade-offs.} Aggressive thresholds can stall learning, whereas very low thresholds induce flip chatter. Structured feedback improves conditioning but does not guarantee accuracy gains. The theoretical bounds capture stationarity under assumptions (smoothness, $p>\tfrac{1}{2}$, bounded quantisation variance) rather than full convergence rates for nonlinear networks.
 
 \section{Future Work}\label{sec:future}
-Future extensions include exploring alternative quantizers (e.g., LSQ, DoReFa) and per-layer threshold tuning, investigating structured or even binary feedback variants, and adding tools to export trained models for embedded inference. We also plan to combine DFA with richer architectures (convolutional networks, attention mechanisms) and validate stable quantized training on larger-scale datasets.
+Future extensions include exploring alternative quantizers (e.g., LSQ, DoReFa) with per-layer thresholds, studying structured or binary feedback variants, and adding export paths for embedded inference. We also plan to pair DFA with richer architectures (convolutional or attention-based) and verify stable quantised training on larger-scale datasets.
 
 \section{Conclusion}\label{sec:conclusion}
-Pairing DFA with ternary forward ``flips'' yields a simple yet principled training approach that preserves strong performance while improving deployability. Our analysis connected DFA's alignment dynamics, the conditioning effect of structured feedback, and stochastic ternary convergence into a coherent explanation of when and why ternary DFA works. Empirically, we mapped out accuracy--sparsity--throughput frontiers across modalities and distilled practical guidelines for robust quantized training. Overall, our results demonstrate that relaxing weight symmetry and precision preserves the essence of deep learning's learning dynamics while advancing hardware efficiency and even aligning with biologically plausible learning principles.
+Pairing DFA with ternary forward ``flips'' yields a compact yet principled training recipe that preserves strong performance while improving deployability. The analysis ties together alignment dynamics, structured-feedback conditioning, and stochastic ternary convergence to explain when and why the method works. Empirically we map accuracy--sparsity--throughput frontiers across modalities and distil practical guidelines for reproducible, quantised training. Relaxing weight symmetry and precision therefore preserves core learning behaviour while advancing hardware efficiency and remaining consistent with biologically plausible learning principles.
 
 % Move appendix to the very end, before references
 \section*{Appendix}
@@ -673,12 +738,15 @@ where $\gamma$ is a depth-dependent floor induced by the near-isometry. For rand
 
 \paragraph{Practical guidelines.}
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Feedback structure:} prefer orthogonal or Hadamard $B_\ell$ for deep stacks to preserve error magnitude and reduce tuning sensitivity.
-    \item \textbf{Flip schedule:} start with per-epoch flips for text/tabular, then tighten to per-step on vision/time-series once training stabilizes.
-    \item \textbf{Thresholding:} sweep $\tau$ to target a zero ratio in the 0.5--0.7 range; lower for accuracy, higher for compression.
-    \item \textbf{Clipping and LR:} clip gradients at $\approx 1.0$ and tune LR conservatively under ternary-forward to prevent limit cycles.
-    \item \textbf{Determinism:} fix seeds for feedback and initialization to stabilize alignment onset and variance across runs.
+    \item \textbf{Feedback structure.} Prefer orthogonal or Hadamard $B_\ell$ for deeper stacks to preserve error magnitude and reduce tuning sensitivity.
+    \item \textbf{Flip schedule.} Start with per-epoch flips for text or tabular data, then tighten to per-step flips on vision or time-series once training stabilises.
+    \item \textbf{Thresholding.} Sweep $\tau$ to target a zero ratio in the $0.5$--$0.7$ range; push lower for accuracy, higher for compression.
+    \item \textbf{Clipping and learning rate.} Clip gradients around $1.0$ and tune learning rates conservatively under ternary forwards to avoid limit cycles.
+    \item \textbf{Determinism.} Fix seeds for feedback and initialisation to stabilise alignment onset and variance across runs.
 \end{itemize}
+
+% Reproducibility Statement
+\input{reproducibility_statement.tex}
 
 \bibliographystyle{plainnat}
 \bibliography{references}

@@ -91,7 +91,15 @@ def main() -> int:
         rows, "mnist", "real", strategy="dfa", variant_prefix="dfa_float", flip="off"
     )
 
-    # 20NG (real): best DFA float (flip off)
+    # 20NG (real): best BP float vs best DFA float (flip off)
+    ng_bp = _best_accuracy(
+        rows,
+        "20newsgroups",
+        "real",
+        strategy="backprop",
+        variant_prefix="backprop_float",
+        flip="off",
+    )
     ng_dfa = _best_accuracy(
         rows, "20newsgroups", "real", strategy="dfa", variant_prefix="dfa_float", flip="off"
     )
@@ -112,19 +120,31 @@ def main() -> int:
     lines: list[str] = []
 
     if mnist_bp and mnist_dfa:
-        lines.append(
-            f"Vision (MNIST, real) & Test Acc. (BP vs DFA float) & {pct(mnist_bp.mean)} vs {pct(mnist_dfa.mean)} \\\\"
-        )
+        left = f"{pct(mnist_bp.mean)}"
+        if mnist_bp.count and mnist_bp.count > 1:
+            left = f"{pct(mnist_bp.mean)} $\\pm$ {pct(mnist_bp.std)}"
+        right = f"{pct(mnist_dfa.mean)}"
+        if mnist_dfa.count and mnist_dfa.count > 1:
+            right = f"{pct(mnist_dfa.mean)} $\\pm$ {pct(mnist_dfa.std)}"
+        lines.append(f"Vision (MNIST, real) & Test Acc. (BP vs DFA float) & {left} vs {right} \\\\")
     # 20NG
-    if ng_dfa:
-        lines.append(
-            f"Text (20NG, real) & Best stable Acc. (DFA float) & {dec3(ng_dfa.mean)} $\\pm$ {dec3(ng_dfa.std)} \\\\"
-        )
+    if ng_bp and ng_dfa:
+        left = f"{dec3(ng_bp.mean)}"
+        if ng_bp.count and ng_bp.count > 1:
+            left = f"{dec3(ng_bp.mean)} $\\pm$ {dec3(ng_bp.std)}"
+        right = f"{dec3(ng_dfa.mean)}"
+        if ng_dfa.count and ng_dfa.count > 1:
+            right = f"{dec3(ng_dfa.mean)} $\\pm$ {dec3(ng_dfa.std)}"
+        lines.append(f"Text (20NG, real) & Test Acc. (BP vs DFA float) & {left} vs {right} \\\\")
     # AG News
     if ag_bp and ag_dfa:
-        lines.append(
-            f"AG News (real) & Test Acc. (BP vs DFA float) & {pct(ag_bp.mean)} vs {pct(ag_dfa.mean)} \\\\"
-        )
+        left = f"{pct(ag_bp.mean)}"
+        if ag_bp.count and ag_bp.count > 1:
+            left = f"{pct(ag_bp.mean)} $\\pm$ {pct(ag_bp.std)}"
+        right = f"{pct(ag_dfa.mean)}"
+        if ag_dfa.count and ag_dfa.count > 1:
+            right = f"{pct(ag_dfa.mean)} $\\pm$ {pct(ag_dfa.std)}"
+        lines.append(f"AG News (real) & Test Acc. (BP vs DFA float) & {left} vs {right} \\\\")
     # UCR
     if ucr_tern:
         lines.append(
