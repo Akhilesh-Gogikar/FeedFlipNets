@@ -1,29 +1,39 @@
 FeedFlipNets
 ===========
 
-Deterministic training with Direct Feedback Alignment (DFA) and ternary forward weights. Small, standard benchmarks. Reproducible on a laptop.
+Deterministic Direct Feedback Alignment (DFA) with ternary forward weights, implemented as a clear, reproducible baseline that runs on a laptop. The code accompanies the paper “FeedFlipNets: Deterministic DFA with Ternary Forwards—Stability and Convergence on Small, Standard Benchmarks” and reproduces its figures, tables, and results end‑to‑end.
 
 Project status: complete — no further development planned.
 
-
-Why FeedFlipNets
-----------------
-
-- Determinism: fixed seeds, offline fixtures, CPU‑friendly NumPy loops.
-- Stability: clear flip schedules (per_step, per_epoch) and structured feedback options.
-- Convergence: a compact theoretical treatment and alignment curves in the paper.
-
-Training updates float “shadow” weights V; the forward path exposes ternary weights W = Qτ(V) on a configurable schedule (“flip”).
+- Paper PDF: `docs/paper/main.pdf`
+- Citation: see `CITATION.cff`
 
 
-Highlights
-----------
+What’s Inside (Paper‑Aligned)
+-----------------------------
 
-- Strategies: backprop, DFA (float), ternary‑DFA, structured feedback (orthogonal/Hadamard).
-- Flip controls: τ threshold, deterministic/stochastic ternarization, per_step/per_epoch schedules.
-- Artifacts: JSON/CSV logs, plots, and compiled tables under `data/report/`.
-- Presets: laptop‑safe MLPs for vision, text, and tabular datasets.
-- Paper: LaTeX manuscript with auto‑generated Key Metrics table.
+- Deterministic runs: fixed seeds, offline fixtures, CPU‑friendly NumPy.
+- Method: ternary forward weights with float “shadow” parameters; forward uses `W = Q_τ(V)`, gradients update shadows `V` via DFA with fixed feedback matrices.
+- Controls: flip schedule (`per_step`/`per_epoch`), threshold `τ`, deterministic vs. stochastic ternary.
+- Structured feedback: orthogonal or Hadamard `B_l` options that stabilize deeper MLPs without sacrificing speed.
+- Reproducible reporting: scripted sweeps yield JSON/CSV summaries and plots under `data/report/` and build the manuscript.
+
+
+Results at a Glance
+-------------------
+
+- Vision (MNIST, real): test accuracy — BP 96.49% vs DFA (float) 95.14%.
+- Text (AG News, real): test accuracy — BP 90.05% vs DFA (float) 89.98%.
+- Text (20 Newsgroups, real): DFA (float) exceeds the matched BP baseline under this configuration, with the gap most visible at intermediate learning rates.
+- Time‑series (UCR GunPoint): ternary and float DFA both reach 100%.
+- Sparsity/throughput: ternary forwards yield typical zero ratios in the 0.5–0.75 range with competitive throughput, exposing accuracy–sparsity Pareto fronts and favorable memory footprints.
+
+Theory & Guarantees
+-------------------
+
+- Alignment: we monitor a sign‑match statistic `p` that is typically > 1/2.
+- Convergence: under ternary noise and `p > 1/2`, updates converge in finite time to a stationary neighborhood.
+- Conditioning: orthogonal/Hadamard feedback raises the alignment floor and stabilizes deeper stacks.
 
 
 Install
@@ -37,7 +47,7 @@ pip install -U pip
 pip install -e .
 ```
 
-Requirements: Python 3.8+ (see `pyproject.toml` / `requirements-lock.txt`).
+Requirements: Python 3.8+ (see `pyproject.toml` / `requirements-lock.txt`). Optional CNN baselines require `requirements-extras.txt`.
 
 
 Quickstart
@@ -49,29 +59,56 @@ Quickstart
 FEEDFLIP_DATA_OFFLINE=1 pytest -q tests/test_datasets_smoke.py tests/test_training_loops.py tests/integration/test_cli.py
 ```
 
-- Run a preset via CLI:
+- Train a preset from the CLI:
 
 ```bash
-python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05
+# Deterministic ternary flips
+python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05 --quant det
+
+# Stochastic‑dithered ternary (seeded ⇒ reproducible)
+python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05 --quant stoch
 ```
 
-- One‑click reproduction of curated benchmarks and report:
+Logs live in `runs/`. View TensorBoard with `tensorboard --logdir runs`.
 
-```bash
-./reproduce_all.sh
-# Aggregations and plots: data/report/
-```
 
-Make targets
+Common Tasks
 ------------
 
 ```bash
-make setup        # create venv, install deps, pre-commit hooks
-make test         # run full test suite
-make smoke        # run deterministic preset sweep
-make bench ARGS=  # comprehensive benchmark + report
-make report       # aggregate metrics to data/report/
-make paper        # (simple) build of docs/paper/main.pdf
+# Reproduce curated benchmarks and compile the report
+./reproduce_all.sh
+
+# Make targets
+make setup    # venv, deps, pre-commit
+make test     # full test suite
+make smoke    # quick deterministic sweep
+make bench    # comprehensive benchmark + report
+make report   # aggregate to data/report/
+make paper    # build docs/paper/main.pdf
+```
+
+
+Selected Baselines
+------------------
+
+```bash
+# MNIST MLP — BP + STE ternary (no DFA)
+python -m cli.main --preset mnist_mlp_bp_ste
+
+# MNIST MLP — DFA with normalized feedback (orthogonal)
+python -m cli.main --preset mnist_mlp_dfa_orthogonal
+
+# Fashion‑MNIST MLP — BP + STE ternary (no DFA)
+python -m cli.main --preset fashion_mnist_mlp_bp_ste
+```
+
+CNN baselines (optional, PyTorch):
+
+```bash
+pip install -r requirements-extras.txt
+python scripts/baselines/cnn_dfa_baselines.py --dataset fashion_mnist --method bp  --epochs 2 --batch-size 128 --run-dir runs/baselines/fmnist-bp
+python scripts/baselines/cnn_dfa_baselines.py --dataset fashion_mnist --method dfa --epochs 2 --batch-size 128 --run-dir runs/baselines/fmnist-dfa
 ```
 
 
@@ -118,15 +155,12 @@ print(result.metrics_path)
 ```
 
 
-Reproducibility & artifacts
----------------------------
+Reports & Reproducibility
+-------------------------
 
 - Offline by default with `FEEDFLIP_DATA_OFFLINE=1` and fixed seeds.
-- Metrics and manifests are written under `runs/` per run.
-- Aggregated summaries, tables, and plots land in `data/report/`:
-  - `data/report/benchmark_summary.md` / `.csv`
-  - `data/report/best_configs.*`
-  - `data/report/plots/`
+- Per‑run metrics live under `runs/`; aggregated summaries and plots go to `data/report/` (e.g., `benchmark_summary.{csv,md,json}`, `plots/`).
+- Paper build: `scripts/build_pdf.sh` then open `docs/paper/main.pdf`.
 
 
 Build the paper
@@ -150,26 +184,33 @@ Configuration surface
 - Seeds and dataset options; see presets in `configs/presets/`
 
 
-Repository layout
+Practical Tips
+--------------
+
+- Feedback structure: prefer orthogonal or Hadamard `B_l` for deeper stacks to preserve error magnitude and reduce tuning sensitivity.
+- Flip schedule: start with `per_epoch` on text/tabular; tighten to `per_step` on vision/time‑series once training is stable.
+- Thresholding: sweep `τ` to target zero ratios in the `0.5–0.7` range; push lower for accuracy, higher for compression.
+- Optimization: consider gradient clipping around `1.0`; tune learning rates conservatively with ternary forwards to avoid limit cycles.
+- Determinism: fix seeds for initialization and feedback to stabilize alignment onset and variance across runs.
+
+
+Repository Layout
 -----------------
 
 - `cli/` — CLI entrypoint and commands
 - `feedflipnets/` — core library (data, core modules, training)
 - `configs/presets/` — runnable experiment presets
-- `scripts/` — reporting and benchmark utilities
-- `tests/` — unit, contract, integration, and performance tests
-- `docs/paper/` — LaTeX manuscript and references
+- `scripts/` — reporting/benchmark utilities
+- `tests/` — unit, contract, integration tests
+- `docs/paper/` — LaTeX manuscript and generated tables/figures
 - `data/report/` — aggregated results and plots
 
 
-Results snapshot
+Scope & Caveats
 ----------------
 
-Exact numbers are maintained by the reporting pipeline. See:
-
-- `data/report/benchmark_summary.md` for consolidated metrics
-- `data/report/best_configs_table.*` for best settings by dataset
-- `data/report/plots/` for LR/τ sweeps, throughput, and alignment curves
+- Scope is intentionally limited to small MLPs on standard datasets; no SOTA claims on large‑scale CNNs/Transformers.
+- Minimal CNN DFA baselines are included for reference and are expected to underperform BP without additional normalization/structure.
 
 
 Troubleshooting
@@ -180,18 +221,28 @@ Troubleshooting
 - Fresh environment? Run `make setup` to install deps and pre‑commit hooks.
 
 
-Citation & license
+Citation & License
 ------------------
 
-- Cite via `CITATION.cff` or the paper in `docs/paper/main.pdf`.
+- Cite via `CITATION.cff` or the paper at `docs/paper/main.pdf`.
 - License: see `LICENSE`.
 
-**Do I need a GPU?**
+BibTeX
+```
+@misc{gogikar_feedflipnets_2024,
+  title   = {FeedFlipNets: Deterministic Offline Framework for Feedback Alignment},
+  author  = {Gogikar, Aki},
+  year    = {2024},
+  version = {1.0.0-rc1},
+  url     = {https://github.com/akigogikar/FeedFlipNets}
+}
+```
 
-No. CPU is fine for the supported experiments and smoke tests.
+FAQ
+---
 
+- Do I need a GPU? No — CPU is fine for the supported experiments and smoke tests.
 
-⸻
 
 Keywords
 --------
