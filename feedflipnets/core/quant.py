@@ -1,4 +1,11 @@
-"""Ternary quantisation helpers."""
+"""Ternary quantisation helpers.
+
+Conventions:
+- Inclusive-zero boundary for ternary mapping: values with ``|x| \le tau``
+  map to ``0``; only magnitudes strictly exceeding the threshold are mapped
+  to ``\pm 1``. This matches the paper's Definition (and Eq. (1)) and reduces
+  flip "chatter" from boundary noise.
+"""
 
 from __future__ import annotations
 
@@ -17,7 +24,10 @@ def ternary(x: Array) -> Array:
 
 
 def quantize_ternary_det(weights: Array, tau: float) -> Array:
-    """Deterministic ternary quantisation with threshold ``tau``."""
+    """Deterministic ternary quantisation with threshold ``tau``.
+
+    Boundary rule: ``|w| \le tau -> 0`` (inclusive).
+    """
 
     out = np.zeros_like(weights, dtype=float)
     out[weights > tau] = 1.0
@@ -26,7 +36,11 @@ def quantize_ternary_det(weights: Array, tau: float) -> Array:
 
 
 def quantize_ternary_stoch(weights: Array, tau: float, rng: np.random.Generator) -> Array:
-    """Stochastic ternary quantisation matching the legacy behaviour."""
+    """Stochastic ternary quantisation matching the legacy behaviour.
+
+    Boundary rule: ``|w + \varepsilon| \le tau -> 0`` (inclusive) after
+    adding zero-mean dither ``\varepsilon \sim \mathcal{U}[-\tau, \tau]``.
+    """
 
     noise = rng.uniform(-tau, tau, size=weights.shape)
     jittered = weights + noise

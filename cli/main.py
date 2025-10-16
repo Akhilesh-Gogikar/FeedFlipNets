@@ -80,9 +80,19 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         help="Threshold used for ternary flips",
     )
     parser.add_argument(
+        "--quant",
+        choices=["det", "stoch"],
+        help="Ternary quantization mode for forward weights (det or stoch)",
+    )
+    parser.add_argument(
         "--eval-every",
         type=int,
         help="Evaluate validation/test splits every N epochs",
+    )
+    parser.add_argument(
+        "--alignment-probe-steps",
+        type=int,
+        help="Collect alignment samples for the first N steps of each epoch",
     )
     parser.add_argument(
         "--early-stopping-patience",
@@ -241,8 +251,12 @@ def main(argv: Iterable[str] | None = None) -> None:
         config.setdefault("train", {})["flip_schedule"] = args.flip_schedule.lower()
     if args.flip_threshold is not None:
         config.setdefault("train", {})["flip_threshold"] = args.flip_threshold
+    if args.quant:
+        config.setdefault("model", {})["quant"] = args.quant
     if args.eval_every is not None:
         config.setdefault("train", {})["eval_every"] = args.eval_every
+    if args.alignment_probe_steps is not None:
+        config.setdefault("train", {})["alignment_probe_steps"] = int(args.alignment_probe_steps)
     if args.early_stopping_patience is not None:
         config.setdefault("train", {})["early_stopping_patience"] = args.early_stopping_patience
 

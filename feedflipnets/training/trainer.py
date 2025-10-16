@@ -143,6 +143,8 @@ class Trainer:
         self.callbacks = list(callbacks or [])
         self._state: StrategyState | None = None
         self._timings: Dict[str, list[float]] = {"train": [], "val": [], "test": []}
+        # Stores alignment samples collected in the last training phase
+        self._last_alignment: dict | None = None
 
     def run(
         self,
@@ -245,6 +247,15 @@ class Trainer:
                 alignment_probe_steps=alignment_probe_steps,
             )
             total_steps += train_steps
+            # Emit alignment calibration (p vs rho) if collected this epoch
+            if self._last_alignment is not None:
+                for cb in self.callbacks:
+                    if hasattr(cb, "on_alignment"):
+                        try:
+                            cb.on_alignment(epoch, self._last_alignment)  # type: ignore[attr-defined]
+                        except Exception:
+                            # Guardrail: alignment callback must not break training
+                            pass
             self._emit_epoch("train", epoch, train_metrics, split_loggers)
 
             if flip_enabled and resolved_schedule == "per_epoch":
@@ -341,8 +352,17 @@ class Trainer:
         # Alignment accumulators (per-layer) when requested
         want_align = bool(training and (alignment_probe_steps or 0) > 0)
         align_bp = Backprop() if want_align else None
-        align_sums: list[float] = []
+        # Per-layer running sums and counts for cosine rho, directional p, and sign-agreement q
+        align_rho_sums: list[float] = []
+        align_p_sums: list[float] = []
+        align_q_sums: list[float] = []
         align_counts: list[int] = []
+        # Per-layer samples for calibration plots (rho sample list, p in {0,1})
+        align_rho_samples: list[list[float]] = []
+        align_p_samples: list[list[float]] = []
+        # Global (all-params) alignment statistics across probed steps
+        global_rho_samples: list[float] = []
+        global_p_samples: list[float] = []
 
         for step_idx in range(max(1, steps)):
             try:
@@ -362,21 +382,50 @@ class Trainer:
                 if want_align and step_idx < int(alignment_probe_steps or 0):
                     bp_grads, _ = align_bp.backward(activations, delta, StrategyState())  # type: ignore[arg-type]
                     # Initialize accumulators lazily
-                    if not align_sums:
+                    if not align_counts:
                         last_idx = len(activations.weights) - 1
-                        align_sums = [0.0 for _ in range(last_idx + 1)]
-                        align_counts = [0 for _ in range(last_idx + 1)]
+                        n_layers = last_idx + 1
+                        align_rho_sums = [0.0 for _ in range(n_layers)]
+                        align_p_sums = [0.0 for _ in range(n_layers)]
+                        align_q_sums = [0.0 for _ in range(n_layers)]
+                        align_counts = [0 for _ in range(n_layers)]
+                        align_rho_samples = [[] for _ in range(n_layers)]
+                        align_p_samples = [[] for _ in range(n_layers)]
+                    # Per-layer and global dot products and norms
+                    total_dot = 0.0
+                    total_norm_dfa_sq = 0.0
+                    total_norm_bp_sq = 0.0
                     for name, g_dfa in grads.items():
                         if name in bp_grads:
                             g_bp = bp_grads[name]
-                            a = float(np.sum(g_dfa.astype(np.float64) * g_bp.astype(np.float64)))
-                            b = float(np.sqrt(np.sum(g_dfa.astype(np.float64) ** 2)) + 1e-12)
-                            c = float(np.sqrt(np.sum(g_bp.astype(np.float64) ** 2)) + 1e-12)
-                            rho = a / (b * c)
+                            g_dfa64 = g_dfa.astype(np.float64)
+                            g_bp64 = g_bp.astype(np.float64)
+                            dot = float(np.sum(g_dfa64 * g_bp64))
+                            nd = float(np.sum(g_dfa64 ** 2))
+                            nb = float(np.sum(g_bp64 ** 2))
+                            b = float(np.sqrt(nd) + 1e-12)
+                            c = float(np.sqrt(nb) + 1e-12)
+                            rho = dot / (b * c)
+                            p_dir = 1.0 if dot > 0.0 else 0.0
+                            # coordinate-wise sign agreement q
+                            q = float(np.mean(np.sign(g_dfa64) == np.sign(g_bp64))) if g_dfa64.size > 0 else 0.0
                             idx = int(name[1:]) if name.startswith("W") else 0
-                            if 0 <= idx < len(align_sums):
-                                align_sums[idx] += rho
+                            if 0 <= idx < len(align_rho_sums):
+                                align_rho_sums[idx] += rho
+                                align_p_sums[idx] += p_dir
+                                align_q_sums[idx] += q
                                 align_counts[idx] += 1
+                                align_rho_samples[idx].append(rho)
+                                align_p_samples[idx].append(p_dir)
+                            total_dot += dot
+                            total_norm_dfa_sq += nd
+                            total_norm_bp_sq += nb
+                    if total_norm_dfa_sq > 0.0 and total_norm_bp_sq > 0.0:
+                        rho_global = total_dot / (
+                            float(np.sqrt(total_norm_dfa_sq)) * float(np.sqrt(total_norm_bp_sq)) + 1e-12
+                        )
+                        global_rho_samples.append(float(rho_global))
+                        global_p_samples.append(1.0 if total_dot > 0.0 else 0.0)
                 if grad_clip is not None and grad_clip > 0:
                     # Compute global L2 norm across all parameter gradients
                     sqsum = 0.0
@@ -411,16 +460,47 @@ class Trainer:
         metrics["samples_per_step"] = float(total_samples / max(steps, 1))
         metrics["ternary_zero_ratio"] = _ternary_zero_ratio(self.model)
         # Emit average alignment across probed steps if collected
-        if want_align and align_sums and any(align_counts):
-            rhos: list[float] = []
-            for i, (s, n) in enumerate(zip(align_sums, align_counts)):
+        if want_align and align_counts and any(align_counts):
+            rho_avgs: list[float] = []
+            p_avgs: list[float] = []
+            q_avgs: list[float] = []
+            for i, n in enumerate(align_counts):
                 if n > 0:
-                    avg = float(s / n)
-                    metrics[f"rho_l{i}"] = avg
-                    rhos.append(avg)
-            if rhos:
-                metrics["rho_mean"] = float(np.mean(rhos))
-                metrics["rho_min"] = float(np.min(rhos))
+                    rho_i = float(align_rho_sums[i] / n)
+                    p_i = float(align_p_sums[i] / n)
+                    q_i = float(align_q_sums[i] / n)
+                    metrics[f"rho_l{i}"] = rho_i
+                    metrics[f"p_l{i}"] = p_i
+                    metrics[f"q_l{i}"] = q_i
+                    rho_avgs.append(rho_i)
+                    p_avgs.append(p_i)
+                    q_avgs.append(q_i)
+            if rho_avgs:
+                metrics["rho_mean"] = float(np.mean(rho_avgs))
+                metrics["rho_min"] = float(np.min(rho_avgs))
+            if p_avgs:
+                metrics["p_mean"] = float(np.mean(p_avgs))
+                metrics["p_min"] = float(np.min(p_avgs))
+            if q_avgs:
+                metrics["q_mean"] = float(np.mean(q_avgs))
+                metrics["q_min"] = float(np.min(q_avgs))
+            # Global alignment summary
+            if global_rho_samples:
+                metrics["rho_global_mean"] = float(np.mean(global_rho_samples))
+                metrics["p_global_mean"] = float(np.mean(global_p_samples))
+            # Stash samples for external consumers (e.g., TensorBoard adapter)
+            self._last_alignment = {
+                "per_layer": {
+                    "rho": [list(s) for s in align_rho_samples],
+                    "p": [list(s) for s in align_p_samples],
+                },
+                "global": {
+                    "rho": list(global_rho_samples),
+                    "p": list(global_p_samples),
+                },
+            }
+        else:
+            self._last_alignment = None
         return metrics, current_state
 
     def _emit_epoch(

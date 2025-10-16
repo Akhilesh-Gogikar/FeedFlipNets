@@ -4,12 +4,14 @@ We scope claims to shallow MLPs on small, standard datasets and provide all code
 
 \textbf{Datasets and splits.} MNIST, Fashion‑MNIST (subsets), 20 Newsgroups, AG News (small variant), UCR GunPoint, and California Housing. We use canonical train/test splits; validation subsets are formed deterministically with fixed seeds.
 
-\textbf{Training protocol.} Seeds are fixed for initialization and data shuffling. We run $n\!\in\![2,5]$ repeats per configuration and report mean $\pm$ standard deviation. We sweep learning rate and ternary threshold $\tau$ within specified ranges. No early stopping is used.
+\textbf{Training protocol.} Seeds are fixed for initialization and data shuffling. We run $n\!\in\![2,5]$ repeats per configuration and report means with 95\% confidence intervals (Student's $t$) across seeds. We sweep learning rate and ternary threshold $\tau$ within specified ranges. No early stopping is used.
 
 \textbf{Implementation details.} Feedback strategies include backprop, DFA (float), ternary‑forward DFA, and structured feedback (orthonormal/Hadamard). Ternary quantization uses float shadow weights and deterministic or seeded stochastic rounding. Full configs are saved with each run.
 
 \textbf{Environment.} CPU‑only runs on a host with Apple M3 (Darwin 24.6.0, arm64). Dependencies are pinned via \texttt{requirements‑lock.txt}. BLAS is provided via NumPy’s linked backend on macOS; all latencies are measured with high‑resolution timers on this host and reported alongside the device string in the Deployability table.
 
-\textbf{Artifacts.} Per‑run metrics/manifests under \texttt{runs/}; aggregate tables and plots under \texttt{data/report/}. The Key Metrics table is auto‑generated for the paper build. Scripts: \texttt{reproduce\_all.sh}, \texttt{make report}, and \texttt{make paper}.
+\textbf{Artifacts.} Per‑run metrics/manifests under \texttt{runs/}; aggregate tables and plots under \texttt{data/report/}. Only figures backed by existing data are included via guarded includes; missing assets are omitted (no placeholders). The Key Metrics table is auto‑generated for the paper build. Scripts: \texttt{reproduce\_all.sh}, \texttt{make report}, and \texttt{make paper}.
 
-\textbf{Limitations.} DFA/FA often underperform on deep CNNs and large‑scale vision without adapted feedback; we do not claim results beyond our small MLPs.
+\textbf{Generating specific plots.} To produce alignment and Pareto figures: enable alignment probes during training to log per‑epoch sign‑match and alignment (\texttt{metrics\_train.jsonl}); use \texttt{scripts/plot\_p\_hist.py} to summarize directional sign‑match $p$; and run \texttt{python scripts/make\_pareto\_plots.py} after threshold/schedule sweeps to generate accuracy–sparsity–throughput Pareto charts. These scripts read from \texttt{runs/} and write to \texttt{data/report/plots}.
+
+\textbf{Limitations.} DFA/FA often underperform on deep CNNs and large‑scale vision without adapted feedback; we do not claim results beyond our small MLPs. Partial sweeps (e.g., small $n$ on some text datasets) are clearly marked; inferential claims rely on non‑parametric paired tests and are treated as ties when not significant.

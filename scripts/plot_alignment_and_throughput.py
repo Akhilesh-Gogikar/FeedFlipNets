@@ -99,14 +99,17 @@ def _alignment_curves(
 
 
 def _train_throughput(dataset: str, mode: str) -> Tuple[List[str], np.ndarray, np.ndarray]:
-    """Return variants, mean, std of train throughput (samples/sec)."""
+    """Return variants, mean, 95% CI of train throughput (samples/sec).
+
+    Falls back to 0 error bar when only a single seed is available.
+    """
     root = ROOT / dataset / mode
     if not root.exists():
         return [], np.array([]), np.array([])
     variants = sorted([p.name for p in root.iterdir() if p.is_dir()])
     vals: List[float] = []
     labs: List[str] = []
-    stds: List[float] = []
+    cis: List[float] = []
     for var in variants:
         throughputs: List[float] = []
         for seed_dir in sorted((root / var).glob("seed*")):
@@ -123,9 +126,21 @@ def _train_throughput(dataset: str, mode: str) -> Tuple[List[str], np.ndarray, n
                 throughputs.append(sc / float(total))
         if throughputs:
             labs.append(var)
-            vals.append(float(np.mean(throughputs)))
-            stds.append(float(np.std(throughputs, ddof=1)) if len(throughputs) > 1 else 0.0)
-    return labs, np.asarray(vals), np.asarray(stds)
+            mu = float(np.mean(throughputs))
+            vals.append(mu)
+            if len(throughputs) > 1:
+                # Student's t 95% CI
+                try:
+                    from scipy import stats  # type: ignore
+
+                    tcrit = float(stats.t.ppf(1 - 0.05 / 2.0, df=len(throughputs) - 1))
+                except Exception:
+                    tcrit = 1.96
+                sem = float(np.std(throughputs, ddof=1)) / (len(throughputs) ** 0.5)
+                cis.append(tcrit * sem)
+            else:
+                cis.append(0.0)
+    return labs, np.asarray(vals), np.asarray(cis)
 
 
 def _plot_alignment(dataset: str, mode: str) -> None:
@@ -153,13 +168,13 @@ def _plot_alignment(dataset: str, mode: str) -> None:
 def _plot_throughput(dataset: str, mode: str) -> None:
     import matplotlib.pyplot as plt  # type: ignore
 
-    labels, means, stds = _train_throughput(dataset, mode)
+    labels, means, ci95 = _train_throughput(dataset, mode)
     if not labels:
         return
     PLOTS.mkdir(parents=True, exist_ok=True)
     x = np.arange(len(labels))
     plt.figure(figsize=(6.0, 3.4))
-    plt.bar(x, means, yerr=stds, capsize=3)
+    plt.bar(x, means, yerr=ci95, capsize=3)
     plt.xticks(x, labels, rotation=25, ha="right")
     plt.ylabel("Train throughput (samples/s)")
     plt.title(f"Training Throughput — {dataset} ({mode})")

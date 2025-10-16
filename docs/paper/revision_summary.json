@@ -1,0 +1,37 @@
+{
+  "status": "success",
+  "git_sha": "cc8103b",
+  "datasets": [
+    "20newsgroups",
+    "adult",
+    "ag_news",
+    "california_housing",
+    "cifar10",
+    "fashion_mnist",
+    "mnist",
+    "synthetic",
+    "ucr"
+  ],
+  "figures": [
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-Align-Rho.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-E90.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-Early-Slope.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-20newsgroups.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-adult.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-ag_news.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-california_housing.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-cifar10.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-fashion_mnist.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-mnist.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-synthetic.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-PARETO-ucr.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-SignMatch-P.png",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/fig/Fig-Throughput.png"
+  ],
+  "tables": [
+    "/Users/akhileshgogikar/FeedFlipNets/paper/tables/Tbl-Best-Configs-CI.csv",
+    "/Users/akhileshgogikar/FeedFlipNets/paper/tables/Tbl-Best-Configs-CI.tex"
+  ],
+  "pdf": "/Users/akhileshgogikar/FeedFlipNets/paper/main.pdf",
+  "notes": []
+}

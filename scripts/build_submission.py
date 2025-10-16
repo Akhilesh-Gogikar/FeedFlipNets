@@ -540,7 +540,7 @@ def best_configs_table(df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[str], O
         best_variant = str(best_row["variant"])
         vals_best = [x for x in best_row["vals"] if x is not None]
         mu_best, half_best, n_best = _ci95(vals_best)
-        sd_best = float(np.std(vals_best, ddof=1)) if n_best > 1 else 0.0
+        sd_best = float(np.std(vals_best, ddof=1)) if n_best > 1 else float("nan")
 
         # Choose baseline: backprop_float if present, else dfa_float if present, else the best itself
         baseline_variant = (
@@ -554,6 +554,7 @@ def best_configs_table(df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[str], O
         else:
             vals_base = vals_best
         mu_base, half_base, n_base = _ci95(vals_base)
+        sd_base = float(np.std(vals_base, ddof=1)) if n_base > 1 else float("nan")
         delta = mu_best - mu_base
 
         # Wilcoxon signed-rank if same n and both >1
@@ -581,6 +582,9 @@ def best_configs_table(df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[str], O
                 "CI95": round(half_best, 4),
                 "Baseline": baseline_variant,
                 "BaselineMean": round(mu_base, 4) if not math.isnan(mu_base) else mu_base,
+                "BaselineSD": round(sd_base, 4) if not math.isnan(sd_base) else sd_base,
+                "BaselineCI95": round(half_base, 4) if not math.isnan(half_base) else half_base,
+                "BaselineN": int(n_base),
                 "Delta": round(delta, 4)
                 if not (math.isnan(mu_best) or math.isnan(mu_base))
                 else float("nan"),
@@ -645,72 +649,118 @@ def best_configs_table(df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[str], O
             text = str(raw)
             return "NA" if text.lower() == "nan" else text
 
-        def _fmt_scalar(val: Any) -> str:
-            if val is None:
-                return "--"
-            if isinstance(val, float):
-                if math.isnan(val):
-                    return "--"
-                return f"{val:.3f}"
-            text = str(val)
-            return "--" if text.lower() == "nan" else text
+        def _fmt_pm(mean_val: Any, sd_val: Any, n_val: Optional[int]) -> str:
+            if isinstance(mean_val, (int, float, np.floating)) and not math.isnan(float(mean_val)):
+                mean_f = float(mean_val)
+                if (
+                    isinstance(sd_val, (int, float, np.floating))
+                    and not math.isnan(float(sd_val))
+                    and n_val is not None
+                    and n_val > 1
+                ):
+                    return f"${mean_f:.3f}\\pm{float(sd_val):.3f}$"
+                return f"${mean_f:.3f}$"
+            text = str(mean_val) if mean_val is not None else ""
+            return text if text else "--"
+
+        def _fmt_ci(ci_val: Any, n_val: Optional[int]) -> str:
+            if (
+                isinstance(ci_val, (int, float, np.floating))
+                and not math.isnan(float(ci_val))
+                and n_val is not None
+                and n_val > 1
+            ):
+                return f"$\\pm{float(ci_val):.3f}$"
+            return ""
+
+        def _fmt_best_summary(row: pd.Series) -> str:
+            variant = _shorten_variant(row.get("Variant"))
+            if not variant:
+                variant = "--"
+            n_raw = row.get("n")
+            n_val: Optional[int]
+            if isinstance(n_raw, (int, np.integer)):
+                n_val = int(n_raw)
+            elif isinstance(n_raw, (float, np.floating)) and not math.isnan(float(n_raw)):
+                n_val = int(n_raw)
+            else:
+                n_val = None
+            pm = _fmt_pm(row.get("Mean"), row.get("SD"), n_val)
+            ci = _fmt_ci(row.get("CI95"), n_val)
+            parts: List[str] = [variant]
+            if n_val is not None:
+                parts.append(f"n={n_val}")
+            if pm and pm != "--":
+                parts.append(pm)
+            if ci:
+                parts.append(f"CI {ci}")
+            return ", ".join(parts)
+
+        def _fmt_baseline_summary(row: pd.Series) -> str:
+            variant = _shorten_variant(row.get("Baseline"))
+            if not variant:
+                variant = "--"
+            n_raw = row.get("BaselineN")
+            n_val: Optional[int]
+            if isinstance(n_raw, (int, np.integer)):
+                n_val = int(n_raw)
+            elif isinstance(n_raw, (float, np.floating)) and not math.isnan(float(n_raw)):
+                n_val = int(n_raw)
+            else:
+                n_val = None
+            pm = _fmt_pm(row.get("BaselineMean"), row.get("BaselineSD"), n_val)
+            ci = _fmt_ci(row.get("BaselineCI95"), n_val)
+            parts: List[str] = [variant]
+            if n_val is not None:
+                parts.append(f"n={n_val}")
+            if pm and pm != "--":
+                parts.append(pm)
+            if ci:
+                parts.append(f"CI {ci}")
+            return ", ".join(parts)
+
+        def _fmt_delta(val: Any) -> str:
+            if isinstance(val, (int, float, np.floating)) and not math.isnan(float(val)):
+                return f"{float(val):+.3f}"
+            return "--"
+
+        def _fmt_outcome(row: pd.Series) -> str:
+            notes: List[str] = []
+            tie_raw = row.get("Tie")
+            tie_text = str(tie_raw).strip() if tie_raw is not None else ""
+            if tie_text and tie_text.lower() not in ("na", "nan", "--"):
+                notes.append(tie_text)
+            p_txt = _format_p(row.get("WilcoxonP"))
+            if p_txt not in ("NA", "--"):
+                notes.append(f"$p={p_txt}$")
+            mean_val = row.get("Mean")
+            if isinstance(mean_val, float) and not math.isnan(mean_val) and abs(mean_val - 1.0) < 1e-6:
+                notes.append("saturated")
+            return ", ".join(notes) if notes else "--"
 
         with tex_path.open("w", encoding="utf-8") as fh:
             fh.write("% Auto-generated by scripts/build_submission.py\n")
-            fh.write("\\begin{table}[H]\n\\centering\n\\tiny\n")
-            fh.write("\\begingroup\n\\setlength{\\tabcolsep}{2.0pt}\n")
-            fh.write("\\resizebox{0.80\\linewidth}{!}{%\n")
-            cols = [
-                "Dataset",
-                "Mode",
-                "Variant",
-                "n",
-                "Mean",
-                "SD",
-                "CI95",
-                "Baseline",
-                "Delta",
-                "WilcoxonP",
-                "Tie",
-            ]
-            header_labels = [
-                "Data",
-                "Mode",
-                "Var",
-                "n",
-                "Mean",
-                "SD",
-                "CI",
-                "Base",
-                "$\\Delta$",
-                "$p$",
-                "Tie",
-            ]
+            fh.write("\\begin{table}[H]\n\\centering\n\\small\n")
+            fh.write("\\setlength{\\tabcolsep}{3.5pt}\n")
             fh.write(
-                "\\begin{tabular}{l l l r S[table-format=1.3] S[table-format=1.3] S[table-format=1.3] l S[table-format=+1.3] S[table-format=1.3] l}\n\\toprule\n"  # noqa: E501
+                "\\begin{tabularx}{\\linewidth}{@{}l c@{\\hspace{-0.3em}}>{\\raggedright\\arraybackslash}X@{\\hspace{0.8em}}>{\\raggedright\\arraybackslash}X r >{\\raggedright\\arraybackslash}X@{}}\n"
             )
-            fh.write(" & ".join(header_labels) + " \\\\ \n\\midrule\n")
+            fh.write("\\toprule\n")
+            fh.write("Data & Mode & Best configuration & Baseline (flip-off) & $\\Delta$ & Outcome \\\\ \n")
+            fh.write("\\midrule\n")
             for _, r in tbl.iterrows():
-                row_vals = []
-                for key in cols:
-                    val = r[key]
-                    if key == "Dataset":
-                        row_vals.append(_shorten_dataset(val))
-                    elif key in ("Variant", "Baseline"):
-                        row_vals.append(_shorten_variant(val))
-                    elif key == "Mode":
-                        row_vals.append(_shorten_mode(val))
-                    elif key == "WilcoxonP":
-                        row_vals.append(_format_p(val))
-                    elif key in ("Mean", "SD", "CI95", "Delta"):
-                        row_vals.append(_fmt_scalar(val))
-                    else:
-                        row_vals.append(_fmt_scalar(val))
-                fh.write(" & ".join(row_vals) + " \\\\ \n")
-            fh.write("\\bottomrule\n\\end{tabular}}\n")
-            fh.write("\\endgroup\n")
+                data_label = _shorten_dataset(r.get("Dataset"))
+                mode_label = _shorten_mode(r.get("Mode"))
+                best_summary = _fmt_best_summary(r)
+                base_summary = _fmt_baseline_summary(r)
+                delta_text = _fmt_delta(r.get("Delta"))
+                outcome_text = _fmt_outcome(r)
+                fh.write(
+                    f"{data_label} & {mode_label} & {best_summary} & {base_summary} & {delta_text} & {outcome_text} \\\\ \n"
+                )
+            fh.write("\\bottomrule\n\\end{tabularx}\n")
             fh.write(
-                "\\caption{Best configs with mean, SD, and n; 95\\% CIs shown only when n>1. Rows with n<2 are omitted to avoid spurious intervals. Tie tests (Wilcoxon) included when comparable.}\n"  # noqa: E501
+                "\\caption{Best configurations by dataset. Scores report mean $\\pm$ sample SD over $n$ seeds (95\\% CIs shown when $n>1$). Baseline column lists the strongest flip-off variant for comparison; $\\Delta$ is versus that baseline. Wilcoxon outcomes are shown when seed-paired tests are available.}\n"  # noqa: E501
             )
             fh.write("\\label{tab:best-configs-ci}\n\\end{table}\n")
         return tbl, str(csv_path), str(tex_path)

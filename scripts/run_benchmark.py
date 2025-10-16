@@ -206,6 +206,8 @@ DATASETS: Sequence[DatasetConfig] = (
     DatasetConfig(
         name="fashion_mnist", preset="fashion_mnist_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)
     ),
+    # CIFAR-10 (uses CIFAR offline synthetic fixture by default; online via modes=real)
+    DatasetConfig(name="cifar10", preset="cifar10_mlp_dfa_orthogonal", modes=(MODE_OFFLINE, MODE_REAL)),
     DatasetConfig(name="ucr", preset="ucr_gunpoint_mlp_dfa", modes=(MODE_OFFLINE, MODE_REAL)),
     DatasetConfig(
         name="california_housing",

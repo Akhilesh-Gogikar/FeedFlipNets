@@ -1,10 +1,67 @@
 __pycache__/
 tests/__pycache__/
-# Ignore large experiment artifacts
+
+# Python cache/build artifacts
+*.py[cod]
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+*.egg
+MANIFEST
+feedflipnets.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+pip-wheel-metadata/
+
+# Test/coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.benchmarks/
+
+# Linters/type checkers
+.ruff_cache/
+.mypy_cache/
+.cache/
+
+# OS/IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Experiment outputs & artifacts
+runs/
+artifacts/
+.artifacts/
+datasets_cache/
+
+# Results (heavy intermediates)
 results/**/*.npy
 results/**/*.png
 !results/simple/plots/*.svg
-datasets_cache/
-runs/
-.venv/
-.artifacts/
+
+# Model checkpoints
+*.ckpt
+*.pth
+*.pt

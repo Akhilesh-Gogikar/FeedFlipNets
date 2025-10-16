@@ -1,17 +1,18 @@
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabular}{l l l}
+\begingroup\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} l l Y @{}}
 \toprule
 Headline & Metric & Value \\
 \midrule
-Vision (MNIST, real) & Test Acc. (BP vs DFA float) & 96.49\% $\pm$ 0.01\% vs 95.14\% $\pm$ 0.10\% \\
+Vision (MNIST, real) & Test Acc. (BP vs DFA float) & 96.46\% $\pm$ 0.03\% vs 95.14\% $\pm$ 0.08\% \\
 Text (20NG, real) & Test Acc. (BP vs DFA float) & .199 $\pm$ .013 vs .321 $\pm$ .005 \\
 AG News (real) & Test Acc. (BP vs DFA float) & 90.05\% $\pm$ 0.07\% vs 89.98\% $\pm$ 0.05\% \\
 Time-series (UCR) & Best Test Acc. (Ternary DFA, real) & 100.00\% \\
 Sparsity (Ternary) & Zero ratio (typical) & \(\approx\) 0.5--0.75 \\
 Determinism & Seeds, fixtures & Yes \\
 \bottomrule
-\end{tabular}
+\end{tabularx}\par\endgroup
 \caption*{Key Metrics (condensed). Representative values from our benchmark suite.}
 \end{table}

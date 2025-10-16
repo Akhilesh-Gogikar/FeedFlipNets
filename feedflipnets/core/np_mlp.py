@@ -105,8 +105,13 @@ class DFAStrategy:
 
 
 def _ternary(g: Array, tau: float) -> Array:
+    """Ternary map with inclusive-zero boundary (|g| <= tau -> 0).
+
+    Matches the library quantizer semantics used elsewhere: assign ±1 only
+    when the magnitude strictly exceeds the threshold.
+    """
     s = np.sign(g)
-    m = (np.abs(g) >= tau).astype(g.dtype)
+    m = (np.abs(g) > tau).astype(g.dtype)
     return s * m
 
 

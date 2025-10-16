@@ -1,6 +1,7 @@
-% Stats protocol box
+% Auto-generated stats protocol box
+
 \begin{center}
 \fbox{\begin{minipage}{0.96\linewidth}
-\textbf{Stats protocol.} Report mean $\pm$ standard deviation over seeds (n shown per entry). Non-parametric tests are omitted in this build; when available we use two-sided Wilcoxon signed-rank for paired comparisons and report ties at $p\ge0.05$.
+\textbf{Stats protocol.} Report mean $\pm$ 95\% CI over seeds (Student's $t$). Within each dataset/mode, test variant vs baseline (best flip=off) using two-sided Wilcoxon signed-rank on seed-paired values. Across datasets (per mode), compare algorithms with Friedman test on average ranks (1=best); if fewer than 3 common algorithms, use Wilcoxon on paired dataset means. Control $\alpha=0.05$; treat $p\ge0.05$ as ties. See \citet{demsar2006comparisons,dror2018hitchhiker}.
 \end{minipage}}
 \end{center}

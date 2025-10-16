@@ -1,0 +1,23 @@
+offline: true
+data:
+  name: fashion_mnist
+  options:
+    seed: 7
+    val_split: 0.1
+    test_split: 0.2
+    one_hot: true
+model:
+  hidden: [256, 256]
+  quant: det
+  strategy: backprop
+train:
+  seed: 7
+  batch_size: 64
+  epochs: 5
+  eval_every: 1
+  lr: 0.05
+  optimizer: sgd
+  flip: ternary
+  flip_schedule: per_step
+  run_dir: runs/fashion-mnist-mlp-bp-ste
+

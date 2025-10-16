@@ -6,10 +6,13 @@ set -euo pipefail
 DOC=docs/paper/main.tex
 OUTDIR=docs/paper
 
-# 1) Auto-generate key metrics rows from CSVs to keep paper in sync
+# 1) Auto-generate key metrics and deployability table to keep paper in sync
 if command -v python3 >/dev/null 2>&1; then
   python3 scripts/generate_key_metrics.py || {
     echo "Warning: key metrics generation failed; proceeding with last generated rows." >&2
+  }
+  python3 scripts/generate_deployability_table.py || {
+    echo "Warning: deployability table generation failed; proceeding with last generated table." >&2
   }
 else
   echo "Warning: python3 not found; skipping key metrics generation." >&2

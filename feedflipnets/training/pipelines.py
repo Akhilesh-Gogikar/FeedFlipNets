@@ -17,6 +17,7 @@ from ..core.types import Batch, RunResult
 from ..data import registry
 from ..reporting.artifacts import write_manifest
 from ..reporting.metrics import CsvSink, JsonlSink
+from ..reporting import TensorBoardAdapter
 from ..reporting.summary import write_summary
 from .trainer import FeedForwardModel, SGDOptimizer, Trainer
 
@@ -66,6 +67,31 @@ _PRESETS: Dict[str, Mapping[str, object]] = {
             "seed": 42,
             "lr": 0.02,
             "run_dir": "runs/synthetic-min",
+            "enable_plots": False,
+            "flip": "ternary",
+            "flip_schedule": "per_step",
+        },
+    },
+    "synthetic-min-stoch": {
+        "data": {
+            "name": "synthetic",
+            "options": {"freq": 3, "n_points": 128, "seed": 0},
+        },
+        "model": {
+            "d_in": 1,
+            "d_out": 1,
+            "hidden": [8],
+            "quant": "stoch",
+            "tau": 0.05,
+            "strategy": "dfa",
+        },
+        "train": {
+            "epochs": 1,
+            "steps_per_epoch": 200,
+            "batch_size": 16,
+            "seed": 42,
+            "lr": 0.02,
+            "run_dir": "runs/synthetic-min-stoch",
             "enable_plots": False,
             "flip": "ternary",
             "flip_schedule": "per_step",
@@ -319,6 +345,14 @@ def _run_sweep(config: Mapping[str, object]) -> List[RunResult]:
                     cfg.setdefault("data", {})
                     cfg["data"].setdefault("options", {})["freq"] = freq
                     cfg.setdefault("train", {})["seed"] = seed
+                    # Ensure unique run directories per combination to avoid collisions
+                    # Example: runs/sweep/<method>_d<depth>_f<freq>_s<seed>
+                    run_dir = (
+                        Path("runs")
+                        / "sweep"
+                        / f"{str(method).replace(' ', '_')}_d{int(depth)}_f{int(freq)}_s{int(seed)}"
+                    )
+                    cfg.setdefault("train", {})["run_dir"] = str(run_dir)
                     cfg["offline"] = config.get("offline", True)
                     result = _train_single(cfg)
                     results.append(result)
@@ -444,17 +478,22 @@ def _train_single(config: Mapping[str, object]) -> RunResult:
     if optimizer_name != "sgd":
         raise ValueError("Only 'sgd' optimizer is currently supported")
     optimizer = SGDOptimizer(lr=float(train_cfg.get("lr", 0.01)))
+    # TensorBoard adapters per split (no-op if TB is unavailable)
+    tb_train = TensorBoardAdapter(run_dir, split="train")
+    tb_val = TensorBoardAdapter(run_dir, split="val")
+    tb_test = TensorBoardAdapter(run_dir, split="test")
+
     trainer = Trainer(
         model=model,
         strategy=strategy,
         optimizer=optimizer,
-        callbacks=[],
+        callbacks=[tb_train],
     )
 
     split_loggers = {
-        "train": [train_jsonl, train_csv, capture_train],
-        "val": [val_jsonl, val_csv, capture_val],
-        "test": [test_jsonl, test_csv, capture_test],
+        "train": [train_jsonl, train_csv, capture_train, tb_train],
+        "val": [val_jsonl, val_csv, capture_val, tb_val],
+        "test": [test_jsonl, test_csv, capture_test, tb_test],
     }
 
     result = trainer.run(

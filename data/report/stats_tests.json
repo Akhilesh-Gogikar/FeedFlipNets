@@ -1,0 +1,1927 @@
+{
+  "within_dataset": [
+    {
+      "dataset": "20newsgroups",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "backprop_float",
+      "comparisons": [
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": 0.21875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 3,
+          "median_delta": -0.03125,
+          "p_value": 0.5,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": 0.15625,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.015625,
+          "p_value": 1.0,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.0625,
+          "p_value": 0.15729920705028502,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": 0.09375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -0.0625,
+          "p_value": 0.15729920705028502,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": 0.03125,
+          "p_value": 0.75,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": 0.09375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "20newsgroups",
+      "mode": "real",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 3,
+          "median_delta": -0.1988877118644068,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 3,
+          "median_delta": -0.23490466101694915,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 3,
+          "median_delta": -0.1988877118644068,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr15",
+          "n_pairs": 3,
+          "median_delta": -0.11467161016949151,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.2629766949152542,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 3,
+          "median_delta": -0.09560381355932204,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 3,
+          "median_delta": -0.18220338983050846,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 3,
+          "median_delta": -0.09560381355932204,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": -0.1898834745762712,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 3,
+          "median_delta": -0.2123940677966102,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 3,
+          "median_delta": -0.1898834745762712,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 3,
+          "median_delta": -0.2311970338983051,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.2611228813559322,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.24841101694915252,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.2603283898305085,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -0.23252118644067796,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.2613877118644068,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": -0.2613877118644068,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "adult",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 3,
+          "median_delta": -0.3671875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 3,
+          "median_delta": -0.359375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 3,
+          "median_delta": -0.359375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr15",
+          "n_pairs": 3,
+          "median_delta": -0.3125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.3046875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 3,
+          "median_delta": -0.3984375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 3,
+          "median_delta": -0.3359375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 3,
+          "median_delta": -0.4453125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 3,
+          "median_delta": -0.078125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": -0.2421875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 3,
+          "median_delta": -0.3515625,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 3,
+          "median_delta": -0.2421875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 3,
+          "median_delta": -0.390625,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.3828125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 3,
+          "median_delta": -0.375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.3046875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -0.375,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.328125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": -0.3046875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "adult",
+      "mode": "real",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 3,
+          "median_delta": -0.0026552287581700362,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 3,
+          "median_delta": -0.053104575163398726,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "ag_news",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "backprop_float",
+      "comparisons": [
+        {
+          "variant": "dfa_float",
+          "n_pairs": 5,
+          "median_delta": -0.03125,
+          "p_value": 1.0,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": 0.140625,
+          "p_value": 0.625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "ag_news",
+      "mode": "real",
+      "primary_metric": "accuracy",
+      "baseline": "backprop_float",
+      "comparisons": [
+        {
+          "variant": "dfa_float",
+          "n_pairs": 2,
+          "median_delta": -0.0006853070175438791,
+          "p_value": 1.0,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 2,
+          "median_delta": -0.1266643170426065,
+          "p_value": 0.5,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "california_housing",
+      "mode": "offline",
+      "primary_metric": "r2",
+      "baseline": "dfa_float",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 3,
+          "median_delta": -0.07811721184682441,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.16213938176820608,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": -0.48540505984756555,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -1728.1028740099323,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.07971278022203976,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.5339940019888471,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -0.08062537412348425,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": -12010.374237517604,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": -20.64823354046094,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "california_housing",
+      "mode": "real",
+      "primary_metric": "r2",
+      "baseline": "dfa_float",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 5,
+          "median_delta": -0.05270332880814166,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -7.503081346973408,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 3,
+          "median_delta": -0.11248612221241716,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 2,
+          "median_delta": -3.663529352829834,
+          "p_value": 0.5,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": -3.667124086802447,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 3,
+          "median_delta": -3.667124086802447,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": -3.667124086802447,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 3,
+          "median_delta": -3.667124086802447,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -2962.3374403633807,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.18617629020062432,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 3,
+          "median_delta": -0.21076810189503026,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": -825.7523073905354,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -1.698092857612,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": -2501.294730426912,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": -66.19295125011578,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "cifar10",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr15",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.859375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 5,
+          "median_delta": -0.171875,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.0234375,
+          "p_value": 0.10880943004054568,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 5,
+          "median_delta": -0.109375,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.2109375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.171875,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 5,
+          "median_delta": -0.109375,
+          "p_value": 0.10880943004054568,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.2109375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 5,
+          "median_delta": -0.1015625,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "fashion_mnist",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr15",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": 0.31731050786291415,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.78125,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": 0.31731050786291415,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 5,
+          "median_delta": -0.0390625,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.140625,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 5,
+          "median_delta": -0.1015625,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.1796875,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.1015625,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 5,
+          "median_delta": -0.1171875,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.109375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "fashion_mnist",
+      "mode": "real",
+      "primary_metric": "accuracy",
+      "baseline": "backprop_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 5,
+          "median_delta": -0.0033533105022831577,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 5,
+          "median_delta": -0.009346461187214605,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 5,
+          "median_delta": -0.0033533105022831577,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.7729737442922375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 5,
+          "median_delta": -0.09874429223744297,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.03645833333333337,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 5,
+          "median_delta": -0.08661529680365299,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 5,
+          "median_delta": -0.09874429223744297,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr15",
+          "n_pairs": 5,
+          "median_delta": -0.10759132420091322,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 5,
+          "median_delta": -0.263341894977169,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 5,
+          "median_delta": -0.2751855022831051,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": -0.263341894977169,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 5,
+          "median_delta": -0.2358019406392694,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.5652111872146119,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 5,
+          "median_delta": -0.7744006849315069,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.15146974885844755,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.6242865296803654,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 5,
+          "median_delta": -0.7724029680365297,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.47831050228310507,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 5,
+          "median_delta": -0.6797231735159818,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "mnist",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr15",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.8125,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.0390625,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 5,
+          "median_delta": -0.109375,
+          "p_value": 0.06788915486182899,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.484375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.1484375,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 5,
+          "median_delta": -0.15625,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.1328125,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 5,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "mnist",
+      "mode": "real",
+      "primary_metric": "accuracy",
+      "baseline": "backprop_float_lr15",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 5,
+          "median_delta": -0.004922945205479423,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr06",
+          "n_pairs": 5,
+          "median_delta": -0.01391267123287665,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_float_lr10",
+          "n_pairs": 5,
+          "median_delta": -0.004922945205479423,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.5928938356164384,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float",
+          "n_pairs": 5,
+          "median_delta": -0.02989440639269403,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.02725456621004574,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr06",
+          "n_pairs": 5,
+          "median_delta": -0.012913812785388168,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr10",
+          "n_pairs": 5,
+          "median_delta": -0.02989440639269403,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_float_lr15",
+          "n_pairs": 5,
+          "median_delta": -0.03139269406392686,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 5,
+          "median_delta": -0.14947203196347036,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau002",
+          "n_pairs": 5,
+          "median_delta": -0.14633276255707772,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau005",
+          "n_pairs": 5,
+          "median_delta": -0.14947203196347036,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch_tau010",
+          "n_pairs": 5,
+          "median_delta": -0.2053367579908676,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 5,
+          "median_delta": -0.8000856164383561,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 5,
+          "median_delta": -0.1672374429223744,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float_clip1",
+          "n_pairs": 5,
+          "median_delta": -0.15946061643835618,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.6098030821917808,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 5,
+          "median_delta": -0.15938926940639264,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 5,
+          "median_delta": -0.6013127853881279,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 5,
+          "median_delta": -0.6351312785388128,
+          "p_value": 0.0625,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "ucr",
+      "mode": "offline",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.203125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.171875,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.203125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -0.234375,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.203125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    },
+    {
+      "dataset": "ucr",
+      "mode": "real",
+      "primary_metric": "accuracy",
+      "baseline": "dfa_float",
+      "comparisons": [
+        {
+          "variant": "backprop_float",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "backprop_ternary_step",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_epoch",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "dfa_ternary_step",
+          "n_pairs": 3,
+          "median_delta": -0.203125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_float",
+          "n_pairs": 3,
+          "median_delta": -0.171875,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_hadamard_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.203125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_float",
+          "n_pairs": 3,
+          "median_delta": -0.234375,
+          "p_value": 0.17971249487899976,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "structured_orth_ternary",
+          "n_pairs": 3,
+          "median_delta": -0.203125,
+          "p_value": 0.25,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        },
+        {
+          "variant": "ternary_dfa_step",
+          "n_pairs": 3,
+          "median_delta": 0.0,
+          "p_value": NaN,
+          "significant": false,
+          "outcome": "tie",
+          "test": "Wilcoxon signed-rank (two-sided)"
+        }
+      ]
+    }
+  ],
+  "across_modes": {
+    "offline": {
+      "mode": "offline",
+      "datasets": [
+        "20newsgroups",
+        "adult",
+        "ag_news",
+        "california_housing",
+        "cifar10",
+        "fashion_mnist",
+        "mnist",
+        "ucr"
+      ],
+      "test": "Wilcoxon signed-rank across datasets",
+      "p_value": 0.7150006546880893,
+      "variants": [
+        "backprop_float",
+        "dfa_float"
+      ],
+      "median_delta": 0.0
+    },
+    "real": {
+      "mode": "real",
+      "datasets": [
+        "20newsgroups",
+        "adult",
+        "ag_news",
+        "california_housing",
+        "fashion_mnist",
+        "mnist",
+        "ucr"
+      ],
+      "test": "Wilcoxon signed-rank across datasets",
+      "p_value": 0.7531523647659145,
+      "variants": [
+        "backprop_float",
+        "dfa_float"
+      ],
+      "median_delta": 0.0
+    }
+  },
+  "protocol": {
+    "ci": "Mean \u00b1 95% CI via Student's t (n seeds)",
+    "within": "Per dataset/mode, Wilcoxon signed-rank on seed-aligned pairs vs baseline (best flip=off)",
+    "across": "Across datasets (per mode), Friedman test on average ranks when K\u22653 variants share coverage; else Wilcoxon on paired dataset means.",
+    "alpha": 0.05,
+    "ties": "p \u2265 0.05"
+  }
+}

@@ -1,0 +1,37 @@
+% Auto-generated: Best configs with 95% CI (sanitized for LaTeX)
+\begin{table}[H]
+\centering
+\footnotesize
+% Tighter column padding to help avoid overfull boxes
+\setlength{\tabcolsep}{2pt}
+% Column layout notes:
+% - Avoid \ttfamily in the “Best Variant” column because typewriter
+%   fonts do not hyphenate, which caused overfull hboxes for long
+%   tokens like "DFA-ter-epoch-tau005". Use a fixed-width p{..} with
+%   ragged-right so TeX can break at hyphens naturally.
+% - Keep “Fwd (Sched)” and “Base (μ±σ)” at fixed widths to stabilise
+%   wrapping, and leave the trailing “Notes” as an X column.
+\begin{tabularx}{\linewidth}{@{} l l >{\raggedright\arraybackslash}p{0.07\linewidth} >{\centering\arraybackslash}p{0.10\linewidth} >{\raggedright\arraybackslash}X @{\hspace{0.6em}} >{\raggedright\arraybackslash}p{0.11\linewidth} r >{\raggedright\arraybackslash}X r >{\raggedright\arraybackslash}X @{}}
+\toprule
+Data & Mode & Metric & Best & Best Variant & Fwd (Sched) & n & Base ($\mu\pm\sigma$) & $\Delta$ vs Base & Notes \\
+\midrule
+20NG & off & Acc & 0.391 & BP-ter-step & ter (step) & 3 & 0.177 $\pm$ 0.072 & 0.214 &  \\
+20NG & real & Acc & 0.321 & DFA-float-lr15 & off & 3 & 0.321 $\pm$ 0.005 & 0.000 &  \\
+Adult & off & Acc & 0.909 & DFA-float-lr15 & off & 3 & 0.909 $\pm$ 0.032 & 0.000 &  \\
+Adult & real & Acc & 0.860 & DFA-float & off & 3 & 0.860 $\pm$ 0.000 & 0.000 &  \\
+AGNews & off & Acc & 0.481 & DFA-ter-epoch-tau005 & ter (epoch) & 5 & 0.412 $\pm$ 0.070 & 0.069 &  \\
+AGNews & real & Acc & 0.901 & BP-float & off & 2 & 0.901 $\pm$ 0.001 & 0.000 &  \\
+CalHouse & off & R2 & 0.084 & DFA-float & off & 3 & 0.084 $\pm$ 0.056 & 0.000 &  \\
+CalHouse & real & R2 & 0.556 & DFA-float & off & 5 & 0.556 $\pm$ 0.006 & 0.000 &  \\
+CIFAR10 & off & Acc & 1.000 & DFA-float-lr15 & off & 5 & 1.000 $\pm$ 0.000 & 0.000 & saturated \\
+Fashion & off & Acc & 1.000 & DFA-float-lr15 & off & 5 & 1.000 $\pm$ 0.000 & 0.000 & saturated \\
+Fashion & real & Acc & 0.874 & BP-float-lr15 & off & 5 & 0.874 $\pm$ 0.003 & 0.000 &  \\
+MNIST & off & Acc & 1.000 & DFA-float-lr15 & off & 5 & 1.000 $\pm$ 0.000 & 0.000 & saturated \\
+MNIST & real & Acc & 0.965 & BP-float-lr15 & off & 5 & 0.965 $\pm$ 0.000 & 0.000 &  \\
+UCR & off & Acc & 1.000 & ter-DFA-step & ter (step) & 3 & 1.000 $\pm$ 0.000 & 0.000 & saturated \\
+UCR & real & Acc & 1.000 & ter-DFA-step & ter (step) & 3 & 1.000 $\pm$ 0.000 & 0.000 & saturated \\
+\bottomrule
+\end{tabularx}
+\caption{Best configurations per dataset. Means over seeds; Base shows $\mu\,\pm\,\sigma$ for the best flip-off baseline; $\Delta$ is vs Base.}
+\label{tab:best-configs}
+\end{table}

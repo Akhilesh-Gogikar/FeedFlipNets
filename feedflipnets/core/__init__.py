@@ -1,5 +1,10 @@
-"""Core numerical primitives for FeedFlipNets."""
+"""Core numerical primitives for FeedFlipNets.
 
-from . import activations, feedback, quant, strategies, types
+Backwards-compat note: the legacy module ``feedflipnets.core.feedback`` remains
+available for direct import, but is no longer imported here to avoid triggering
+its deprecation warning during package import. Prefer ``feedflipnets.core.strategies``.
+"""
 
-__all__ = ["activations", "quant", "strategies", "types", "feedback"]
+from . import activations, quant, strategies, types
+
+__all__ = ["activations", "quant", "strategies", "types"]

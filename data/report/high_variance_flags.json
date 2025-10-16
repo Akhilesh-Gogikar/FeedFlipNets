@@ -1,0 +1,472 @@
+[
+  {
+    "dataset": "ucr",
+    "mode": "real",
+    "variant": "dfa_ternary_step",
+    "metric": "accuracy",
+    "mean": 0.8177083333333334,
+    "std": 0.12629537138523064,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "real",
+    "variant": "dfa_ternary_step",
+    "metric": "macro_f1",
+    "mean": 0.7354973517351727,
+    "std": 0.18629459021789105,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "real",
+    "variant": "structured_hadamard_float",
+    "metric": "accuracy",
+    "mean": 0.796875,
+    "std": 0.22041774968227945,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "real",
+    "variant": "structured_hadamard_float",
+    "metric": "macro_f1",
+    "mean": 0.6837958846344853,
+    "std": 0.32727679014552546,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "real",
+    "variant": "structured_orth_float",
+    "metric": "accuracy",
+    "mean": 0.7760416666666666,
+    "std": 0.2189359328852469,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "real",
+    "variant": "structured_orth_float",
+    "metric": "macro_f1",
+    "mean": 0.6644444440486914,
+    "std": 0.3211322559568282,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "offline",
+    "variant": "dfa_ternary_step",
+    "metric": "accuracy",
+    "mean": 0.8177083333333334,
+    "std": 0.12629537138523064,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "offline",
+    "variant": "dfa_ternary_step",
+    "metric": "macro_f1",
+    "mean": 0.7354973517351727,
+    "std": 0.18629459021789105,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "offline",
+    "variant": "structured_hadamard_float",
+    "metric": "accuracy",
+    "mean": 0.6770833333333334,
+    "std": 0.4045436922735705,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "offline",
+    "variant": "structured_hadamard_float",
+    "metric": "macro_f1",
+    "mean": 0.6048807497921397,
+    "std": 0.435952913106901,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "offline",
+    "variant": "structured_orth_float",
+    "metric": "accuracy",
+    "mean": 0.7760416666666666,
+    "std": 0.2189359328852469,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "ucr",
+    "mode": "offline",
+    "variant": "structured_orth_float",
+    "metric": "macro_f1",
+    "mean": 0.6657380453411837,
+    "std": 0.3209520367721788,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "real",
+    "variant": "dfa_ternary_epoch_tau005",
+    "metric": "r2",
+    "mean": -0.056718655606512715,
+    "std": 0.21841283053042868,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "backprop_float_lr06",
+    "metric": "accuracy",
+    "mean": 0.5859375,
+    "std": 0.16810495930742198,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "ternary_dfa_step",
+    "metric": "accuracy",
+    "mean": 0.5520833333333334,
+    "std": 0.12010263080833547,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "ternary_dfa_step",
+    "metric": "r2",
+    "mean": -0.8996272349417812,
+    "std": 0.4878632793634831,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "dfa_ternary_epoch_tau010",
+    "metric": "r2",
+    "mean": -0.21905076508204413,
+    "std": 0.35204706885554565,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_hadamard_float_clip1",
+    "metric": "accuracy",
+    "mean": 0.5625,
+    "std": 0.1484375,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "dfa_ternary_epoch_tau002",
+    "metric": "r2",
+    "mean": -1.0430105860402195,
+    "std": 0.4042710313645715,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "backprop_float_lr15",
+    "metric": "accuracy",
+    "mean": 0.59375,
+    "std": 0.16627966135775596,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "dfa_float_lr06",
+    "metric": "accuracy",
+    "mean": 0.5390625,
+    "std": 0.19184420559076054,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "dfa_ternary_step",
+    "metric": "r2",
+    "mean": -0.9351993970796295,
+    "std": 0.28999406546723205,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_hadamard_float",
+    "metric": "accuracy",
+    "mean": 0.5625,
+    "std": 0.1484375,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_orth_float",
+    "metric": "accuracy",
+    "mean": 0.5598958333333334,
+    "std": 0.15236044246156327,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "backprop_ternary_step",
+    "metric": "accuracy",
+    "mean": 0.5338541666666666,
+    "std": 0.1308059203632746,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "backprop_ternary_step",
+    "metric": "r2",
+    "mean": -0.9187859913538748,
+    "std": 0.48409259855348663,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "dfa_float_clip1",
+    "metric": "accuracy",
+    "mean": 0.5208333333333334,
+    "std": 0.10664372515335037,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_hadamard_ternary",
+    "metric": "accuracy",
+    "mean": 0.5364583333333334,
+    "std": 0.11303403340734743,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_hadamard_ternary",
+    "metric": "r2",
+    "mean": -0.9300670815763409,
+    "std": 0.438247286662775,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "backprop_float_lr10",
+    "metric": "accuracy",
+    "mean": 0.5833333333333334,
+    "std": 0.1641244922561326,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "dfa_ternary_epoch",
+    "metric": "r2",
+    "mean": -0.5807008023989202,
+    "std": 0.4422883492016877,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_orth_ternary",
+    "metric": "accuracy",
+    "mean": 0.5130208333333334,
+    "std": 0.11701376009719255,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "adult",
+    "mode": "offline",
+    "variant": "structured_orth_ternary",
+    "metric": "r2",
+    "mean": -0.9577823489159779,
+    "std": 0.4574438538707627,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "ternary_dfa_step",
+    "metric": "r2",
+    "mean": -225.38596183972905,
+    "std": 304.5815809155865,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "dfa_ternary_epoch_tau002",
+    "metric": "r2",
+    "mean": -3.389265075039805,
+    "std": 0.4815685615827005,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "dfa_ternary_step",
+    "metric": "r2",
+    "mean": -2910.7762005076816,
+    "std": 2514.9701569423582,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "structured_orth_float",
+    "metric": "r2",
+    "mean": -1.2570217810346558,
+    "std": 0.3561246491272813,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "backprop_ternary_step",
+    "metric": "r2",
+    "mean": -15.198660999232546,
+    "std": 17.596233889120523,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "structured_hadamard_ternary",
+    "metric": "r2",
+    "mean": -4473.011655012782,
+    "std": 6987.048754743592,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "real",
+    "variant": "structured_orth_ternary",
+    "metric": "r2",
+    "mean": -3213.7031559245247,
+    "std": 1863.426350440909,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "ternary_dfa_step",
+    "metric": "r2",
+    "mean": -28.437260234663828,
+    "std": 22.861645807008777,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "dfa_float",
+    "metric": "r2",
+    "mean": 0.08400654625864083,
+    "std": 0.055593608604244255,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "dfa_ternary_step",
+    "metric": "r2",
+    "mean": -2321.5537216420444,
+    "std": 2662.177694126966,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "backprop_ternary_step",
+    "metric": "r2",
+    "mean": -18.379051316100448,
+    "std": 31.819484117733474,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "structured_hadamard_ternary",
+    "metric": "r2",
+    "mean": -1.364258430560226,
+    "std": 1.9378795347134694,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "dfa_ternary_epoch",
+    "metric": "r2",
+    "mean": -0.5529173593516458,
+    "std": 0.2215502676957354,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  },
+  {
+    "dataset": "california_housing",
+    "mode": "offline",
+    "variant": "structured_orth_ternary",
+    "metric": "r2",
+    "mean": -17612.49540712539,
+    "std": 11707.68660221807,
+    "n": 3,
+    "recommendation": "Increase seeds to at least 5 (compute 95% CIs)."
+  }
+]
