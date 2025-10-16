@@ -1,20 +1,39 @@
 FeedFlipNets
 ===========
 
-Deterministic Direct Feedback Alignment (DFA) with ternary forward weights on small, standard benchmarks. Reproducible on a laptop. Baseline‑oriented (not SOTA). Stochastic‑dithered ternary is provided with fixed seeds for unbiased, reproducible runs.
+Deterministic Direct Feedback Alignment (DFA) with ternary forward weights, implemented as a clear, reproducible baseline that runs on a laptop. The code accompanies the paper “FeedFlipNets: Deterministic DFA with Ternary Forwards—Stability and Convergence on Small, Standard Benchmarks” and reproduces its figures, tables, and results end‑to‑end.
 
 Project status: complete — no further development planned.
 
+- Paper PDF: `docs/paper/main.pdf`
+- Citation: see `CITATION.cff`
 
-Why This Repo
--------------
 
-- Deterministic: fixed seeds, offline fixtures, CPU‑friendly NumPy.
-- Simple, strong baselines: backprop, DFA (float), ternary‑DFA, structured feedback (orthogonal/Hadamard).
-- Clear controls: flip schedule (per_step/per_epoch), τ threshold, deterministic vs. stochastic ternary.
-- Reproducible reports: JSON/CSV summaries and plots under `data/report/`.
+What’s Inside (Paper‑Aligned)
+-----------------------------
 
-Conceptually: we update float “shadow” weights `V` and expose ternary weights `W = Q_τ(V)` in the forward pass on a configurable “flip” schedule.
+- Deterministic runs: fixed seeds, offline fixtures, CPU‑friendly NumPy.
+- Method: ternary forward weights with float “shadow” parameters; forward uses `W = Q_τ(V)`, gradients update shadows `V` via DFA with fixed feedback matrices.
+- Controls: flip schedule (`per_step`/`per_epoch`), threshold `τ`, deterministic vs. stochastic ternary.
+- Structured feedback: orthogonal or Hadamard `B_l` options that stabilize deeper MLPs without sacrificing speed.
+- Reproducible reporting: scripted sweeps yield JSON/CSV summaries and plots under `data/report/` and build the manuscript.
+
+
+Results at a Glance
+-------------------
+
+- Vision (MNIST, real): test accuracy — BP 96.49% vs DFA (float) 95.14%.
+- Text (AG News, real): test accuracy — BP 90.05% vs DFA (float) 89.98%.
+- Text (20 Newsgroups, real): DFA (float) exceeds the matched BP baseline under this configuration, with the gap most visible at intermediate learning rates.
+- Time‑series (UCR GunPoint): ternary and float DFA both reach 100%.
+- Sparsity/throughput: ternary forwards yield typical zero ratios in the 0.5–0.75 range with competitive throughput, exposing accuracy–sparsity Pareto fronts and favorable memory footprints.
+
+Theory & Guarantees
+-------------------
+
+- Alignment: we monitor a sign‑match statistic `p` that is typically > 1/2.
+- Convergence: under ternary noise and `p > 1/2`, updates converge in finite time to a stationary neighborhood.
+- Conditioning: orthogonal/Hadamard feedback raises the alignment floor and stabilizes deeper stacks.
 
 
 Install
@@ -114,6 +133,16 @@ Reports & Reproducibility
 - Paper build: `scripts/build_pdf.sh` then open `docs/paper/main.pdf`.
 
 
+Practical Tips
+--------------
+
+- Feedback structure: prefer orthogonal or Hadamard `B_l` for deeper stacks to preserve error magnitude and reduce tuning sensitivity.
+- Flip schedule: start with `per_epoch` on text/tabular; tighten to `per_step` on vision/time‑series once training is stable.
+- Thresholding: sweep `τ` to target zero ratios in the `0.5–0.7` range; push lower for accuracy, higher for compression.
+- Optimization: consider gradient clipping around `1.0`; tune learning rates conservatively with ternary forwards to avoid limit cycles.
+- Determinism: fix seeds for initialization and feedback to stabilize alignment onset and variance across runs.
+
+
 Repository Layout
 -----------------
 
@@ -126,17 +155,31 @@ Repository Layout
 - `data/report/` — aggregated results and plots
 
 
-Notes & Scope
--------------
+Scope & Caveats
+----------------
 
-- Baselines target small MLPs on standard datasets; we do not claim SOTA or large‑scale CNN/Transformer performance.
-- DFA on CNNs is sensitive without backward‑path normalization/structure and is expected to underperform BP in our minimal baseline.
+- Scope is intentionally limited to small MLPs on standard datasets; no SOTA claims on large‑scale CNNs/Transformers.
+- Minimal CNN DFA baselines are included for reference and are expected to underperform BP without additional normalization/structure.
 
 
 Citation & License
 ------------------
 
-- Cite via `CITATION.cff` or the paper in `docs/paper/main.pdf`.
+- Cite via `CITATION.cff` or the paper at `docs/paper/main.pdf`.
 - License: see `LICENSE`.
 
-Do I need a GPU? No — CPU is fine for the supported experiments and smoke tests.
+BibTeX
+```
+@misc{gogikar_feedflipnets_2024,
+  title   = {FeedFlipNets: Deterministic Offline Framework for Feedback Alignment},
+  author  = {Gogikar, Aki},
+  year    = {2024},
+  version = {1.0.0-rc1},
+  url     = {https://github.com/akigogikar/FeedFlipNets}
+}
+```
+
+FAQ
+---
+
+- Do I need a GPU? No — CPU is fine for the supported experiments and smoke tests.
