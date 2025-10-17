@@ -32,6 +32,12 @@ dev = [
 [tool.setuptools]
 py-modules = ["ternary_dfa_experiment"]
 
+[tool.setuptools.packages.find]
+include = ["feedflipnets*", "experiments*", "cli*"]
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]
+
+[project.scripts]
+feedflip = "cli.main:main"

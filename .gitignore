@@ -1,5 +1,10 @@
 __pycache__/
 tests/__pycache__/
+# Python caches and tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
 # Ignore large experiment artifacts
 results/**/*.npy
 results/**/*.png
@@ -8,3 +13,12 @@ datasets_cache/
 runs/
 .venv/
 .artifacts/
+artifacts/
+
+# Build/distribution metadata
+*.egg-info/
+dist/
+build/
+
+# Checkpoints and generated weights
+*.ckpt

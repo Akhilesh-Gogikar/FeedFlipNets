@@ -63,10 +63,10 @@ FEEDFLIP_DATA_OFFLINE=1 pytest -q tests/test_datasets_smoke.py tests/test_traini
 
 ```bash
 # Deterministic ternary flips
-python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05 --quant det
+feedflip --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05 --quant det
 
 # Stochastic‑dithered ternary (seeded ⇒ reproducible)
-python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05 --quant stoch
+feedflip --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05 --quant stoch
 ```
 
 Logs live in `runs/`. View TensorBoard with `tensorboard --logdir runs`.
@@ -120,6 +120,9 @@ Presets live under `configs/presets/`. You can override any flag on the CLI or v
 ```bash
 # Short form using Make
 make run PRESET=mnist_mlp_dfa EXTRA_ARGS='--feedback dfa --flip ternary --flip-schedule per_step'
+
+# Or call the module directly
+python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step
 ```
 
 Python API example:
