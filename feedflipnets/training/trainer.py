@@ -50,6 +50,8 @@ class FeedForwardModel:
     quant: str = "det"
     seed: int = 0
     weights: MutableSequence[Array] = field(init=False, repr=False)
+    shadow_weights: MutableSequence[Array] = field(init=False, repr=False)
+    last_quant_stats: list[float] = field(default_factory=list, init=False, repr=False)
 
     def __post_init__(self) -> None:
         self.reset(self.seed)
@@ -60,12 +62,14 @@ class FeedForwardModel:
     def reset(self, seed: int) -> None:
         rng = np.random.default_rng(seed)
         self._quant_rng = np.random.default_rng(seed + 1)
-        weights: list[Array] = []
+        shadow: list[Array] = []
         dims = list(self.layer_dims)
         for in_dim, out_dim in zip(dims[:-1], dims[1:]):
             W = rng.standard_normal((in_dim, out_dim), dtype=np.float32) * 0.05
-            weights.append(W)
-        self.weights = weights
+            shadow.append(W)
+        self.shadow_weights = shadow
+        self.weights = [w.copy() for w in shadow]
+        self.last_quant_stats = []
 
     def forward(self, inputs: Array) -> tuple[Array, ActivationState]:
         layer_inputs: list[Array] = [inputs]
@@ -87,33 +91,61 @@ class FeedForwardModel:
         return x, activations
 
     def apply_gradients(self, grads: Gradients) -> None:
-        for idx, W in enumerate(self.weights):
+        for idx, W in enumerate(self.shadow_weights):
             grad = grads.get(f"W{idx}")
             if grad is None:
                 continue
-            self.weights[idx] = W + grad
+            self.shadow_weights[idx] = W + grad
 
-    def quantise(self) -> None:
-        for idx, W in enumerate(self.weights):
+    def copy_shadow_to_forward(self) -> None:
+        self.weights = [w.copy() for w in self.shadow_weights]
+        self.last_quant_stats = [0.0 for _ in self.weights]
+
+    def quantise(self) -> list[float]:
+        stats: list[float] = []
+        new_forward: list[Array] = []
+        for idx, shadow in enumerate(self.shadow_weights):
             if self.quant == "det":
-                self.weights[idx] = quantize_ternary_det(W, self.tau)
+                quantised = quantize_ternary_det(shadow, self.tau)
             elif self.quant == "stoch":
-                self.weights[idx] = quantize_ternary_stoch(W, self.tau, self._quant_rng)
+                quantised = quantize_ternary_stoch(shadow, self.tau, self._quant_rng)
             else:  # pragma: no cover - guardrail
                 raise ValueError(f"Unknown quantisation mode: {self.quant}")
+            diff = quantised.astype(np.float32) - shadow.astype(np.float32)
+            stats.append(float(np.mean(diff * diff)))
+            new_forward.append(quantised)
+        self.weights = new_forward
+        self.last_quant_stats = stats
+        return stats
 
     def state_dict(self) -> Mapping[str, Array]:
-        return {f"W{idx}": W.copy() for idx, W in enumerate(self.weights)}
+        payload: dict[str, Array] = {}
+        for idx, shadow in enumerate(self.shadow_weights):
+            payload[f"W{idx}"] = shadow.copy()
+            payload[f"W{idx}_forward"] = self.weights[idx].copy()
+        return payload
 
     def load_state_dict(self, state: Mapping[str, Array]) -> None:
-        for idx in range(len(self.weights)):
+        shadow: list[Array] = []
+        forward: list[Array] = []
+        idx = 0
+        while True:
             key = f"W{idx}"
             if key not in state:
-                raise KeyError(f"Missing weight {key} in state dict")
-            self.weights[idx] = state[key].copy()
+                if idx == 0:
+                    raise KeyError(f"Missing weight {key} in state dict")
+                break
+            shadow_w = state[key].copy()
+            shadow.append(shadow_w)
+            fwd_key = f"W{idx}_forward"
+            forward.append(state.get(fwd_key, shadow_w).copy())
+            idx += 1
+        self.shadow_weights = shadow
+        self.weights = forward
+        self.last_quant_stats = [0.0 for _ in forward]
 
     def parameter_count(self) -> int:
-        return int(sum(int(w.size) for w in self.weights))
+        return int(sum(int(w.size) for w in self.shadow_weights))
 
 
 @dataclass
@@ -247,9 +279,6 @@ class Trainer:
             total_steps += train_steps
             self._emit_epoch("train", epoch, train_metrics, split_loggers)
 
-            if flip_enabled and resolved_schedule == "per_epoch":
-                self.model.quantise()
-
             should_eval = epoch % max(1, eval_every) == 0
             val_metrics = None
             if should_eval and val_loader is not None and (val_steps or 0) > 0:
@@ -343,6 +372,15 @@ class Trainer:
         align_bp = Backprop() if want_align else None
         align_sums: list[float] = []
         align_counts: list[int] = []
+        sign_match_counts: list[int] = []
+        sign_match_totals: list[int] = []
+        quant_var_sums: list[float] = []
+        quant_var_steps = 0
+        grad_norm_sum = 0.0
+        grad_norm_count = 0
+
+        if not training or not flip_enabled:
+            self.model.copy_shadow_to_forward()
 
         for step_idx in range(max(1, steps)):
             try:
@@ -366,6 +404,8 @@ class Trainer:
                         last_idx = len(activations.weights) - 1
                         align_sums = [0.0 for _ in range(last_idx + 1)]
                         align_counts = [0 for _ in range(last_idx + 1)]
+                        sign_match_counts = [0 for _ in range(last_idx + 1)]
+                        sign_match_totals = [0 for _ in range(last_idx + 1)]
                     for name, g_dfa in grads.items():
                         if name in bp_grads:
                             g_bp = bp_grads[name]
@@ -377,6 +417,19 @@ class Trainer:
                             if 0 <= idx < len(align_sums):
                                 align_sums[idx] += rho
                                 align_counts[idx] += 1
+                                mask = np.logical_or(
+                                    np.abs(g_bp) > 0.0,
+                                    np.abs(g_dfa) > 0.0,
+                                )
+                                total = int(np.count_nonzero(mask))
+                                if total > 0:
+                                    matches = int(
+                                        np.count_nonzero(
+                                            np.sign(g_bp[mask]) == np.sign(g_dfa[mask])
+                                        )
+                                    )
+                                    sign_match_counts[idx] += matches
+                                    sign_match_totals[idx] += total
                 if grad_clip is not None and grad_clip > 0:
                     # Compute global L2 norm across all parameter gradients
                     sqsum = 0.0
@@ -387,9 +440,34 @@ class Trainer:
                         scale = float(grad_clip / (norm + 1e-12))
                         for k, g in grads.items():
                             grads[k] = g * scale
+                grad_sq = 0.0
+                for g in grads.values():
+                    grad_sq += float(np.sum(g.astype(np.float64) ** 2))
+                grad_norm_sum += float(np.sqrt(grad_sq))
+                grad_norm_count += 1
                 self.optimizer.step(self.model, grads)
-                if flip_enabled and flip_schedule == "per_step":
-                    self.model.quantise()
+                if flip_enabled:
+                    if flip_schedule == "per_step":
+                        variances = self.model.quantise()
+                        if variances:
+                            if not quant_var_sums:
+                                quant_var_sums = [0.0 for _ in variances]
+                            for idx, val in enumerate(variances):
+                                quant_var_sums[idx] += float(val)
+                            quant_var_steps += 1
+                    elif flip_schedule == "off":
+                        self.model.copy_shadow_to_forward()
+                else:
+                    self.model.copy_shadow_to_forward()
+
+        if training and flip_enabled and flip_schedule == "per_epoch":
+            variances = self.model.quantise()
+            if variances:
+                if not quant_var_sums:
+                    quant_var_sums = [0.0 for _ in variances]
+                for idx, val in enumerate(variances):
+                    quant_var_sums[idx] += float(val)
+                quant_var_steps += 1
 
         metrics = {"loss": float(np.mean(losses)) if losses else 0.0}
         if preds_all:
@@ -413,14 +491,39 @@ class Trainer:
         # Emit average alignment across probed steps if collected
         if want_align and align_sums and any(align_counts):
             rhos: list[float] = []
+            deficits: list[float] = []
             for i, (s, n) in enumerate(zip(align_sums, align_counts)):
                 if n > 0:
                     avg = float(s / n)
                     metrics[f"rho_l{i}"] = avg
                     rhos.append(avg)
+                    deficit = float(1.0 - avg)
+                    metrics[f"rho_deficit_l{i}"] = deficit
+                    deficits.append(deficit)
             if rhos:
                 metrics["rho_mean"] = float(np.mean(rhos))
                 metrics["rho_min"] = float(np.min(rhos))
+            if deficits:
+                metrics["rho_deficit_mean"] = float(np.mean(deficits))
+                metrics["rho_deficit_max"] = float(np.max(deficits))
+        if want_align and sign_match_totals:
+            probs: list[float] = []
+            for i, total in enumerate(sign_match_totals):
+                if total > 0:
+                    prob = float(sign_match_counts[i] / total)
+                    metrics[f"p_align_l{i}"] = prob
+                    probs.append(prob)
+            if probs:
+                metrics["p_align_mean"] = float(np.mean(probs))
+                metrics["p_align_min"] = float(np.min(probs))
+        if grad_norm_count > 0:
+            metrics["grad_norm_mean"] = float(grad_norm_sum / grad_norm_count)
+        if quant_var_steps > 0 and quant_var_sums:
+            per_layer = [float(val / quant_var_steps) for val in quant_var_sums]
+            metrics["sigma_q2_mean"] = float(np.mean(per_layer))
+            metrics["sigma_q2_max"] = float(np.max(per_layer))
+            for i, val in enumerate(per_layer):
+                metrics[f"sigma_q2_l{i}"] = float(val)
         return metrics, current_state
 
     def _emit_epoch(

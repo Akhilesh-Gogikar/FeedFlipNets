@@ -29,6 +29,26 @@ import numpy as np
 ROOT = Path("runs/bench")
 REPORT_DIR = Path("data/report")
 
+_CI_T_CRIT = {
+    1: 0.0,
+    2: 12.706,
+    3: 4.303,
+    4: 3.182,
+    5: 2.776,
+    6: 2.571,
+    7: 2.447,
+    8: 2.365,
+    9: 2.306,
+    10: 2.262,
+}
+
+
+def _ci95_from_std(std: float, n: int) -> float:
+    if n <= 1 or std <= 0.0:
+        return 0.0
+    t = _CI_T_CRIT.get(n, 1.96)
+    return float(t * std / math.sqrt(n))
+
 
 def _read_json(path: Path) -> Mapping[str, object]:
     if not path.exists():
@@ -173,7 +193,7 @@ def _aggregate(runs: Sequence[RunRecord]) -> List[SummaryRecord]:
             sigma = float(np.std(values, ddof=1)) if len(values) > 1 else 0.0
             n = len(values)
             sem = (sigma / (n**0.5)) if n > 0 else 0.0
-            ci95 = 1.96 * sem if n > 0 else 0.0
+            ci95 = _ci95_from_std(sigma, n)
             summary.append(
                 SummaryRecord(
                     dataset=key[0],
@@ -316,7 +336,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             effect = (delta / pooled) if (base_rec is not None and pooled > 1e-12) else 0.0
 
             best_label = _format_pm(best_rec.mean, best_rec.ci95)
-            base_label = _format_pm(base_rec.mean, base_rec.std) if base_rec else "—"
+            base_label = _format_pm(base_rec.mean, base_rec.ci95) if base_rec else "—"
             flip_label = f"{best_rec.flip} ({best_rec.flip_schedule})"
             rows.append(
                 "| "
@@ -341,12 +361,12 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
 
     lines: List[str] = []
     lines.append("# FeedFlipNets Benchmark Summary\n")
-    lines.append("Aggregated over seeds with mean ± std.\n")
+    lines.append("Aggregated over seeds with mean ± 95% CI.\n")
     lines.append("")
 
     if topline:
         lines.append("## Topline Highlights\n")
-        lines.append("| Dataset | Mode | Metric | Mean ± Std | Strategy Variant | Flip | n |")
+        lines.append("| Dataset | Mode | Metric | Mean ± 95% CI | Strategy Variant | Flip | n |")
         lines.append("|---|---|---|---|---|---|---:|")
         for dataset, mode in sorted(topline.keys()):
             records = topline[(dataset, mode)]
@@ -360,7 +380,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                             dataset,
                             mode,
                             label,
-                            _format_pm(record.mean, record.std),
+                            _format_pm(record.mean, record.ci95),
                             record.strategy_variant,
                             f"{record.flip} ({record.flip_schedule})",
                             str(record.count),
@@ -375,7 +395,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
 
     for (dataset, mode), records in sorted(grouped.items()):
         lines.append(f"## {dataset} ({mode})\n")
-        lines.append("| Strategy Variant | Flip | Metric | Mean ± Std | n |")
+        lines.append("| Strategy Variant | Flip | Metric | Mean ± 95% CI | n |")
         lines.append("|---|---|---|---|---:|")
         records_sorted = sorted(records, key=lambda r: (r.strategy_variant, r.metric))
         for record in records_sorted:
@@ -395,7 +415,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                         record.strategy_variant,
                         f"{record.flip} ({record.flip_schedule})",
                         record.metric,
-                        _format_pm(record.mean, record.std) + highlight,
+                        _format_pm(record.mean, record.ci95) + highlight,
                         str(record.count),
                     ]
                 )
@@ -515,14 +535,17 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
         # Best Configs — markdown-only table (paper-ready)
         md_path = REPORT_DIR / "best_configs_table.md"
         md_lines = [
-            "| Dataset | Mode | Primary | Best (μ±σ) | Variant | Flip | n | "
-            "Baseline (μ±σ) | Δ | Effect | Note |",
+            "| Dataset | Mode | Primary | Best (μ±CI95) | Variant | Flip | n | "
+            "Baseline (μ±CI95) | Δ | Effect | Note |",
             "|---|---|---|---|---|---|---:|---|---:|---:|---|",
         ]
         for row in best_rows_csv:
-            best_label = _format_pm(float(row["best_mean"]), float(row["best_std"]))
+            n = int(row["n"])
+            best_ci = _ci95_from_std(float(row["best_std"]), n)
+            base_ci = _ci95_from_std(float(row["baseline_std"]), n)
+            best_label = _format_pm(float(row["best_mean"]), best_ci)
             if math.isfinite(float(row["baseline_mean"])):
-                base_label = _format_pm(float(row["baseline_mean"]), float(row["baseline_std"]))
+                base_label = _format_pm(float(row["baseline_mean"]), base_ci)
             else:
                 base_label = "—"
             delta_str = f"{float(row['delta']):.4f}" if math.isfinite(float(row["delta"])) else "—"
@@ -564,63 +587,87 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             s = s.replace("—", "\\textemdash{}")
             return s
 
-        tex_path = REPORT_DIR / "best_configs_table.tex"
-        # 11 columns: l l l c l l r c c c l
-        # Use a minimal header without \hline to maximize engine compatibility
-        header = "\\begin{tabular}{lllllllllll}\n"
-        header += (
-            "Dataset & Mode & Primary & Best (mean+/-std) & Variant & Flip & n & Baseline & "
+        def _tex_rows(records: Sequence[Mapping[str, object]]) -> List[str]:
+            rendered: List[str] = []
+            for row in records:
+                n = int(row["n"])
+                best_ci = _ci95_from_std(float(row["best_std"]), n)
+                base_ci = _ci95_from_std(float(row["baseline_std"]), n)
+                best_label = f"{float(row['best_mean']):.4f} \\(\\pm {best_ci:.4f}\\)"
+                if math.isfinite(float(row["baseline_mean"])):
+                    base_label = f"{float(row['baseline_mean']):.4f} \\(\\pm {base_ci:.4f}\\)"
+                else:
+                    base_label = "\\textemdash{}"
+                delta_str = (
+                    f"{float(row['delta']):.4f}"
+                    if math.isfinite(float(row["delta"]))
+                    else "\\textemdash{}"
+                )
+                effect_str = (
+                    f"{float(row['effect_size']):.3f}"
+                    if math.isfinite(float(row["effect_size"]))
+                    else "\\textemdash{}"
+                )
+                flip_label = f"{row['best_flip']} ({row['best_flip_schedule']})"
+                rendered.append(
+                    " ".join(
+                        [
+                            _tex_escape(str(row["dataset"])),
+                            "&",
+                            _tex_escape(str(row["mode"])),
+                            "&",
+                            _tex_escape(str(row["primary"])),
+                            "&",
+                            best_label,
+                            "&",
+                            _tex_escape(str(row["best_variant"])),
+                            "&",
+                            _tex_escape(flip_label),
+                            "&",
+                            str(row["n"]),
+                            "&",
+                            _tex_escape(base_label),
+                            "&",
+                            _tex_escape(delta_str),
+                            "&",
+                            _tex_escape(effect_str),
+                            "&",
+                            _tex_escape(str(row["note"])) if row.get("note") else "",
+                            "\\\\",
+                        ]
+                    )
+                )
+            return rendered
+
+        header = (
+            "\\begin{tabular}{lllllllllll}\n"
+            "Dataset & Mode & Primary & Best (mean+/-CI95) & Variant & Flip & n & Baseline & "
             "Delta & Effect & Note \\\n"
         )
-        rows_tex: List[str] = []
-        for row in best_rows_csv:
-            # Prefer UTF-8 ± using XeTeX to avoid math-mode \pm in tables
-            best_label = f"{float(row['best_mean']):.4f} ± {float(row['best_std']):.4f}"
-            if math.isfinite(float(row["baseline_mean"])):
-                base_label = f"{float(row['baseline_mean']):.4f} ± {float(row['baseline_std']):.4f}"
-            else:
-                base_label = "\\textemdash{}"
-            delta_str = (
-                f"{float(row['delta']):.4f}"
-                if math.isfinite(float(row["delta"]))
-                else "\\textemdash{}"
-            )
-            effect_str = (
-                f"{float(row['effect_size']):.3f}"
-                if math.isfinite(float(row["effect_size"]))
-                else "\\textemdash{}"
-            )
-            flip_label = f"{row['best_flip']} ({row['best_flip_schedule']})"
-            rows_tex.append(
-                " ".join(
-                    [
-                        _tex_escape(str(row["dataset"])),
-                        "&",
-                        _tex_escape(str(row["mode"])),
-                        "&",
-                        _tex_escape(str(row["primary"])),
-                        "&",
-                        best_label,
-                        "&",
-                        _tex_escape(str(row["best_variant"])),
-                        "&",
-                        _tex_escape(flip_label),
-                        "&",
-                        str(row["n"]),
-                        "&",
-                        _tex_escape(base_label),
-                        "&",
-                        _tex_escape(delta_str),
-                        "&",
-                        _tex_escape(effect_str),
-                        "&",
-                        _tex_escape(str(row["note"])) if row.get("note") else "",
-                        "\\\\",
-                    ]
-                )
-            )
         trailer = "\\end{tabular}\n"
-        tex_path.write_text(header + "\n".join(rows_tex) + "\n" + trailer)
+
+        def _write_tex(name: str, rows: Sequence[str]) -> None:
+            if not rows:
+                return
+            path = REPORT_DIR / name
+            path.write_text(header + "\n".join(rows) + "\n" + trailer)
+
+        def _write_rows(name: str, rows: Sequence[str]) -> None:
+            if not rows:
+                return
+            path = REPORT_DIR / name
+            path.write_text("\n".join(rows) + "\n")
+
+        rows_all = _tex_rows(best_rows_csv)
+        rows_real = _tex_rows([r for r in best_rows_csv if r["mode"] == "real"])
+        rows_offline = _tex_rows([r for r in best_rows_csv if r["mode"] == "offline"])
+
+        _write_tex("best_configs_table.tex", rows_all)
+        _write_tex("best_configs_table_real.tex", rows_real)
+        _write_tex("best_configs_table_offline.tex", rows_offline)
+        _write_rows("best_configs_table_rows.tex", rows_all)
+        _write_rows("best_configs_table_real_rows.tex", rows_real)
+        _write_rows("best_configs_table_offline_rows.tex", rows_offline)
 
 
 def main() -> None:

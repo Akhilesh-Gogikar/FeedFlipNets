@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Render redesigned meta figures from data/report/meta_convergence_summary.csv:
- - meta_epochs_to_0p90_acc.png (horizontal bars)
+ - meta_epochs_to_90pct_acc.png (horizontal bars)
  - meta_early_slopes.png (two clean panels: Acc. slope and R^2 slope)
 
 The script is deterministic and uses a consistent style with compact labels.
@@ -54,7 +54,7 @@ def _read_meta() -> (
             run = row["run"].strip()
             runs.append(run)
             try:
-                e = float(row.get("epochs_to_0.90_acc") or "nan")
+                e = float(row.get("epochs_to_90pct_best_acc") or "nan")
             except ValueError:
                 e = float("nan")
             try:
@@ -94,11 +94,11 @@ def plot_epochs_to_point(runs: List[str], e90: Dict[str, float]) -> None:
     values = [e90[r] for r in runs if e90.get(r) == e90.get(r)]
     fig, ax = plt.subplots(figsize=(5.0, 3.2))
     ax.barh(labels, values, color="#5B8FD9")
-    ax.set_xlabel("Epochs to .90 accuracy")
+    ax.set_xlabel("Epochs to 90% of best accuracy")
     ax.grid(axis="x", alpha=0.2)
     fig.tight_layout()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT_DIR / "meta_epochs_to_0p90_acc.png", dpi=200)
+    fig.savefig(OUT_DIR / "meta_epochs_to_90pct_acc.png", dpi=200)
     plt.close(fig)
 
 

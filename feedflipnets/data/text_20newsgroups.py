@@ -1,4 +1,4 @@
-"""20 Newsgroups dataset with hashing vectorizer and offline fixture."""
+"""20 Newsgroups dataset with TF-IDF + Truncated SVD pipeline and offline fixture."""
 
 from __future__ import annotations
 
@@ -7,11 +7,14 @@ from typing import Iterator
 
 import numpy as np
 from sklearn.datasets import fetch_20newsgroups
-from sklearn.feature_extraction.text import HashingVectorizer
+from sklearn.decomposition import TruncatedSVD
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.preprocessing import Normalizer
 
 from ..core.types import Batch
 from .registry import DatasetSpec, DataSpec, register_dataset
-from .utils import batch_iterator, deterministic_split, resolve_cache_dir
+from .utils import SplitIndices, batch_iterator, deterministic_split, resolve_cache_dir
 
 
 def _offline_dataset(n_features: int) -> tuple[np.ndarray, np.ndarray]:
@@ -48,46 +51,176 @@ def _offline_dataset(n_features: int) -> tuple[np.ndarray, np.ndarray]:
     return X, y
 
 
+def _stratified_indices(
+    labels: np.ndarray,
+    val_split: float,
+    test_split: float,
+    seed: int,
+) -> SplitIndices:
+    """Create deterministic stratified train/val/test partitions."""
+
+    y = labels.astype(np.int64, copy=False)
+    indices = np.arange(y.size)
+
+    train_val_idx = indices
+    test_idx = np.empty(0, dtype=np.int64)
+    if test_split > 0:
+        splitter = StratifiedShuffleSplit(n_splits=1, test_size=test_split, random_state=seed)
+        train_val_idx, test_idx = next(splitter.split(indices, y))
+
+    val_idx = np.empty(0, dtype=np.int64)
+    if val_split > 0 and train_val_idx.size > 0:
+        remaining = 1.0 - test_split
+        rel_val = val_split / remaining if remaining > 0 else 0.0
+        rel_val = min(max(rel_val, 0.0), 1.0)
+        splitter = StratifiedShuffleSplit(n_splits=1, test_size=rel_val, random_state=seed + 1)
+        train_idx_rel, val_idx_rel = next(splitter.split(train_val_idx, y[train_val_idx]))
+        train_idx = train_val_idx[train_idx_rel]
+        val_idx = train_val_idx[val_idx_rel]
+    else:
+        train_idx = train_val_idx
+
+    return SplitIndices(
+        train=np.sort(train_idx.astype(np.int64)),
+        val=np.sort(val_idx.astype(np.int64)),
+        test=np.sort(test_idx.astype(np.int64)),
+    )
+
+
+def _build_real_representation(
+    *,
+    cache_root: Path,
+    subset: str,
+    seed: int,
+    val_split: float,
+    test_split: float,
+    tfidf_max_features: int | None,
+    svd_dim: int | None,
+    min_df: int,
+    max_df: float,
+    ngram_range: tuple[int, int],
+    stop_words: str | None,
+    sublinear_tf: bool,
+) -> tuple[np.ndarray, np.ndarray, SplitIndices, dict]:
+    raw = fetch_20newsgroups(
+        subset=subset,
+        remove=("headers", "footers"),
+        data_home=str(cache_root),
+    )
+    texts = np.asarray(raw.data, dtype=object)
+    labels = raw.target.astype(np.int64)
+    splits = _stratified_indices(labels, val_split, test_split, seed)
+
+    max_feats = int(tfidf_max_features) if tfidf_max_features else None
+    vec = TfidfVectorizer(
+        max_features=max_feats,
+        min_df=int(min_df),
+        max_df=float(max_df),
+        ngram_range=tuple(ngram_range),
+        stop_words=stop_words,
+        lowercase=True,
+        norm="l2",
+        sublinear_tf=sublinear_tf,
+    )
+
+    train_texts = texts[splits.train]
+    train_sparse = vec.fit_transform(train_texts)
+    full_sparse = vec.transform(texts)
+
+    vocab_size = len(vec.vocabulary_)
+    svd_used = None
+    normalizer = None
+
+    if svd_dim is not None and svd_dim > 0 and train_sparse.shape[1] > 1:
+        n_components = min(int(svd_dim), train_sparse.shape[1] - 1)
+        n_components = max(n_components, 1)
+        svd_used = TruncatedSVD(n_components=n_components, random_state=seed)
+        normalizer = Normalizer(copy=False)
+        reduced = svd_used.fit_transform(train_sparse).astype(np.float32)
+        reduced = normalizer.fit_transform(reduced)
+        dense = svd_used.transform(full_sparse).astype(np.float32)
+        dense = normalizer.transform(dense)
+    else:
+        dense = full_sparse.toarray().astype(np.float32)
+
+    features = np.ascontiguousarray(dense.astype(np.float32))
+    provenance = {
+        "mode": "download",
+        "subset": subset,
+        "tfidf_vocabulary": int(vocab_size),
+        "tfidf_max_features": int(max_feats or 0),
+        "svd_dim": int(svd_dim or 0),
+        "min_df": int(min_df),
+        "max_df": float(max_df),
+        "ngram_range": list(ngram_range),
+        "stop_words": stop_words or "none",
+        "sublinear_tf": bool(sublinear_tf),
+        "target_names": list(raw.target_names),
+    }
+    if svd_used is not None:
+        provenance["svd_explained_variance"] = float(svd_used.explained_variance_ratio_.sum())
+
+    return features, labels, splits, provenance
+
+
 @register_dataset("20newsgroups")
 def build_20newsgroups(
     *,
     offline: bool = True,
     cache_dir: str | Path | None = None,
     subset: str = "all",
-    n_features: int = 4096,
+    n_features: int | None = 4096,
+    tfidf_max_features: int | None = 60000,
+    svd_dim: int | None = None,
+    min_df: int = 2,
+    max_df: float = 0.95,
+    ngram_range: tuple[int, int] | list[int] | tuple[int, int] = (1, 2),
+    stop_words: str | None = "english",
+    sublinear_tf: bool = True,
     val_split: float = 0.1,
     test_split: float = 0.2,
     seed: int = 0,
 ) -> DatasetSpec:
     """Create a :class:`DatasetSpec` for 20 Newsgroups."""
 
+    if isinstance(ngram_range, (list, tuple)) and len(ngram_range) == 2:
+        ngram = (int(ngram_range[0]), int(ngram_range[1]))
+    else:  # pragma: no cover - guardrail
+        raise ValueError("ngram_range must be a pair such as (1, 2)")
+
+    effective_svd = int(svd_dim or n_features or 2048)
+
     if offline:
-        X, y = _offline_dataset(n_features)
-        provenance: dict[str, object] = {"mode": "offline", "source": "synthetic"}
+        feature_dim = int(n_features or 4096)
+        X, y = _offline_dataset(feature_dim)
+        provenance: dict[str, object] = {
+            "mode": "offline",
+            "source": "synthetic",
+            "feature_dim": feature_dim,
+        }
+        splits = deterministic_split(
+            X.shape[0], val_split=val_split, test_split=test_split, seed=seed
+        )
     else:
         cache_root = resolve_cache_dir(cache_dir)
-        raw = fetch_20newsgroups(
-            subset=subset, remove=("headers", "footers"), data_home=str(cache_root)
+        max_feats = tfidf_max_features or max(effective_svd * 4, 50000)
+        X, y, splits, provenance = _build_real_representation(
+            cache_root=cache_root,
+            subset=subset,
+            seed=seed,
+            val_split=val_split,
+            test_split=test_split,
+            tfidf_max_features=max_feats,
+            svd_dim=effective_svd,
+            min_df=min_df,
+            max_df=max_df,
+            ngram_range=ngram,
+            stop_words=stop_words,
+            sublinear_tf=sublinear_tf,
         )
-        vectorizer = HashingVectorizer(
-            n_features=n_features,
-            alternate_sign=False,
-            norm="l2",
-        )
-        X_sparse = vectorizer.transform(raw.data)
-        X = X_sparse.toarray().astype(np.float32)
-        y = raw.target.astype(np.int64)
-        provenance = {
-            "mode": "download",
-            "subset": subset,
-            "n_features": n_features,
-            "target_names": list(raw.target_names),
-        }
 
     num_classes = int(np.max(y)) + 1 if y.size else 0
     y_one_hot = np.eye(num_classes, dtype=np.float32)[y] if num_classes else y.reshape(-1, 1)
-
-    splits = deterministic_split(X.shape[0], val_split=val_split, test_split=test_split, seed=seed)
 
     def loader(split: str, batch_size: int) -> Iterator[Batch]:
         if split not in {"train", "val", "test"}:
@@ -109,6 +242,7 @@ def build_20newsgroups(
             "val_split": val_split,
             "test_split": test_split,
             "seed": seed,
+            "svd_dim": effective_svd,
         }
     )
 

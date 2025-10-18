@@ -1,17 +1,24 @@
-\begin{table}[H]
-\centering
+\begin{center}
+\begingroup
+\setlength{\fboxsep}{8pt}%
+\setlength{\fboxrule}{0pt}%
+\colorbox{feedflipHighlight}{%
+\begin{minipage}{0.96\linewidth}
 \footnotesize
-\begin{tabular}{l l l}
+\begin{tabularx}{\linewidth}{l X X}
 \toprule
-Headline & Metric & Value \\
+Metric & Definition & Notes \\
 \midrule
-Vision (MNIST, real) & Test Acc. (BP vs DFA float) & 96.49\% vs 95.14\% \\
-Text (20NG, real) & Best stable Acc. (DFA float) & .321 $\pm$ .005 \\
-AG News (real) & Test Acc. (BP vs DFA float) & 90.05\% vs 89.98\% \\
-Time-series (UCR) & Best Test Acc. (Ternary DFA, real) & 100.00\% \\
-Sparsity (Ternary) & Zero ratio (typical) & \(\approx\) 0.5--0.75 \\
-Determinism & Seeds, fixtures & Yes \\
+E@90\% of best & First epoch where a run's validation metric reaches \(0.9\times\) its best value. & Computed per seed; we report mean $\pm$ 95\% t-CI over matched seeds. \\
+Early slope (e1→e3) & Finite difference between epochs 1 and 3 of the validation metric. & Captures initial learning speed; positive is faster. \\
+Stability CV & Coefficient of variation of validation loss across epochs in a run. & Lower is steadier; we average CV across matched seeds. \\
+Alignment AUC & Normalized area under the layerwise cosine-alignment curves \(\rho_\ell(t)\). & Reported as mean $\pm$ 95\% t-CI; higher implies backprop-like signals. \\
+TOST equivalence & Two one-sided tests on matched seeds with \(\delta=\pm0.5\) pp for accuracy (\(\pm0.01\) for $R^2$). & We declare equivalence when both one-sided p-values < 0.05. \\
 \bottomrule
-\end{tabular}
-\caption*{Key Metrics (condensed). Representative values from our benchmark suite.}
-\end{table}
+\end{tabularx}
+\vspace{0.25em}
+\captionof{table}{Metrics sidebar: definitions used in Sec.~\ref{sec:results}--\ref{sec:discussion}.}
+\label{sidebar:metrics-key}
+\end{minipage}}
+\endgroup
+\end{center}

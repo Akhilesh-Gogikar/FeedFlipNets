@@ -14,6 +14,11 @@ runs/
 .venv/
 .artifacts/
 artifacts/
+data/report/best_configs_table*.tex
+data/report/best_configs_table*_rows.tex
+data/report/plots/*.svg
+data/report/plots/*.pdf
+data/report/plots/*.eps
 
 # Build/distribution metadata
 *.egg-info/

@@ -74,8 +74,13 @@ def analyze_run(run_dir: Path) -> Dict:
     rec: Dict[str, float] = {"run": name}
     if is_classif:
         acc_df = val if "accuracy" in val.columns else train
-        epochs_to_0p90 = first_epoch_crossing(acc_df, "accuracy", 0.90, mode="max")
-        rec["epochs_to_0.90_acc"] = epochs_to_0p90
+        if not acc_df.empty:
+            best_acc = float(acc_df["accuracy"].max())
+            threshold = 0.9 * best_acc
+        else:
+            threshold = float("nan")
+        epochs_to_rel = first_epoch_crossing(acc_df, "accuracy", threshold, mode="max")
+        rec["epochs_to_90pct_best_acc"] = epochs_to_rel
         rec["early_acc_slope_e3"] = early_slope(acc_df, "accuracy", epochs=3)
     if is_reg:
         r2_df = val if "r2" in val.columns else train
@@ -129,19 +134,19 @@ def main():
 
     # Plot: epochs to 0.90 accuracy (classification only)
     cls = (
-        df.dropna(subset=["epochs_to_0.90_acc"])
-        if "epochs_to_0.90_acc" in df.columns
+        df.dropna(subset=["epochs_to_90pct_best_acc"])
+        if "epochs_to_90pct_best_acc" in df.columns
         else pd.DataFrame()
     )
     if not cls.empty:
         plt.figure(figsize=(6, 3.0))
-        cls_sorted = cls.sort_values("epochs_to_0.90_acc")
+        cls_sorted = cls.sort_values("epochs_to_90pct_best_acc")
         y = cls_sorted["run"]
-        vals = cls_sorted["epochs_to_0.90_acc"]
+        vals = cls_sorted["epochs_to_90pct_best_acc"]
         plt.barh(y, vals, color="#4e79a7")
-        plt.xlabel("Epochs to 0.90 accuracy")
+        plt.xlabel("Epochs to 90% of best accuracy")
         plt.tight_layout()
-        plt.savefig(PLOTS_DIR / "meta_epochs_to_0p90_acc.png", dpi=200)
+        plt.savefig(PLOTS_DIR / "meta_epochs_to_90pct_acc.png", dpi=200)
         plt.close()
 
     # Plot: early slopes (acc or r2)
