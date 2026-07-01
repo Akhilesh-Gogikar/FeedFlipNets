@@ -8,12 +8,12 @@
     ],
     "mean_min_theta": [
       55.571021389938814,
-      74.08097881998712,
-      90.0,
-      null
+      73.86899998071945,
+      78.11872206127646,
+      105.83764464245333
     ],
-    "theta_slope_deg_per_layer": null,
-    "slope_ci95": null
+    "theta_slope_deg_per_layer": 3.2564975905591886,
+    "slope_ci95": 1.1195075897889928
   },
   "perturb": {
     "depths": [
@@ -24,11 +24,11 @@
     ],
     "mean_min_theta": [
       56.716600157020956,
-      65.9456727422701,
-      90.0,
-      null
+      65.72209084869687,
+      63.430730886521474,
+      106.11380519179109
     ],
-    "theta_slope_deg_per_layer": null,
-    "slope_ci95": null
+    "theta_slope_deg_per_layer": 3.406209484690672,
+    "slope_ci95": 1.6947102697857839
   }
 }

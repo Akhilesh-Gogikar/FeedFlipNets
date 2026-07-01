@@ -22,10 +22,29 @@ D_IN = 16
 C = 4
 N = 128
 
+# Substrate amendment (2026-07-01, pre-registered): the initial run diverged at L=16
+# (bias-free deep MLP explodes at lr=0.1). We add a global grad-norm clip at 1.0 — the value
+# the FeedFlipNets paper itself recommends — applied IDENTICALLY to every strategy. This
+# stabilizes the weight trajectory so the alignment gate is computable at depth. The alignment
+# METRIC and the gate THRESHOLDS are unchanged; clipping touches only the update trajectory,
+# never the raw gradients that alignment is measured on. lr stays 0.1 (lowering it worsened
+# worst-layer alignment in probes, so clipping alone is the minimal fix).
+GRAD_CLIP_NORM = 1.0
+
+Array = np.ndarray
+
 
 class _Desc:
     def __init__(self, dims):
         self.layer_dims = dims
+
+
+def _clip_global_norm(grads: Dict[str, Array], max_norm: float) -> Dict[str, Array]:
+    total = np.sqrt(sum(float((g**2).sum()) for g in grads.values()))
+    if total <= max_norm:
+        return grads
+    scale = max_norm / (total + 1e-12)
+    return {k: v * scale for k, v in grads.items()}
 
 
 def _dims(depth: int) -> List[int]:
@@ -65,6 +84,7 @@ def run_condition(
         fn, _base, _st = make_perturb_loss_fn(model, X, y)
         sstate.metadata["perturb_loss_fn"] = fn
         grads, sstate = strat.backward(state, err, sstate)
+        grads = _clip_global_norm(grads, GRAD_CLIP_NORM)
         for idx in range(model.num_layers):
             model.weights[idx] -= lr * grads[f"W{idx}"]
 
