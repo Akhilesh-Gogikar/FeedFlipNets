@@ -1,0 +1,4 @@
+# M2 (Activation-Routed DFA through attention) testbed dependency.
+# torch is CPU-only here: autograd provides the exact-BP reference/alignment target.
+# Strategies stay explicit (they read cached forward tensors, never autograd their own grads).
+torch>=2.2
