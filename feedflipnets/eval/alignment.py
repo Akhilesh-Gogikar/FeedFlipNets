@@ -44,3 +44,22 @@ def depth_slope(depths: List[int], theta_mins: List[float]) -> Tuple[float, floa
     s2 = float((resid**2).sum() / (n - 2))
     se = np.sqrt(s2 / (sxx + 1e-12))
     return slope, float(1.96 * se)
+
+
+# --- M2: attention-block theta + per-path breakdown (spec section 7) ---
+_ATTN = ["Wq", "Wk", "Wv", "Wo"]
+
+
+def attention_block_theta(cosines: Dict[str, float]) -> float:
+    """Attention-block theta = MAX angle over {Wq,Wk,Wv,Wo} (worst-aligned). MLP excluded."""
+    return max(theta_deg(cosines[k]) for k in _ATTN if k in cosines)
+
+
+def per_path_theta(cosines: Dict[str, float]) -> Dict[str, float]:
+    """Per-path worst angle: value path {Wv,Wo} vs score path {Wq,Wk} (spec section 3)."""
+    value = [theta_deg(cosines[k]) for k in ["Wv", "Wo"] if k in cosines]
+    score = [theta_deg(cosines[k]) for k in ["Wq", "Wk"] if k in cosines]
+    return {
+        "value": max(value) if value else float("nan"),
+        "score": max(score) if score else float("nan"),
+    }
