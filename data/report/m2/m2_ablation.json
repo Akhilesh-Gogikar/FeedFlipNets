@@ -1,0 +1,30 @@
+{
+  "fixed_dfa": {
+    "attn_block_theta_mean": 90.55531377827234,
+    "attn_block_theta_ci95": 0.4243510276726001,
+    "value_theta_mean": 90.4377102855426,
+    "score_theta_mean": 90.25922255175053,
+    "R_O_rel_err_mean": null
+  },
+  "one_only": {
+    "attn_block_theta_mean": 90.78202105949677,
+    "attn_block_theta_ci95": 0.8666119492498829,
+    "value_theta_mean": 90.35466386205137,
+    "score_theta_mean": 90.11161241287643,
+    "R_O_rel_err_mean": null
+  },
+  "two_only": {
+    "attn_block_theta_mean": 91.81971429811406,
+    "attn_block_theta_ci95": 1.3788613220021917,
+    "value_theta_mean": 89.03389191068479,
+    "score_theta_mean": 90.09133363080966,
+    "R_O_rel_err_mean": null
+  },
+  "one_two": {
+    "attn_block_theta_mean": 46.35004048292123,
+    "attn_block_theta_ci95": 5.598862678201596,
+    "value_theta_mean": 42.86405232245385,
+    "score_theta_mean": 44.17327480607454,
+    "R_O_rel_err_mean": 1.0574314479903608
+  }
+}
