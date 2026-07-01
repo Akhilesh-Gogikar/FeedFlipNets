@@ -365,6 +365,98 @@ class PerturbationTaughtFeedback:
         return grads, StrategyState(feedback=B, metadata=md)
 
 
+# --- M2: ① Activation-Routed DFA (torch testbed) ---
+from .transformer import forward_np_cache as _fwd_np  # noqa: E402
+from .transformer import softmax_jac_apply as _sjac  # noqa: E402
+
+
+@dataclass
+class ActivationRoutedDFA:
+    """① Activation-Routed DFA for a pre-LN single-head decoder block.
+
+    Reuses cached data-maps EXACTLY (A, softmax-Jac J_A, LN VJP, phi' mask). Replaces ONLY the two
+    weight-transposes W_O^T, W_2^T with fixed-random surrogates R_O, R_2 (1-alone) -- 2 adapts them.
+    Two DFA broadcast points (one per pre-LN sublayer): e_attn ~= dL/dx1, e_mlp ~= dL/dx2, so that
+    dL/dW_O = Ctx^T.e_attn and dL/dW_2 = H^T.e_mlp value-EXACT. Never dereferences W_O^T / W_2^T.
+
+    adapt_R_O=True enables the 1+2 surrogate update (Kolen-Pollack, transport-free): the runner
+    supplies a genuine node-perturbation estimate ghat_ctx of dL/dCtx (block-forward only, no
+    autograd, no W_O^T) and this nudges R_O TOWARD W_O^T's direction -- PARTIALLY (validated:
+    ||R_O-W_O^T|| stays ~1.0, cos~0.69 at d=32; the M1 1/sqrt(d) variance wall), never reaching
+    exactness, and never reading W_O (see experiments/m2_attention_alignment.py::adapt_R_O_honest).
+    """
+
+    R_O: Array
+    R_2: Array
+    adapt_R_O: bool = False
+    lr_R: float = 0.02
+
+    def block_grads(
+        self,
+        block,
+        x_np: Array,
+        e_attn: Array,
+        e_mlp: Array,
+        ghat_ctx: Array | None = None,
+    ) -> Gradients:
+        c = _fwd_np(block, x_np)
+        d = block.d
+        # --- MLP sublayer (x2 = x1 + M): dW2 EXACT, dH via surrogate R_2, phi' reused exactly ---
+        dM = e_mlp
+        dW2 = c["H"].T @ dM  # EXACT
+        dH = dM @ self.R_2  # surrogate R_2 for W_2ᵀ
+        dpre = dH * c["phi_mask"]  # phi' mask reused EXACTLY
+        dW1 = c["z2"].T @ dpre
+        # --- attention sublayer (x1 = x + O): dWo EXACT, dCtx via surrogate R_O, A/J_A reused ---
+        dO = e_attn  # dL/dO = dL/dx1
+        dWo = c["Ctx"].T @ dO  # EXACT (no transport)
+        dCtx = dO @ self.R_O  # surrogate R_O for W_Oᵀ (ONLY attention transport)
+        dV = c["A"].T @ dCtx  # A cached (exact)
+        dA = dCtx @ c["V"].T  # V cached (exact)
+        dS = np.empty_like(c["A"])
+        for r in range(block.T):
+            dS[r] = _sjac(c["A"][r], dA[r])  # softmax Jac from cached A (exact)
+        scale = 1.0 / np.sqrt(d)
+        dQ = (dS @ c["K"]) * scale  # K cached
+        dK = (dS.T @ c["Q"]) * scale  # Q cached
+        dWq = c["y"].T @ dQ  # y cached
+        dWk = c["y"].T @ dK
+        dWv = c["y"].T @ dV
+        if self.adapt_R_O and ghat_ctx is not None:
+            # transport-free Kolen-Pollack: nudge R_O TOWARD W_O^T's direction via regression of the
+            # (surrogate) dCtx onto the node-perturbation estimate ghat_ctx. PARTIAL, never reaches
+            # W_O^T (1/sqrt(d) wall); ghat_ctx MUST be forward-only, NEVER autograd(x2, Ctx).
+            pred = dO @ self.R_O
+            self.R_O = self.R_O + self.lr_R * (dO.T @ (ghat_ctx - pred)) / block.T
+        return {"Wq": dWq, "Wk": dWk, "Wv": dWv, "Wo": dWo, "W1": dW1, "W2": dW2, "dCtx": dCtx}
+
+
+def fixed_dfa_block_grads(
+    block,
+    x_np: Array,
+    e_attn: Array,
+    e_mlp: Array,
+    Bq: Array,
+    Bk: Array,
+    Bv: Array,
+    B1: Array,
+) -> Gradients:
+    """Fixed-DFA-in-a-block baseline: broadcast e to Q/K/V/pre via independent random matrices,
+    IGNORING A entirely. dW_O/dW_2 use the exact residual error (same as ①), so the ablation
+    isolates the win to the A-routed score/value path.
+    """
+    c = _fwd_np(block, x_np)
+    dO = e_attn
+    dWo = c["Ctx"].T @ dO
+    dWq = c["y"].T @ (e_attn @ Bq)
+    dWk = c["y"].T @ (e_attn @ Bk)
+    dWv = c["y"].T @ (e_attn @ Bv)
+    dpre = (e_attn @ B1) * c["phi_mask"]
+    dW1 = c["z2"].T @ dpre
+    dW2 = c["H"].T @ e_mlp
+    return {"Wq": dWq, "Wk": dWk, "Wv": dWv, "Wo": dWo, "W1": dW1, "W2": dW2}
+
+
 __all__ = [
     "FeedbackStrategy",
     "Backprop",
@@ -372,4 +464,6 @@ __all__ = [
     "TernaryDFA",
     "StructuredFeedback",
     "PerturbationTaughtFeedback",
+    "ActivationRoutedDFA",
+    "fixed_dfa_block_grads",
 ]
