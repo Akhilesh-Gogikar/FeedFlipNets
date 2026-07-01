@@ -74,7 +74,8 @@ def build_table() -> str:
         {rows}
         \\bottomrule
         \\end{{tabularx}}
-        \\caption*{{Metrics key used throughout Sec.~7–9.}}
+        \\caption{{Metrics key used in Sec.~7--9.}}
+        \\label{{tab:metrics-key}}
         \\end{{table}}
         """
     ).strip()

@@ -1,5 +1,9 @@
-% FeedFlipNets: Deterministic DFA with Ternary Forwards--Stability and Convergence
+% FeedFlipNets: Deterministic DFA with Ternary Forward Weights--Stability and Convergence
 \documentclass[11pt]{article}
+% Blinding toggle: set \blindedtrue for anonymous submission; \blindedfalse for camera-ready
+\newif\ifblinded
+% Default: blinded submission. Switch to \blindedfalse for camera-ready.
+\blindedtrue
 \PassOptionsToPackage{table}{xcolor}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
@@ -26,13 +30,16 @@
 \usepackage{array}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \definecolor{feedflipHighlight}{HTML}{EFF4FF}
+% siunitx v3-compatible setup (remove deprecated options)
 \sisetup{
-  detect-weight=true,
-  detect-inline-weight=math,
-  input-ignore={,},
-  input-decimal-markers=.,
-  table-number-alignment=center,
-  table-auto-round=true
+  mode = match,
+  propagate-math-font = true,
+  reset-math-version = false,
+  reset-text-family = false,
+  reset-text-series = false,
+  reset-text-shape = false,
+  text-family-to-math = true,
+  text-series-to-math = true
 }
 
 % Caption styling for consistency
@@ -41,9 +48,14 @@
 % Relax badness to avoid overfull boxes in tight spots
 \emergencystretch=2em
 
-\title{FeedFlipNets: Deterministic DFA with Ternary Forwards--Stability and Convergence on Small, Standard Benchmarks}
-\author{Akhilesh Gogikar\\ Mendel Infolabs}
-\date{\today}
+\title{FeedFlipNets: Deterministic DFA with Ternary Forward Weights--Stability and Convergence on Small, Standard Benchmarks}
+\ifblinded
+  \author{Anonymous}
+  \date{}
+\else
+  \author{Akhilesh Gogikar\\ Mendel Infolabs}
+  \date{\today}
+\fi
 
 % Graphics search path: point to aggregated plots
 \graphicspath{{../../data/report/plots/}}
@@ -67,7 +79,7 @@
 \maketitle
 
 \begin{abstract}
-We examine \emph{Direct Feedback Alignment} (DFA) with ternary forward weights, focusing on \textbf{determinism}, \textbf{stability}, and \textbf{convergence}. \textbf{FeedFlipNets} is a minimal, fully reproducible training stack that runs on a standard laptop and exposes rich training-dynamics traces. Across MNIST, Fashion-MNIST, AG News, Adult, California Housing, and 20 Newsgroups, we target transparent, deterministic baselines rather than state-of-the-art accuracy. We report mean $\pm$ \textbf{95\% confidence intervals} over fixed seeds and flag the seed sets for every result. On AG News, DFA-float is statistically indistinguishable from backpropagation under the shared seeds; on MNIST, DFA trails the tuned backprop baseline by roughly $1$--$1.5$ percentage points. On 20 Newsgroups (TF--IDF+SVD), absolute accuracy is modest, so we foreground stability diagnostics (E@90\% of best, stability coefficient of variation) alongside alignment AUC. We chart accuracy--sparsity trade-offs under different flip schedules, log layer-wise alignment together with sign-match and quantization-variance probes, and connect these measurements to a calibrated estimate of the finite-time stationarity bound. Finally, we contribute a structured-feedback alignment lemma and a non-asymptotic stationarity result for DFA under ternary weight noise, turning the theory into operational diagnostics that accompany the empirical study.
+We examine \emph{Direct Feedback Alignment} (DFA) with ternary forward weights, focusing on \textbf{determinism}, \textbf{stability}, and \textbf{convergence}. \textbf{FeedFlipNets} is a minimal, fully reproducible training stack that runs on a standard laptop and exposes rich training-dynamics traces. Across MNIST, Fashion-MNIST, AG News, Adult, California Housing, and 20 Newsgroups, we target transparent, deterministic baselines rather than state-of-the-art accuracy. We report mean $\pm$ \textbf{95\% confidence intervals} over fixed seeds and clearly indicate the number of seeds ($n$) per result. On AG News, DFA-float is \emph{similar} to backpropagation under the shared seeds (\(n=2\)); given the small sample we refrain from equivalence claims. On MNIST, DFA trails the tuned backprop baseline by roughly $3.1$ percentage points (Table~\ref{tab:real-results}). On 20 Newsgroups (TF--IDF+SVD), absolute accuracy is modest, so we foreground stability diagnostics (E@90\% of best, stability coefficient of variation) alongside alignment AUC. We chart accuracy--sparsity trade-offs under different flip schedules, log layer-wise alignment together with sign-match and quantization-variance probes, and connect these measurements to a calibrated estimate of the finite-time stationarity bound. Finally, we contribute a structured-feedback alignment lemma and a non-asymptotic stationarity result for DFA under ternary weight noise, turning the theory into operational diagnostics that accompany the empirical study.
 \end{abstract}
 \begin{keywords}
 Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary Networks, Stability, Convergence, Alignment Dynamics, Structured Feedback, Reproducible Research.
@@ -76,7 +88,7 @@ Deterministic Training, Direct Feedback Alignment, Quantized Training, Ternary N
 \noindent\textit{Abbreviations:} 20NG = 20 Newsgroups; Cal. = California; TF--IDF = term-frequency inverse-document-frequency; ps = per\_step; pe = per\_epoch.
 
 \section{Introduction}\label{sec:intro}
-Reproducible, deterministic training is essential for credible empirical findings. Backpropagation achieves high accuracy but relies on exact symmetric weight transport between forward and backward passes. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} eliminates this requirement by broadcasting output errors through fixed random matrices to each hidden layer. In parallel, low-precision neural networks (binary or ternary weights) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} drastically reduce memory and compute demands. We combine these ideas in \textbf{FeedFlipNets}\footnote{Source code: \url{https://github.com/akigogikar/FeedFlipNets}}: training uses float ``shadow'' weights updated via DFA, while inference (forward passes) uses ternary weights that are periodically ``flipped'' from the shadows. Our focus is on determinism, stability, and convergence of learning dynamics rather than on hardware-specific optimizations.
+Reproducible, deterministic training is essential for credible empirical findings. Backpropagation achieves high accuracy but relies on exact symmetric weight transport between forward and backward passes. \emph{Direct Feedback Alignment} (DFA) \cite{lillicrap2016random,nokland2016direct} eliminates this requirement by broadcasting output errors through fixed random matrices to each hidden layer. In parallel, low-precision neural networks (binary or ternary weights) \cite{courbariaux2015binaryconnect,rastegari2016xnor,hubara2016binarized,zhou2016dorefa} drastically reduce memory and compute demands. We combine these ideas in \textbf{FeedFlipNets}\ifblinded\else\footnote{Source code: \url{https://github.com/akigogikar/FeedFlipNets}}\fi: training uses float ``shadow'' weights updated via DFA, while inference (forward passes) uses ternary weights that are periodically ``flipped'' from the shadows. Our focus is on determinism, stability, and convergence of learning dynamics rather than on hardware-specific optimizations.
 
 \paragraph{Contributions.} We present the following contributions:
 \begin{itemize}[leftmargin=*]
@@ -102,17 +114,17 @@ Low-precision networks reduce memory usage, bandwidth, and multiply--accumulate 
 \section{Method: FeedFlipNets}\label{sec:method}
 Let $V_\ell \in \R^{d_{\ell-1}\times d_\ell}$ be the float \emph{shadow weight} matrix for layer $\ell$. We define the ternary forward weight matrix as $W_\ell = Q_{\tau}(V_\ell)$, where $Q_{\tau}$ is a quantizer mapping each entry of $V_\ell$ to $\{-1,0,+1\}$ using threshold $\tau \ge 0$. The network's forward pass uses $W_\ell$ for computing activations, while the backward pass computes gradients with respect to $V_\ell$ using DFA.
 
-\paragraph{Forward.} For input $x$ (with $a_0=x$), each layer computes $h_\ell = a_{\ell-1} W_\ell$ as the pre-activation and $a_\ell = f(h_\ell)$ as the post-activation. The final layer produces output logits $z = a_L$.
+\paragraph{Forward.} For input $x$ (with $h_0=x$), each layer computes $z_\ell = W_\ell h_{\ell-1}$ as the pre-activation and $h_\ell = f(z_\ell)$ as the post-activation. The final layer produces output logits $z = h_L$.
 
-\paragraph{Backward (DFA).} Let $e = \partial \mathcal{L}/\partial z$ be the output error gradient. DFA uses fixed feedback matrices $B_\ell$ for each hidden layer. The error propagated to layer $\ell$ is $\delta_\ell = (e\,B_\ell) \odot f'(h_\ell)$. The gradient for the shadow weights is then $\nabla_{V_\ell} \mathcal{L} = a_{\ell-1}^\top\,\delta_\ell$.
+\paragraph{Backward (DFA).} Let $e = \partial \mathcal{L}/\partial z$ be the output error gradient. DFA uses fixed feedback matrices $B_\ell$ for each hidden layer. The error propagated to layer $\ell$ is $\delta_\ell = (B_\ell\,e) \odot f'(z_\ell)$. The gradient for the shadow weights is then $\nabla_{V_\ell} \mathcal{L} = \delta_\ell\,h_{\ell-1}^\top$.
 
 \paragraph{Flip schedule.} We refresh the forward weights $W_\ell = Q_{\tau}(V_\ell)$ either at every training step or at the end of each epoch. The deterministic ternary quantizer $Q_{\tau}(v)$ operates as:
 \begin{equation}
 Q_{\tau}(v) =
 \begin{cases}
-+1, & v \ge \tau,\\[6pt]
-0, & |v| < \tau,\\[6pt]
--1, & v \le -\tau~,
++1, & v > \tau,\\[6pt]
+0, & |v| \le \tau,\\[6pt]
+-1, & v < -\tau~,
 \end{cases}
 \end{equation}
 mapping $v$ to $\pm1$ if it exceeds the threshold in magnitude, and to $0$ if it lies in the $\tau$-deadzone.
@@ -205,23 +217,23 @@ We write the epoch-averaged alignment as $\bar{\rho}_l(T)=\tfrac{1}{T}\sum_{t=1}
 \end{definition}
 
 \paragraph{Non-asymptotic convergence under ternary stochasticity.}
-We elevate the stochastic ternary \emph{plausibility} statement into a finite-time bound. Let $\mathcal{L}$ be $L$-smooth and bounded below by $\mathcal{L}_\star$. Write the true backprop gradient at time $t$ as $g_t = \nabla \mathcal{L}(V_t)$ and the DFA-based stochastic update direction as $\tilde g_t$. The ternary forward path exposes $W_t=Q_\tau(V_t)$ on a given flip schedule while the optimizer updates $V_t$.
+We elevate the stochastic ternary \emph{plausibility} statement into a finite-time bound. Let $\mathcal{L}$ be $\beta$-smooth and bounded below by $\mathcal{L}_\star$. Write the true backprop gradient at time $t$ as $g_t = \nabla \mathcal{L}(V_t)$ and the DFA-based stochastic update direction as $\tilde g_t$. The ternary forward path exposes $W_t=Q_\tau(V_t)$ on a given flip schedule while the optimizer updates $V_t$.
 
 \begin{theorem}[Non-asymptotic stationarity with ternary forward path]\label{thm:ternary-nonasymp}
 Consider SGD with DFA-based directions $\tilde g_t$ and step sizes $\eta_t\in(0,\eta_{\max}]$ over $T$ steps. Suppose:
 \begin{enumerate}[leftmargin=*]
-  \item (Smoothness) $\mathcal{L}$ is $L$-smooth and bounded below by $\mathcal{L}_\star$.
+  \item (Smoothness) $\mathcal{L}$ is $\beta$-smooth and bounded below by $\mathcal{L}_\star$.
   \item (Stochastic ternary quantization) The forward ternary map $Q_\tau$ is applied according to a fixed schedule (per\_step or per\_epoch). Quantization noise satisfies $\mathbb{E}[\varepsilon_t\mid V_t]=0$ and $\mathbb{E}\bigl[\lVert\varepsilon_t\rVert^2\mid V_t\bigr]\le \sigma_q^2(\tau)$ for some variance proxy $\sigma_q^2$ depending monotonically on $\tau$.
   \item (Sign advantage) With probability $p>\tfrac{1}{2}$, the DFA direction has a positive inner product with the backprop direction: $\mathbb{P}\bigl(\langle \tilde g_t, g_t\rangle>0\mid V_t\bigr)\ge p$ (equivalently, a sign-match advantage).
   \item (Layer-wise alignment) Let $\rho_l(t)$ be as in Def.~\ref{def:alignment} and define $\bar{\rho}_l(T)=\tfrac{1}{T}\sum_{t=1}^T\rho_l(t)$. Set $\bar{\rho}(T)=\min_l \bar{\rho}_l(T)$.
-  \item (Step sizes) Either (i) Robbins--Monro: $\sum_t \eta_t=\infty$, $\sum_t \eta_t^2<\infty$; or (ii) constant $\eta_t\equiv\eta\le \tfrac{1}{2L}$.
+  \item (Step sizes) Either (i) Robbins--Monro: $\sum_t \eta_t=\infty$, $\sum_t \eta_t^2<\infty$; or (ii) constant $\eta_t\equiv\eta\le \tfrac{1}{2\beta}$.
 \end{enumerate}
 Then for the constant step-size case there exist absolute constants $C_0,C_1,C_2>0$ such that the average stationarity gap satisfies
 \begin{equation}
 \label{eq:stationarity-gap}
 \frac{1}{T}\sum_{t=1}^T \mathbb{E}\bigl[\lVert \nabla \mathcal{L}(V_t)\rVert^2\bigr]
 \;\le\; \frac{2(\mathcal{L}(V_0)-\mathcal{L}_\star)}{\eta T}
-\; +\; C_1\, L\,\eta\, \sigma_q^2(\tau)
+\; +\; C_1\, \beta\,\eta\, \sigma_q^2(\tau)
 \; +\; C_2\, (1-2p)^2
 \; +\; C_0\, \sum_{l=1}^{L-1} \bigl(1-\bar{\rho}_l(T)\bigr),
 \end{equation}
@@ -229,7 +241,7 @@ and under Robbins--Monro the right-hand side tends to $C_2(1-2p)^2 + C_0\sum_l (
 \end{theorem}
 
 \begin{proof}[Proof sketch]
-By $L$-smoothness, $\mathcal{L}(V_{t+1})\le \mathcal{L}(V_t) -\eta\langle g_t,\tilde g_t\rangle + \tfrac{L\eta^2}{2}\lVert \tilde g_t\rVert^2$. Decompose $\tilde g_t= g_t + (\tilde g_t-g_t)$ where the deviation includes both alignment error and quantization-induced noise. Taking expectations, using the sign-advantage $p>\tfrac{1}{2}$ and Jensen, one controls $-\mathbb{E}\langle g_t,\tilde g_t\rangle\le -c\,\mathbb{E}\lVert g_t\rVert^2 + C(1-2p)^2 + C'\sum_l (1-\rho_l(t))$. The variance term yields the $L\eta\sigma_q^2(\tau)$ contribution. Summing and telescoping over $T$ steps gives Eq.~\eqref{eq:stationarity-gap}. Full details are provided in the appendix.
+By $\beta$-smoothness, $\mathcal{L}(V_{t+1})\le \mathcal{L}(V_t) -\eta\langle g_t,\tilde g_t\rangle + \tfrac{\beta\eta^2}{2}\lVert \tilde g_t\rVert^2$. Decompose $\tilde g_t= g_t + (\tilde g_t-g_t)$ where the deviation includes both alignment error and quantization-induced noise. Taking expectations, using the sign-advantage $p>\tfrac{1}{2}$ and Jensen, one controls $-\mathbb{E}\langle g_t,\tilde g_t\rangle\le -c\,\mathbb{E}\lVert g_t\rVert^2 + C(1-2p)^2 + C'\sum_l (1-\rho_l(t))$. The variance term yields the $\beta\eta\sigma_q^2(\tau)$ contribution. Summing and telescoping over $T$ steps gives Eq.~\eqref{eq:stationarity-gap}. Full details are provided in the appendix.
 \end{proof}
 
 \paragraph{Structured feedback improves alignment.}
@@ -386,12 +398,14 @@ FeedFlipNets rely on two complementary phenomena: (i) forward weights align them
 
 \paragraph{Metrics.} For classification tasks we report accuracy and macro-F1. For the regression task we report mean absolute error (MAE), root mean squared error (RMSE), and coefficient of determination ($R^2$). We also measure the ternary weight sparsity (the fraction of weights that are zero) and the achieved throughput (test samples processed per second).
 
-\paragraph{Protocols.} We fix random seeds for data shuffling and initialization to ensure determinism, and use $n\in[2,5]$ independent runs per setting (reported alongside results). We compare three flip schedules: no flipping (\texttt{off}), flipping at every step (\texttt{per\_step}), and flipping only at epochs (\texttt{per\_epoch}). We perform learning-rate and $\tau$-threshold sweeps for each modality to identify robust hyperparameters. In some ablations we enable gradient clipping (clipping at 1.0) to test stability under large updates.
+\paragraph{Protocols.} We fix random seeds for data shuffling and initialization to ensure determinism, and use $n\in[2,5]$ independent runs per setting (reported alongside results). We compare three flip schedules: no flipping (\texttt{off}), flipping at every step (\texttt{per\_step}), and flipping only at epochs (\texttt{per\_epoch}). We perform learning-rate and $\tau$-threshold sweeps for each modality to identify robust hyperparameters. In some ablations we enable gradient clipping (clipping at 1.0) to test stability under large updates. Seed IDs are archived in run metadata; the script \texttt{scripts/compile\_benchmark\_report.py} can emit per-table seed listings.
 
 \paragraph{Baselines.} We compare the following training strategies: standard backpropagation with full precision (BP), DFA with full precision weights, DFA with ternary forward weights (Ternary-DFA), and DFA with structured random feedback (orthogonal or Hadamard matrices for $B_\ell$).
 
+\paragraph{Fairness.} All BP and DFA runs use identical architectures, preprocessing pipelines, batch sizes, train/validation splits, and training budgets. Hyperparameters are selected via matched learning-rate and $\tau$-threshold sweeps per dataset; optimizer type, momentum, weight decay, and LR schedules are held identical across methods unless explicitly stated. We use matched random seeds across sweeps to enable paired comparisons and report mean $\pm$ 95\% t-intervals with the number of seeds $n$ shown alongside each result.
+
 \section{Results}\label{sec:results}
-Unless stated otherwise, we report means and 95\% t-intervals over matched deterministic seeds: when methods produced different numbers of runs, we down-select to the shared seed set before aggregating.
+Unless stated otherwise, we report means and 95\% t-intervals over matched deterministic seeds: when methods produced different numbers of runs, we down-select to the shared seed set before aggregating. For very small samples (e.g., $n\le2$), intervals are descriptive and we refrain from equivalence claims.
 \subsection{Best Configurations}
 Tables~\ref{tab:real-results} and~\ref{tab:offline-results} summarize the best-performing configurations across modalities. Each entry reports mean $\pm$ 95\% confidence intervals (t-based) over deterministic seeds; we separate the offline smoke tests to avoid conflating them with real-data benchmarks.
 \begin{table}[t]
@@ -461,7 +475,7 @@ Tables~\ref{tab:real-results} and~\ref{tab:offline-results} summarize the best-p
 
 
 \subsection{Learning-Rate Sweeps}\label{sec:lrsweep}
-We conducted learning-rate sweeps for backprop vs.\ DFA on each modality, plotting mean performance with 95\% confidence intervals (t-based, using matched seeds per sweep). Figure~\ref{fig:lrsweep} illustrates three representative datasets spanning vision and text modalities. DFA closely tracks backprop on the vision tasks; on 20NG the curves remain flat in absolute accuracy, so we emphasise the stability diagnostics discussed below even as DFA (float) pulls above the backprop baseline.
+We conducted learning-rate sweeps for backprop vs.\ DFA on each modality, plotting mean performance with 95\% confidence intervals (t-based, using matched seeds per sweep). Figure~\ref{fig:lrsweep} illustrates three representative datasets spanning vision and text modalities. DFA closely tracks backprop on the vision tasks; on 20NG the curves remain flat in absolute accuracy, so we emphasize the stability diagnostics discussed below even as DFA (float) pulls above the backprop baseline.
 \begin{figure}[t]
     \centering
     \begin{subfigure}[t]{0.48\linewidth}
@@ -482,7 +496,7 @@ We conducted learning-rate sweeps for backprop vs.\ DFA on each modality, plotti
     \caption{Learning-rate sweeps (per-step flips, $\tau=0.05$ unless noted). Shaded bands denote mean $\pm$ 95\% t-intervals over matched seeds ($n=3$). DFA tracks backprop on MNIST; both methods saturate on the Fashion~MNIST offline subset; and on 20NG (TF--IDF + SVD) the curves are flat, with DFA (float) outperforming the BP baseline (32.06 $\pm$ 1.13 vs.\ 19.86 $\pm$ 3.34; Table~\ref{tab:real-results}) while foregrounding stability metrics (E@90\% of best, stability CV, alignment AUC) over absolute accuracy.}
     \label{fig:lrsweep}
 \end{figure}
-\noindent\emph{Observation:} On 20NG, DFA (float) outperforms backpropagation under matched seeds yet absolute accuracy remains low, so we emphasise stability metrics (E@90\% of best, stability CV, alignment AUC) alongside the accuracy curves.
+\noindent\emph{Observation:} On 20NG, DFA (float) outperforms backpropagation under matched seeds yet absolute accuracy remains low, so we emphasize stability metrics (E@90\% of best, stability CV, alignment AUC) alongside the accuracy curves.
 
 \subsection{Ablations and Sensitivity}\label{sec:ablations}
 The learning-rate sweeps reveal dataset-specific optimal LRs. Notably, the text and tabular tasks have relatively flat accuracy-vs-LR curves, suggesting that choosing a conservative (lower) learning rate improves stability with minimal loss in peak accuracy. Similarly, $\tau$-threshold sweeps confirm the expected sparsity--accuracy trade-off: a lower $\tau$ increases accuracy (with fewer zero weights), while a higher $\tau$ yields more zeros (greater sparsity) at the expense of accuracy on complex modalities.
@@ -552,7 +566,7 @@ We quantify convergence speed and training stability using the logged diagnostic
     }{\fbox{\begin{minipage}{0.75\linewidth}\vspace{2em}\centering
     \emph{Classification convergence figure will render after running the reporting scripts.}
     \vspace{2em}\end{minipage}}}
-    \caption{Convergence speed: epochs required to reach 90\% of each run's best validation accuracy (lower is better). Bars show mean $\pm$ 95\% t-intervals over matched seeds ($n=3$ unless noted); schedule and $\tau$ follow the legend (per-step, $\tau=0.05$ unless noted). Metric definitions appear in Sidebar~\ref{sidebar:metrics-key}.}
+    \caption{Convergence speed: epochs required to reach 90\% of each run's best validation accuracy (lower is better). Bars show mean $\pm$ 95\% t-intervals over matched seeds ($n=3$ unless noted); schedule and $\tau$ follow the legend (per-step, $\tau=0.05$ unless noted). Metric definitions appear in Table~\ref{tab:metrics-key}.}
 \end{figure}
 
 \subsection{Throughput and Efficiency}\label{sec:throughput}
@@ -593,7 +607,7 @@ In addition to cosine alignment, the logging stack now records layer-wise sign-m
     }{\fbox{\begin{minipage}{0.45\linewidth}\vspace{1.6em}\centering
     \emph{Alignment (Adult) plot pending.}
     \vspace{1.6em}\end{minipage}}}
-    \caption{Alignment ($\rho$, mean across layers) over epochs for selected DFA variants. Each trace is averaged over matched seeds ($n=3$, mean $\pm$ 95\% t-interval); schedule indicated in the legend (per-step vs.\ per-epoch) with $\tau=0.05$ unless noted. Metric definitions appear in Sidebar~\ref{sidebar:metrics-key}.}
+    \caption{Alignment ($\rho$, mean across layers) over epochs for selected DFA variants. Each trace is averaged over matched seeds ($n=3$, mean $\pm$ 95\% t-interval); schedule indicated in the legend (per-step vs.\ per-epoch) with $\tau=0.05$ unless noted. Metric definitions appear in Table~\ref{tab:metrics-key}.}
     \label{fig:rho-curves}
 \end{figure}
 
@@ -613,14 +627,13 @@ In addition to cosine alignment, the logging stack now records layer-wise sign-m
     \IfFileExists{../../data/report/plots/meta_early_slopes.png}{%
     \includegraphics[width=0.70\linewidth]{meta_early_slopes.png}
     }{\fbox{\begin{minipage}{0.95\linewidth}\vspace{2em}\centering
-    \emph{Early slope figure pending updated meta-analysis.}
     \vspace{2em}\end{minipage}}}
-    \caption{Early learning dynamics: accuracy slope from epochs~1--3 (higher is better). Bars report mean $\pm$ 95\% t-intervals over matched seeds ($n=3$ unless noted) with schedule and $\tau$ specified in the legend (per-step, $\tau=0.05$ unless noted). Metric definitions appear in Sidebar~\ref{sidebar:metrics-key}.}
+    \caption{Early learning dynamics: accuracy slope from epochs~1--3 (higher is better). Bars report mean $\pm$ 95\% t-intervals over matched seeds ($n=3$ unless noted) with schedule and $\tau$ specified in the legend (per-step, $\tau=0.05$ unless noted). Metric definitions appear in Table~\ref{tab:metrics-key}.}
 \end{figure}
 
 \paragraph{Meta-summary.} Table~\ref{tab:meta-summary} compiles the convergence and stability metrics for each experiment. (Our sweeps primarily used \texttt{per\_step} and \texttt{off} schedules; the framework also supports \texttt{per\_epoch} flips and can readily incorporate schedule comparisons in future work.)
 
-We publish a small ``metrics toolkit'' (``scripts/metrics\_toolkit.py'') that reproduces these diagnostics---epochs-to-threshold, stability coefficient of variation, alignment AUC, and the TOST equivalence check used in the real-dataset tables.
+We publish a small ``metrics toolkit'' (``scripts/metrics\_toolkit.py'') that reproduces these diagnostics---epochs-to-threshold, stability coefficient of variation, alignment AUC, and a TOST equivalence check. Given small sample sizes in some settings, we do not include TOST decisions in the main tables.
 
 \begin{table}[H]
     \centering
@@ -649,9 +662,9 @@ Pairing DFA with ternary forward ``flips'' yields a simple yet principled traini
 \addcontentsline{toc}{subsection}{A. Proof of Theorem}
 We present a finite-time stationarity bound for DFA with ternary forward paths. Recall $g_t=\nabla \mathcal{L}(V_t)$ and update direction $\tilde g_t$. Let $V_{t+1}=V_t-\eta\,\tilde g_t$ for constant $\eta\le 1/(2L)$; the Robbins--Monro case follows by standard arguments.
 
-\paragraph{Descent lemma.} $L$-smoothness gives
+\paragraph{Descent lemma.} $\beta$-smoothness gives
 \begin{equation}
-\mathcal{L}(V_{t+1}) \le \mathcal{L}(V_t) - \eta\,\langle g_t, \tilde g_t\rangle + \tfrac{L\eta^2}{2}\,\lVert \tilde g_t\rVert^2.\label{eq:app-descent}
+\mathcal{L}(V_{t+1}) \le \mathcal{L}(V_t) - \eta\,\langle g_t, \tilde g_t\rangle + \tfrac{\beta\eta^2}{2}\,\lVert \tilde g_t\rVert^2.\label{eq:app-descent}
 \end{equation}
 We decompose $\tilde g_t = g_t + e_t$ where $e_t$ aggregates (i) alignment error (DFA vs BP) and (ii) quantization-induced noise. Taking expectations conditioned on $V_t$:
 \begin{align}
@@ -666,11 +679,11 @@ for some $\alpha_t\in[0,1)$ and $\beta_t\ge0$. The \emph{sign advantage} $p>\tfr
 
 \paragraph{Telescoping.} Taking expectations in \eqref{eq:app-descent} and substituting \eqref{eq:app-ip}--\eqref{eq:app-var} yields
 \begin{equation}
-\mathbb{E}[\mathcal{L}(V_{t+1})] \le \mathbb{E}[\mathcal{L}(V_t)] - \eta(1-\alpha_t - L\eta)\,\mathbb{E}\lVert g_t\rVert^2 + \tfrac{L\eta^2}{2}C'\sigma_q^2(\tau) + \eta\,\beta_t.
+\mathbb{E}[\mathcal{L}(V_{t+1})] \le \mathbb{E}[\mathcal{L}(V_t)] - \eta(1-\alpha_t - \beta\eta)\,\mathbb{E}\lVert g_t\rVert^2 + \tfrac{\beta\eta^2}{2}C'\sigma_q^2(\tau) + \eta\,\beta_t.
 \end{equation}
-With $\eta\le \tfrac{1}{2L}$ and $\alpha_t\in[0,1)$, the coefficient remains positive. Summing over $t=1..T$ and lower bounding by $\mathcal{L}_\star$ telescopes and gives
+With $\eta\le \tfrac{1}{2\beta}$ and $\alpha_t\in[0,1)$, the coefficient remains positive. Summing over $t=1..T$ and lower bounding by $\mathcal{L}_\star$ telescopes and gives
 \begin{equation}
-\frac{1}{T}\sum_{t=1}^T \mathbb{E}\lVert g_t\rVert^2 \le \frac{2(\mathcal{L}(V_0)-\mathcal{L}_\star)}{\eta T} + C_1 L\eta\,\sigma_q^2(\tau) + C_2(1-2p)^2 + C_0 \sum_\ell \bigl(1-\bar{\rho}_\ell(T)\bigr),
+\frac{1}{T}\sum_{t=1}^T \mathbb{E}\lVert g_t\rVert^2 \le \frac{2(\mathcal{L}(V_0)-\mathcal{L}_\star)}{\eta T} + C_1 \, \beta\eta\,\sigma_q^2(\tau) + C_2(1-2p)^2 + C_0 \sum_\ell \bigl(1-\bar{\rho}_\ell(T)\bigr),
 \end{equation}
 matching Eq.~(\ref{eq:stationarity-gap}). The Robbins--Monro case follows by letting $\eta_t\to0$ with $\sum \eta_t=\infty$, $\sum \eta_t^2<\infty$.
 
