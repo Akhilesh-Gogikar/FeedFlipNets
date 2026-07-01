@@ -295,10 +295,81 @@ def _blockdiag_orthogonal(
     return B
 
 
+@dataclass
+class PerturbationTaughtFeedback:
+    """② Transport-free feedback learning.
+
+    Fast path is DFA. Each step, one feedback matrix (round-robin) is nudged so that
+    ``error @ B_idx`` aligns with a node-perturbation estimate of dL/dh at the corresponding
+    hidden activation. The estimate uses only the broadcast error and a scalar loss delta
+    obtained from ``state.metadata['perturb_loss_fn']`` — it never reads a downstream weight.
+    Update is direction-only (scale-invariant); antithetic ±xi cancels O(rho^2) curvature bias.
+    """
+
+    rng: np.random.Generator
+    rho: float = 0.05
+    lr_B: float = 0.1
+    samples_per_step: int = 4
+
+    def init(self, model: ModelDescription) -> StrategyState:
+        dims = model.layer_dims
+        out = dims[-1]
+        mats: List[Array] = [
+            (self.rng.standard_normal((out, hd)) / np.sqrt(out)).astype(np.float64)
+            for hd in dims[1:-1]
+        ]
+        return StrategyState(feedback=mats, metadata={"step": 0})
+
+    def backward(
+        self,
+        activations: ActivationState,
+        error: Array,
+        state: StrategyState,
+    ) -> tuple[Gradients, StrategyState]:
+        weights = activations.weights
+        layer_inputs = activations.layer_inputs
+        layer_derivs = activations.layer_derivs
+        B = list(state.feedback)
+        md = dict(state.metadata)
+
+        grads: Gradients = {}
+        batch = error.shape[0]
+        last_idx = len(weights) - 1
+        grads[f"W{last_idx}"] = layer_inputs[last_idx].T @ error / batch
+        for idx in reversed(range(last_idx)):
+            projected = error @ B[idx]
+            delta_layer = projected * layer_derivs[idx]
+            grads[f"W{idx}"] = layer_inputs[idx].T @ delta_layer / batch
+
+        fn = md.get("perturb_loss_fn")
+        if fn is not None and last_idx >= 1:
+            step = int(md.get("step", 0))
+            idx = step % last_idx  # feedback index 0..last_idx-1
+            hidden_idx = idx + 1  # perturb post-activation acts[hidden_idx]
+            width = B[idx].shape[1]
+            ghat = np.zeros((batch, width), dtype=np.float64)
+            for _ in range(self.samples_per_step):
+                xi = self.rng.standard_normal((batch, width)) * self.rho
+                loss_plus = fn(hidden_idx, xi)
+                loss_minus = fn(hidden_idx, -xi)
+                ghat += ((loss_plus - loss_minus) / (2.0 * self.rho**2))[:, None] * xi
+            ghat /= self.samples_per_step
+
+            projected = error @ B[idx]
+            unit_g = ghat / (np.linalg.norm(ghat, axis=1, keepdims=True) + 1e-12)
+            unit_p = projected / (np.linalg.norm(projected, axis=1, keepdims=True) + 1e-12)
+            dB = error.T @ (unit_g - unit_p) / batch
+            B[idx] = B[idx] + self.lr_B * dB
+            md["step"] = step + 1
+
+        return grads, StrategyState(feedback=B, metadata=md)
+
+
 __all__ = [
     "FeedbackStrategy",
     "Backprop",
     "DFA",
     "TernaryDFA",
     "StructuredFeedback",
+    "PerturbationTaughtFeedback",
 ]
