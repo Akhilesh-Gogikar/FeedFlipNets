@@ -12,9 +12,11 @@ Torch is NOT imported here; the tuned-BP baseline lives in experiments/m2b_lm_ab
 from __future__ import annotations
 
 import math
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
+
+from feedflipnets.data.char_lm import get_batch
 
 Array = np.ndarray
 EPS = 1e-5
@@ -147,3 +149,168 @@ def ghat_ctx_nodepert(P, c, e_top_block, rho, K_samp, rng):
         coef = ((lp - lm) / (2.0 * rho * rho))[:, None, None]
         ghat += coef * xi
     return ghat / K_samp
+
+
+# --- Adam + stackable LM trainer (M2b) ---
+
+
+class Adam:
+    def __init__(self, params, lr=3e-3, b1=0.9, b2=0.999, eps=1e-8):
+        self.p = params
+        self.lr = lr
+        self.b1 = b1
+        self.b2 = b2
+        self.eps = eps
+        self.m = {k: np.zeros_like(v) for k, v in params.items()}
+        self.v = {k: np.zeros_like(v) for k, v in params.items()}
+        self.t = 0
+
+    def step(self, grads):
+        self.t += 1
+        for k, g in grads.items():
+            if g is None:
+                continue
+            self.m[k] = self.b1 * self.m[k] + (1 - self.b1) * g
+            self.v[k] = self.b2 * self.v[k] + (1 - self.b2) * (g * g)
+            mh = self.m[k] / (1 - self.b1**self.t)
+            vh = self.v[k] / (1 - self.b2**self.t)
+            self.p[k] -= self.lr * mh / (np.sqrt(vh) + self.eps)
+
+
+class NumpyLM:
+    """Embeddings + N causal pre-LN blocks + linear head, trained lock-free with DFA broadcast.
+
+    mode ∈ {"ONE_TWO", "FIXED_DFA"}. Each pre-LN sublayer is its own DFA broadcast of the top error
+    e=dL/dlogits: e_attn=e@B_attn_ℓ, e_mlp=e@B_mlp_ℓ. ONE_TWO uses ① value-exact grads + ② adapts R_O;
+    FIXED_DFA ignores A. Head grad EXACT from e; embedding grad from the first-block input error.
+    """
+
+    def __init__(self, V, d, h, N, T, seed, mode):
+        self.V, self.d, self.h, self.N, self.T, self.mode = V, d, h, N, T, mode
+        rng = np.random.default_rng(seed)
+        self.rng = rng
+        s = 1.0 / math.sqrt(d)
+        self.P = dict(
+            emb=rng.standard_normal((V, d)) * s,
+            pos=rng.standard_normal((T, d)) * s,
+            head=rng.standard_normal((d, V)) * s,
+        )
+        self.blocks: List[Dict[str, Array]] = []
+        for _ in range(N):
+            self.blocks.append(
+                dict(
+                    Wq=rng.standard_normal((d, d)) * s,
+                    Wk=rng.standard_normal((d, d)) * s,
+                    Wv=rng.standard_normal((d, d)) * s,
+                    Wo=rng.standard_normal((d, d)) * s,
+                    W1=rng.standard_normal((d, h)) / math.sqrt(d),
+                    W2=rng.standard_normal((h, d)) / math.sqrt(h),
+                )
+            )
+        # per-block per-sublayer DFA broadcast of top error e (…,V) → d
+        self.B_attn = [rng.standard_normal((V, d)) / math.sqrt(V) for _ in range(N)]
+        self.B_mlp = [rng.standard_normal((V, d)) / math.sqrt(V) for _ in range(N)]
+        # ① surrogates R_O (adapted by ②) and R_2 (fixed). R_2 is the surrogate for W_2ᵀ (d×h).
+        self.R_O = [rng.standard_normal((d, d)) / math.sqrt(d) for _ in range(N)]
+        self.R_2 = [rng.standard_normal((d, h)) / math.sqrt(d) for _ in range(N)]
+        # fixed-DFA broadcasts
+        self.Bq = [rng.standard_normal((d, d)) / math.sqrt(d) for _ in range(N)]
+        self.Bk = [rng.standard_normal((d, d)) / math.sqrt(d) for _ in range(N)]
+        self.Bv = [rng.standard_normal((d, d)) / math.sqrt(d) for _ in range(N)]
+        self.B1 = [rng.standard_normal((d, h)) / math.sqrt(d) for _ in range(N)]
+        flat = {"emb": self.P["emb"], "pos": self.P["pos"], "head": self.P["head"]}
+        for i, b in enumerate(self.blocks):
+            for k, v in b.items():
+                flat[f"b{i}_{k}"] = v
+        self.flat = flat
+        self.opt = None
+        self.adapt_ptr = 0
+
+    def set_opt(self, lr):
+        self.opt = Adam(self.flat, lr=lr)
+
+    def forward_np(self, xb):
+        """Batched forward. xb:(B,T). Returns logits(B,T,V), per-block caches, final pre-LN act."""
+        B, T = xb.shape
+        x = self.P["emb"][xb] + self.P["pos"][:T]  # (B,T,d)
+        caches = []
+        for bi in range(self.N):
+            c = block_forward_np(self.blocks[bi], x)
+            caches.append(c)
+            x = c["x2"]
+        _xf, _ = ln_np(x)
+        logits = _xf @ self.P["head"]
+        return logits, caches, x
+
+    def train_step(self, xb, yb, adapt_cfg):
+        B, T = xb.shape
+        logits, caches, xfinal = self.forward_np(xb)
+        z = logits - logits.max(-1, keepdims=True)
+        ez = np.exp(z)
+        p = ez / ez.sum(-1, keepdims=True)
+        idx = (np.arange(B)[:, None], np.arange(T)[None, :], yb)
+        loss = -np.log(p[idx] + 1e-12).sum()
+        e = p.copy()
+        e[idx] -= 1.0
+        e /= T  # dL/dlogits (B,T,V), mean over tokens
+        grads = {k: np.zeros_like(v) for k, v in self.flat.items()}
+        # head EXACT
+        xf, _ = ln_np(xfinal)
+        grads["head"] += np.einsum("btd,btv->dv", xf, e)
+        dxf = e @ self.P["head"].T
+        e_final = ln_vjp(xfinal, dxf)  # dL/d(block-N output) exact through final LN
+        dx_input = e_final
+        for bi in reversed(range(self.N)):
+            c = caches[bi]
+            e_attn = e @ self.B_attn[bi]
+            e_mlp = e @ self.B_mlp[bi]
+            if self.mode == "ONE_TWO":
+                g, dx = one_block_grads(
+                    self.blocks[bi], c, e_attn, e_mlp, self.R_O[bi], self.R_2[bi]
+                )
+            else:  # FIXED_DFA
+                g, dx = fixed_dfa_block_grads(
+                    self.blocks[bi],
+                    c,
+                    e_attn,
+                    e_mlp,
+                    self.Bq[bi],
+                    self.Bk[bi],
+                    self.Bv[bi],
+                    self.B1[bi],
+                )
+            for k in g:
+                grads[f"b{bi}_{k}"] += g[k]
+            dx_input = dx
+        # embedding grads from first-block input error
+        np.add.at(grads["emb"], xb, dx_input)
+        grads["pos"][:T] += dx_input.sum(axis=0)
+        # ② surrogate adaptation: amortised one block/step, transport-free, NO autograd / NO W_Oᵀ
+        if self.mode == "ONE_TWO" and adapt_cfg is not None:
+            bi = self.adapt_ptr % self.N
+            self.adapt_ptr += 1
+            rho, Ksamp, lrR = adapt_cfg
+            c = caches[bi]
+            e_attn = e @ self.B_attn[bi]
+            e_top_block = e @ self.B_mlp[bi]  # local-loss seed for the block
+            ghat = ghat_ctx_nodepert(self.blocks[bi], c, e_top_block, rho, Ksamp, self.rng)
+            pred = e_attn @ self.R_O[bi]
+            # KP: dR_O ∝ e_attnᵀ·(ĝ_Ctx − e_attn·R_O)  (sum over batch+time)
+            self.R_O[bi] += lrR * np.einsum("btd,bte->de", e_attn, ghat - pred) / T
+        self.opt.step(grads)
+        return loss / (B * T) / math.log(2)
+
+    def eval_bpc(self, val, n_batches=8, bs=32):
+        tot = 0.0
+        cnt = 0
+        for _ in range(n_batches):
+            xb, yb = get_batch(val, bs, self.T, self.rng)
+            logits, _, _ = self.forward_np(xb)
+            z = logits - logits.max(-1, keepdims=True)
+            p = np.exp(z)
+            p /= p.sum(-1, keepdims=True)
+            B, T = xb.shape
+            idx = (np.arange(B)[:, None], np.arange(T)[None, :], yb)
+            tot += -np.log(p[idx] + 1e-12).sum()
+            cnt += B * T
+        return tot / cnt / math.log(2)
