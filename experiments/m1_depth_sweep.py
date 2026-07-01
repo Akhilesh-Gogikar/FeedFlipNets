@@ -103,6 +103,18 @@ def fixed_dfa_slope_is_negative() -> bool:
     return slope > 0
 
 
+def _finite_or_none(obj):
+    # ponytail: non-finite thetas mean training diverged at depth; emit strict-JSON null
+    # (bare NaN is invalid JSON and breaks downstream readers) rather than hiding the result.
+    if isinstance(obj, float):
+        return obj if np.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: _finite_or_none(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_finite_or_none(v) for v in obj]
+    return obj
+
+
 def main() -> None:
     out_dir = Path("data/report/m1")
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -116,8 +128,9 @@ def main() -> None:
             "theta_slope_deg_per_layer": slope,
             "slope_ci95": ci,
         }
-    (out_dir / "m1_depth_sweep.json").write_text(json.dumps(results, indent=2))
-    print(json.dumps(results, indent=2))
+    payload = json.dumps(_finite_or_none(results), indent=2)
+    (out_dir / "m1_depth_sweep.json").write_text(payload + "\n")
+    print(payload)
 
 
 if __name__ == "__main__":
