@@ -3,7 +3,14 @@ data:
   name: 20newsgroups
   options:
     subset: all
-    n_features: 2048
+    n_features: 4096
+    svd_dim: 2048
+    tfidf_max_features: 60000
+    min_df: 2
+    max_df: 0.95
+    ngram_range: [1, 2]
+    stop_words: english
+    sublinear_tf: true
     seed: 13
     val_split: 0.2
     test_split: 0.2

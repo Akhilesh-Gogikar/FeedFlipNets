@@ -45,6 +45,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-lock.txt
+          pip install -r requirements-extras.txt   # CPU torch for the AR-DFA / M2 tests
           pip install -e .
 
       - name: Run ruff
@@ -88,6 +89,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-lock.txt
+          pip install -r requirements-extras.txt   # CPU torch for the AR-DFA / M2 tests
           pip install -e .
 
       - name: Run preset smoke tests

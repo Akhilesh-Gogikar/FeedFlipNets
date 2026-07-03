@@ -13,136 +13,141 @@
 \citation{li2016twn,han2015deepcompression}
 \citation{alistarh2017qsgd}
 \citation{launay2020direct}
-\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contributions.}{2}{section*.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Motivation}{2}{section.2}\protected@file@percent }
 \newlabel{sec:motivation}{{2}{2}{Motivation}{section.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Background and Related Work}{2}{section.3}\protected@file@percent }
 \newlabel{sec:related}{{3}{2}{Background and Related Work}{section.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Method: FeedFlipNets}{3}{section.4}\protected@file@percent }
-\newlabel{sec:method}{{4}{3}{Method: FeedFlipNets}{section.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Forward.}{3}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Backward (DFA).}{3}{section*.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Flip schedule.}{3}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Training algorithm.}{3}{section*.6}\protected@file@percent }
-\citation{lillicrap2016random,nokland2016direct}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces FeedFlipNets training with DFA and ternary flips}}{4}{algorithm.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Method: FeedFlipNets}{2}{section.4}\protected@file@percent }
+\newlabel{sec:method}{{4}{2}{Method: FeedFlipNets}{section.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Forward.}{3}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Backward (DFA).}{3}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Flip schedule.}{3}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Training algorithm.}{3}{section*.5}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces FeedFlipNets training with DFA and ternary flips}}{3}{algorithm.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{alg:feedflip}{{1}{4}{FeedFlipNets training with DFA and ternary flips}{algorithm.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Design choices.}{4}{section*.7}\protected@file@percent }
+\newlabel{alg:feedflip}{{1}{3}{FeedFlipNets training with DFA and ternary flips}{algorithm.1}{}}
+\citation{lillicrap2016random,nokland2016direct}
+\citation{courbariaux2015binaryconnect,li2016twn}
+\citation{launay2020direct}
+\citation{girotti2021convergence}
+\@writefile{toc}{\contentsline {paragraph}{Design choices.}{4}{section*.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Theoretical Analysis of FeedFlipNets}{4}{section.5}\protected@file@percent }
 \newlabel{sec:theory}{{5}{4}{Theoretical Analysis of FeedFlipNets}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Preliminaries and Definitions}{4}{subsection.5.1}\protected@file@percent }
 \newlabel{sec:prelims}{{5.1}{4}{Preliminaries and Definitions}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Network setup.}{4}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Network setup.}{4}{section*.7}\protected@file@percent }
 \newlabel{def:dfa}{{1}{4}{Direct Feedback Alignment}{definition.1}{}}
 \newlabel{def:quant}{{2}{4}{Ternary quantization}{definition.2}{}}
-\citation{courbariaux2015binaryconnect,li2016twn}
-\citation{launay2020direct}
-\citation{girotti2021convergence}
+\newlabel{def:structuredB}{{3}{4}{Structured feedback matrix}{definition.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Convergence Analysis Under Direct Feedback Alignment}{4}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:convergence}{{5.2}{4}{Convergence Analysis Under Direct Feedback Alignment}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Deep linear networks}{4}{subsubsection.5.2.1}\protected@file@percent }
 \citation{girotti2021convergence}
 \citation{lillicrap2016random}
 \citation{lillicrap2016random,launay2020direct}
 \citation{courbariaux2015binaryconnect}
-\newlabel{def:structuredB}{{3}{5}{Structured feedback matrix}{definition.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Convergence Analysis Under Direct Feedback Alignment}{5}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:convergence}{{5.2}{5}{Convergence Analysis Under Direct Feedback Alignment}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Deep linear networks}{5}{subsubsection.5.2.1}\protected@file@percent }
 \newlabel{thm:linear}{{1}{5}{Convergence for deep linear DFA}{theorem.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Nonlinear networks and quantized updates}{5}{subsubsection.5.2.2}\protected@file@percent }
 \newlabel{def:alignment}{{4}{5}{Alignment $\rho $}{definition.4}{}}
-\@writefile{toc}{\contentsline {paragraph}{Non-asymptotic convergence under ternary stochasticity.}{6}{section*.9}\protected@file@percent }
-\newlabel{thm:ternary-nonasymp}{{2}{6}{Non-asymptotic stationarity with ternary forward path}{theorem.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Non-asymptotic convergence under ternary stochasticity.}{5}{section*.8}\protected@file@percent }
+\newlabel{thm:ternary-nonasymp}{{2}{5}{Non-asymptotic stationarity with ternary forward path}{theorem.2}{}}
+\citation{alistarh2017qsgd}
 \newlabel{eq:stationarity-gap}{{5}{6}{Non-asymptotic stationarity with ternary forward path}{equation.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{Structured feedback improves alignment.}{6}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Structured feedback improves alignment.}{6}{section*.9}\protected@file@percent }
 \newlabel{lem:structured-alignment}{{1}{6}{Alignment under structured $B_\ell $}{lemma.1}{}}
-\citation{alistarh2017qsgd}
+\newlabel{prop:quantconv}{{1}{6}{Convergence with stochastic ternary updates}{proposition.1}{}}
 \citation{launay2020direct}
 \citation{launay2020direct}
 \citation{alistarh2017qsgd}
-\newlabel{prop:quantconv}{{1}{7}{Convergence with stochastic ternary updates}{proposition.1}{}}
+\citation{courbariaux2015binaryconnect,hubara2016binarized,li2016twn}
+\citation{han2015deepcompression,dettmers2018int8}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces DFA vs. BP alignment. Early updates are nearly orthogonal; later, DFA aligns with BP, preserving a descent component.}}{7}{figure.caption.10}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Comparison to Standard Backpropagation}{7}{subsection.5.3}\protected@file@percent }
 \newlabel{sec:comparison}{{5.3}{7}{Comparison to Standard Backpropagation}{subsection.5.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Structured Feedback Matrices}{7}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:structured}{{5.4}{7}{Structured Feedback Matrices}{subsection.5.4}{}}
-\citation{courbariaux2015binaryconnect,hubara2016binarized,li2016twn}
-\citation{han2015deepcompression,dettmers2018int8}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Implications of Ternary Quantization}{7}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:ternary}{{5.5}{7}{Implications of Ternary Quantization}{subsection.5.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Expressivity and accuracy.}{7}{section*.12}\protected@file@percent }
 \citation{zhou2016dorefa}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces DFA vs. BP alignment. Early updates are nearly orthogonal; later, DFA aligns with BP, preserving a descent component.}}{8}{figure.caption.11}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces FeedFlipNets schematic. Forward (blue) exposes Ter. $W=Q_\tau (V)$, while DFA feedback (red, dashed) broadcasts output error directly to hidden layers via fixed $B_\ell $ (no weight symmetry). Float shadow weights $V$ are optimized and periodically flipped into $W$. Red arrows denote the broadcast error path replacing backprop's $W^\top $ transport. Legend: blue solid arrows -- forward path; red dashed arrows -- broadcast error via $B_\ell $.}}{8}{figure.caption.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Implications of Ternary Quantization}{8}{subsection.5.5}\protected@file@percent }
-\newlabel{sec:ternary}{{5.5}{8}{Implications of Ternary Quantization}{subsection.5.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{Expressivity and accuracy.}{8}{section*.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Sparsity and efficiency.}{8}{section*.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Gradient approximation.}{8}{section*.15}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Failure Modes and Mitigations}{8}{subsection.5.6}\protected@file@percent }
-\newlabel{sec:failures}{{5.6}{8}{Failure Modes and Mitigations}{subsection.5.6}{}}
 \citation{launay2020direct}
 \citation{li2016twn}
 \citation{lillicrap2016random}
 \citation{payeur2020spike}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Neuroscience Plausibility}{9}{subsection.5.7}\protected@file@percent }
-\newlabel{sec:neuro}{{5.7}{9}{Neuroscience Plausibility}{subsection.5.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces FeedFlipNets schematic. Forward (blue) exposes Ter. $W=Q_\tau (V)$, while DFA feedback (red, dashed) broadcasts output error directly to hidden layers via fixed $B_\ell $ (no weight symmetry). Float shadow weights $V$ are optimized and periodically flipped into $W$. Red arrows denote the broadcast error path replacing backprop's $W^\top $ transport. Legend: blue solid arrows -- forward path; red dashed arrows -- broadcast error via $B_\ell $.}}{8}{figure.caption.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Sparsity and efficiency.}{8}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Gradient approximation.}{8}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Failure Modes and Mitigations}{8}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:failures}{{5.6}{8}{Failure Modes and Mitigations}{subsection.5.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Neuroscience Plausibility}{8}{subsection.5.7}\protected@file@percent }
+\newlabel{sec:neuro}{{5.7}{8}{Neuroscience Plausibility}{subsection.5.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Key Takeaways}{9}{subsection.5.8}\protected@file@percent }
 \newlabel{sec:takeaways}{{5.8}{9}{Key Takeaways}{subsection.5.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Experimental Setup}{9}{section.6}\protected@file@percent }
 \newlabel{sec:setup}{{6}{9}{Experimental Setup}{section.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{Datasets.}{9}{section*.16}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Metrics.}{9}{section*.17}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Protocols.}{9}{section*.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Baselines.}{10}{section*.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Results}{10}{section.7}\protected@file@percent }
-\newlabel{sec:results}{{7}{10}{Results}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Best Configurations}{10}{subsection.7.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Best-performing configurations across datasets. Means and standard deviations are computed over $n$ deterministic runs. Shaded rows highlight settings where FeedFlipNets variants deliver measurable gains over the dataset baseline.}}{10}{table.caption.20}\protected@file@percent }
-\newlabel{tab:best-configs}{{1}{10}{Best-performing configurations across datasets. Means and standard deviations are computed over $n$ deterministic runs. Shaded rows highlight settings where FeedFlipNets variants deliver measurable gains over the dataset baseline}{table.caption.20}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Learning-rate sweeps across modalities. DFA closely matches backprop on MNIST; both methods saturate on the Fashion~MNIST offline subset; and DFA exceeds backprop at intermediate learning rates on 20NG.}}{11}{figure.caption.21}\protected@file@percent }
-\newlabel{fig:lrsweep}{{3}{11}{Learning-rate sweeps across modalities. DFA closely matches backprop on MNIST; both methods saturate on the Fashion~MNIST offline subset; and DFA exceeds backprop at intermediate learning rates on 20NG}{figure.caption.21}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Learning-Rate Sweeps}{11}{subsection.7.2}\protected@file@percent }
-\newlabel{sec:lrsweep}{{7.2}{11}{Learning-Rate Sweeps}{subsection.7.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Ablations and Sensitivity}{11}{subsection.7.3}\protected@file@percent }
-\newlabel{sec:ablations}{{7.3}{11}{Ablations and Sensitivity}{subsection.7.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces $\tau $ sweeps: smaller $\tau $ improves accuracy at reduced sparsity; larger $\tau $ enforces zeros and can reduce accuracy in harder tasks across vision, text, and tabular modalities (examples shown for MNIST, Fashion MNIST, 20NG, and California Housing).}}{12}{figure.caption.23}\protected@file@percent }
-\newlabel{fig:tausweep}{{4}{12}{$\tau $ sweeps: smaller $\tau $ improves accuracy at reduced sparsity; larger $\tau $ enforces zeros and can reduce accuracy in harder tasks across vision, text, and tabular modalities (examples shown for MNIST, Fashion MNIST, 20NG, and California Housing)}{figure.caption.23}{}}
-\@writefile{toc}{\contentsline {paragraph}{Tau Sweeps.}{12}{section*.22}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Key Observations}{12}{subsection.7.4}\protected@file@percent }
-\newlabel{sec:keyobs}{{7.4}{12}{Key Observations}{subsection.7.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Structured Feedback: Ortho vs.\ Hadamard}{13}{subsection.7.5}\protected@file@percent }
-\newlabel{sec:structured-perf}{{7.5}{13}{Structured Feedback: Ortho vs.\ Hadamard}{subsection.7.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Datasets.}{9}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Metrics.}{9}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Protocols.}{9}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baselines.}{9}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Results}{9}{section.7}\protected@file@percent }
+\newlabel{sec:results}{{7}{9}{Results}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Best Configurations}{9}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Learning-Rate Sweeps}{9}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:lrsweep}{{7.2}{9}{Learning-Rate Sweeps}{subsection.7.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Real-data accuracy and $R^2$ with matched seeds. Values report mean $\pm $ 95\% t-intervals over the shared deterministic seeds ($n$) for each dataset; accuracy entries are in percentage points. $\Delta $ columns show differences relative to the baseline listed in each block.}}{10}{table.caption.19}\protected@file@percent }
+\newlabel{tab:real-results}{{1}{10}{Real-data accuracy and $R^2$ with matched seeds. Values report mean $\pm $ 95\% t-intervals over the shared deterministic seeds ($n$) for each dataset; accuracy entries are in percentage points. $\Delta $ columns show differences relative to the baseline listed in each block}{table.caption.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Ablations and Sensitivity}{10}{subsection.7.3}\protected@file@percent }
+\newlabel{sec:ablations}{{7.3}{10}{Ablations and Sensitivity}{subsection.7.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Tau Sweeps.}{10}{section*.22}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Offline smoke-test accuracy and $R^2$ for the deterministic subsets. Means $\pm $ 95\% t-intervals are computed over the shared deterministic seeds. $\Delta $ values denote differences relative to the baseline configuration per dataset.}}{11}{table.caption.20}\protected@file@percent }
+\newlabel{tab:offline-results}{{2}{11}{Offline smoke-test accuracy and $R^2$ for the deterministic subsets. Means $\pm $ 95\% t-intervals are computed over the shared deterministic seeds. $\Delta $ values denote differences relative to the baseline configuration per dataset}{table.caption.20}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Key Observations}{11}{subsection.7.4}\protected@file@percent }
+\newlabel{sec:keyobs}{{7.4}{11}{Key Observations}{subsection.7.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Learning-rate sweeps (per-step flips, $\tau =0.05$ unless noted). Shaded bands denote mean $\pm $ 95\% t-intervals over matched seeds ($n=3$). DFA tracks backprop on MNIST; both methods saturate on the Fashion~MNIST offline subset; and on 20NG (TF--IDF + SVD) the curves are flat, with DFA (float) outperforming the BP baseline (32.06 $\pm $ 1.13 vs.\ 19.86 $\pm $ 3.34; Table~\ref {tab:real-results}) while foregrounding stability metrics (E@90\% of best, stability CV, alignment AUC) over absolute accuracy.}}{12}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:lrsweep}{{3}{12}{Learning-rate sweeps (per-step flips, $\tau =0.05$ unless noted). Shaded bands denote mean $\pm $ 95\% t-intervals over matched seeds ($n=3$). DFA tracks backprop on MNIST; both methods saturate on the Fashion~MNIST offline subset; and on 20NG (TF--IDF + SVD) the curves are flat, with DFA (float) outperforming the BP baseline (32.06 $\pm $ 1.13 vs.\ 19.86 $\pm $ 3.34; Table~\ref {tab:real-results}) while foregrounding stability metrics (E@90\% of best, stability CV, alignment AUC) over absolute accuracy}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Structured Feedback: Ortho vs.\ Hadamard}{12}{subsection.7.5}\protected@file@percent }
+\newlabel{sec:structured-perf}{{7.5}{12}{Structured Feedback: Ortho vs.\ Hadamard}{subsection.7.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces $\tau $ sweeps: smaller $\tau $ improves accuracy at reduced sparsity; larger $\tau $ enforces zeros and can reduce accuracy in harder tasks across vision, text, and tabular modalities (examples shown for MNIST, Fashion MNIST, 20NG, and California Housing). Curves report mean $\pm $ 95\% t-intervals over matched seeds ($n=3$); schedule=per-step unless annotated; $\tau $ values follow the legend. Panels (a)--(c) plot accuracy, while panel (d) reports $R^2$.}}{13}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:tausweep}{{4}{13}{$\tau $ sweeps: smaller $\tau $ improves accuracy at reduced sparsity; larger $\tau $ enforces zeros and can reduce accuracy in harder tasks across vision, text, and tabular modalities (examples shown for MNIST, Fashion MNIST, 20NG, and California Housing). Curves report mean $\pm $ 95\% t-intervals over matched seeds ($n=3$); schedule=per-step unless annotated; $\tau $ values follow the legend. Panels (a)--(c) plot accuracy, while panel (d) reports $R^2$}{figure.caption.23}{}}
 \@writefile{toc}{\contentsline {paragraph}{Recommended usage.}{13}{section*.24}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}Meta-Analysis and Discussion}{13}{section.8}\protected@file@percent }
-\newlabel{sec:discussion}{{8}{13}{Meta-Analysis and Discussion}{section.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Convergence speed: epochs required to reach 90\% accuracy (lower is better).}}{14}{figure.caption.25}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Metrics sidebar: definitions used in Sec.~\ref {sec:results}--\ref {sec:discussion}.}}{14}{table.3}\protected@file@percent }
+\newlabel{sidebar:metrics-key}{{3}{14}{Metrics sidebar: definitions used in Sec.~\ref {sec:results}--\ref {sec:discussion}}{table.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Meta-Analysis and Discussion}{14}{section.8}\protected@file@percent }
+\newlabel{sec:discussion}{{8}{14}{Meta-Analysis and Discussion}{section.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Convergence Speed and Stability}{14}{subsection.8.1}\protected@file@percent }
 \newlabel{sec:meta}{{8.1}{14}{Convergence Speed and Stability}{subsection.8.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Throughput and Efficiency}{14}{subsection.8.2}\protected@file@percent }
 \newlabel{sec:throughput}{{8.2}{14}{Throughput and Efficiency}{subsection.8.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Training throughput (samples/s) with mean $\pm $ std.~across seeds, for various feedback/quantization settings.}}{14}{figure.caption.26}\protected@file@percent }
-\newlabel{fig:throughput}{{6}{14}{Training throughput (samples/s) with mean $\pm $ std.~across seeds, for various feedback/quantization settings}{figure.caption.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Early learning dynamics: accuracy slope from epochs~1--3 (higher is better).}}{15}{figure.caption.28}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Convergence speed: epochs required to reach 90\% of each run's best validation accuracy (lower is better). Bars show mean $\pm $ 95\% t-intervals over matched seeds ($n=3$ unless noted); schedule and $\tau $ follow the legend (per-step, $\tau =0.05$ unless noted). Metric definitions appear in Sidebar~\ref {sidebar:metrics-key}.}}{15}{figure.caption.25}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Training throughput (samples/s) with mean $\pm $ 95\% confidence intervals across matched seeds ($n=3$) for the shown feedback/quantization settings; schedule=per-step unless noted, $\tau =0.05$ for ternary variants.}}{15}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:throughput}{{6}{15}{Training throughput (samples/s) with mean $\pm $ 95\% confidence intervals across matched seeds ($n=3$) for the shown feedback/quantization settings; schedule=per-step unless noted, $\tau =0.05$ for ternary variants}{figure.caption.26}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Alignment Dynamics}{15}{subsection.8.3}\protected@file@percent }
 \newlabel{sec:alignment-curves}{{8.3}{15}{Alignment Dynamics}{subsection.8.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Alignment ($\rho $, mean across layers) over epochs for selected DFA variants. DFA feedback gradually aligns with true gradients; per-epoch flip schedules yield smoother (less jittery) alignment growth.}}{15}{figure.caption.27}\protected@file@percent }
-\newlabel{fig:rho-curves}{{7}{15}{Alignment ($\rho $, mean across layers) over epochs for selected DFA variants. DFA feedback gradually aligns with true gradients; per-epoch flip schedules yield smoother (less jittery) alignment growth}{figure.caption.27}{}}
-\@writefile{toc}{\contentsline {paragraph}{Meta-summary.}{15}{section*.29}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of convergence/stability metrics by run. \textbf  {E@0.90}: epoch to reach 90\% accuracy (classification) or 90\% of best $R^2$ (regression). \textbf  {Slope}: change in metric from epoch~1 to~3. Lower E@0.90 (and E@0.9~$R^2$) and lower validation-loss variance indicate faster and more stable convergence; higher early slopes indicate faster initial learning.}}{16}{table.caption.30}\protected@file@percent }
-\newlabel{tab:meta-summary}{{2}{16}{Summary of convergence/stability metrics by run. \textbf {E@0.90}: epoch to reach 90\% accuracy (classification) or 90\% of best $R^2$ (regression). \textbf {Slope}: change in metric from epoch~1 to~3. Lower E@0.90 (and E@0.9~$R^2$) and lower validation-loss variance indicate faster and more stable convergence; higher early slopes indicate faster initial learning}{table.caption.30}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Impact and Broader Significance}{16}{section.9}\protected@file@percent }
-\newlabel{sec:impact}{{9}{16}{Impact and Broader Significance}{section.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {10}Limitations}{16}{section.10}\protected@file@percent }
-\newlabel{sec:limits}{{10}{16}{Limitations}{section.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {11}Future Work}{16}{section.11}\protected@file@percent }
-\newlabel{sec:future}{{11}{16}{Future Work}{section.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {12}Conclusion}{16}{section.12}\protected@file@percent }
-\newlabel{sec:conclusion}{{12}{16}{Conclusion}{section.12}{}}
-\@writefile{toc}{\contentsline {section}{Appendix}{17}{section*.31}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{A. Proof of Theorem}{17}{section*.32}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Descent lemma.}{17}{section*.33}\protected@file@percent }
-\newlabel{eq:app-descent}{{8}{17}{Descent lemma}{equation.8}{}}
-\newlabel{eq:app-ip}{{9}{17}{Descent lemma}{equation.9}{}}
-\@writefile{toc}{\contentsline {paragraph}{Variance control.}{17}{section*.34}\protected@file@percent }
-\newlabel{eq:app-var}{{10}{17}{Variance control}{equation.10}{}}
-\@writefile{toc}{\contentsline {paragraph}{Telescoping.}{17}{section*.35}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{B. Proof of Lemma}{17}{section*.36}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Alignment ($\rho $, mean across layers) over epochs for selected DFA variants. Each trace is averaged over matched seeds ($n=3$, mean $\pm $ 95\% t-interval); schedule indicated in the legend (per-step vs.\ per-epoch) with $\tau =0.05$ unless noted. Metric definitions appear in Sidebar~\ref {sidebar:metrics-key}.}}{16}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:rho-curves}{{7}{16}{Alignment ($\rho $, mean across layers) over epochs for selected DFA variants. Each trace is averaged over matched seeds ($n=3$, mean $\pm $ 95\% t-interval); schedule indicated in the legend (per-step vs.\ per-epoch) with $\tau =0.05$ unless noted. Metric definitions appear in Sidebar~\ref {sidebar:metrics-key}}{figure.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Bound calibration on AG News per-step ternary runs. Each point is a per-epoch proxy aggregated over matched seeds ($n=3$, mean $\pm $ 95\% t-interval); schedule=per-step, $\tau =0.05$. The dashed line is $y=x$. Logged estimates of $\hat  p$, $\hat  {\sigma }_q^2$, and $1-\bar  \rho $ predict the observed $\lVert \nabla L\rVert ^2$ within a median relative gap of $\approx 18\%$, connecting the plot to the time-averaged bound in Eq.~(\ref {eq:stationarity-gap}).}}{16}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:bound-calibration}{{8}{16}{Bound calibration on AG News per-step ternary runs. Each point is a per-epoch proxy aggregated over matched seeds ($n=3$, mean $\pm $ 95\% t-interval); schedule=per-step, $\tau =0.05$. The dashed line is $y=x$. Logged estimates of $\hat p$, $\hat {\sigma }_q^2$, and $1-\bar \rho $ predict the observed $\lVert \nabla L\rVert ^2$ within a median relative gap of $\approx 18\%$, connecting the plot to the time-averaged bound in Eq.~(\ref {eq:stationarity-gap})}{figure.caption.28}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Early learning dynamics: accuracy slope from epochs~1--3 (higher is better). Bars report mean $\pm $ 95\% t-intervals over matched seeds ($n=3$ unless noted) with schedule and $\tau $ specified in the legend (per-step, $\tau =0.05$ unless noted). Metric definitions appear in Sidebar~\ref {sidebar:metrics-key}.}}{16}{figure.caption.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Meta-summary.}{17}{section*.30}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Summary of convergence and stability diagnostics. \textbf  {E@90\% of best}: epoch where the run first attains 90\% of its own best validation score (accuracy or $R^2$). \textbf  {Slope}: change in metric from epoch~1 to~3. Lower E@90\% of best and lower stability CVs indicate faster, steadier convergence; higher early slopes indicate faster initial learning.\newline  \footnotesize  Val.\ Var: variance of validation loss across epochs per run, averaged over matched seeds.}}{17}{table.caption.31}\protected@file@percent }
+\newlabel{tab:meta-summary}{{4}{17}{Summary of convergence and stability diagnostics. \textbf {E@90\% of best}: epoch where the run first attains 90\% of its own best validation score (accuracy or $R^2$). \textbf {Slope}: change in metric from epoch~1 to~3. Lower E@90\% of best and lower stability CVs indicate faster, steadier convergence; higher early slopes indicate faster initial learning.\newline \footnotesize Val.\ Var: variance of validation loss across epochs per run, averaged over matched seeds}{table.caption.31}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Impact and Broader Significance}{17}{section.9}\protected@file@percent }
+\newlabel{sec:impact}{{9}{17}{Impact and Broader Significance}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Limitations}{17}{section.10}\protected@file@percent }
+\newlabel{sec:limits}{{10}{17}{Limitations}{section.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11}Future Work}{17}{section.11}\protected@file@percent }
+\newlabel{sec:future}{{11}{17}{Future Work}{section.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {12}Conclusion}{18}{section.12}\protected@file@percent }
+\newlabel{sec:conclusion}{{12}{18}{Conclusion}{section.12}{}}
+\@writefile{toc}{\contentsline {section}{Appendix}{18}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{A. Proof of Theorem}{18}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Descent lemma.}{18}{section*.34}\protected@file@percent }
+\newlabel{eq:app-descent}{{8}{18}{Descent lemma}{equation.8}{}}
+\newlabel{eq:app-ip}{{9}{18}{Descent lemma}{equation.9}{}}
+\@writefile{toc}{\contentsline {paragraph}{Variance control.}{18}{section*.35}\protected@file@percent }
+\newlabel{eq:app-var}{{10}{18}{Variance control}{equation.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{Telescoping.}{18}{section*.36}\protected@file@percent }
 \bibstyle{plainnat}
 \bibdata{references}
 \bibcite{alistarh2017qsgd}{{1}{2017}{{Alistarh et~al.}}{{Alistarh, Grubic, Li, Tomioka, and Vojnovic}}}
@@ -150,14 +155,15 @@
 \bibcite{dettmers2018int8}{{3}{2018}{{Dettmers}}{{}}}
 \bibcite{girotti2021convergence}{{4}{2021}{{Girotti et~al.}}{{Girotti, Scetbon, and Bruna}}}
 \bibcite{han2015deepcompression}{{5}{2016}{{Han et~al.}}{{Han, Mao, and Dally}}}
+\@writefile{toc}{\contentsline {subsection}{B. Proof of Lemma}{19}{section*.37}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Schedule delta: per-step (ps) versus per-epoch (pe) flips. \textbf  {E@90\% of best}: epochs to reach 90\% of each run's best validation metric; \textbf  {S}: early slope (epoch~1$\to $3). $\Delta $ reports pe $-$ ps.}}{19}{table.caption.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Practical guidelines.}{19}{section*.39}\protected@file@percent }
 \bibcite{hubara2016binarized}{{6}{2016}{{Hubara et~al.}}{{Hubara, Courbariaux, Soudry, El-Yaniv, and Bengio}}}
 \bibcite{launay2020direct}{{7}{2020}{{Launay et~al.}}{{Launay, Poli, Zdeborov{\'a}, Krzakala, Bect, and Pehlevan}}}
 \bibcite{li2016twn}{{8}{2016}{{Li et~al.}}{{Li, Zhang, and Liu}}}
 \bibcite{lillicrap2016random}{{9}{2016}{{Lillicrap et~al.}}{{Lillicrap, Cownden, Tweed, and Akerman}}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Schedule delta: ps vs pe. E@.90: epoch to .90 Acc.; slope: e1$\to $e3; $\Delta $ = pe $-$ ps.}}{18}{table.caption.37}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Practical guidelines.}{18}{section*.38}\protected@file@percent }
 \bibcite{nokland2016direct}{{10}{2016}{{Nokland}}{{}}}
 \bibcite{payeur2020spike}{{11}{2020}{{Payeur et~al.}}{{Payeur, Guerguiev, Zenke, Richards, and Naud}}}
 \bibcite{rastegari2016xnor}{{12}{2016}{{Rastegari et~al.}}{{Rastegari, Ordonez, Redmon, and Farhadi}}}
 \bibcite{zhou2016dorefa}{{13}{2016}{{Zhou et~al.}}{{Zhou, Wu, Ni, Zhou, Wen, and Zou}}}
-\gdef \@abspage@last{19}
+\gdef \@abspage@last{20}

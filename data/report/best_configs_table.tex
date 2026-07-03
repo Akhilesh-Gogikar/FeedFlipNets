@@ -1,17 +1,18 @@
 \begin{tabular}{lllllllllll}
-Dataset & Mode & Primary & Best (mean+/-std) & Variant & Flip & n & Baseline & Delta & Effect & Note \
-20newsgroups & offline & accuracy & 0.3906 ± 0.0681 & backprop\_ternary\_step & ternary (per\_step) & 3 & 0.1771 ± 0.0722 & 0.2135 & 3.043 &  \\
-20newsgroups & real & accuracy & 0.3206 ± 0.0046 & dfa\_float\_lr15 & off (off) & 3 & 0.3206 ± 0.0046 & 0.0000 & 0.000 &  \\
-adult & offline & accuracy & 0.6438 ± 0.0892 & dfa\_ternary\_epoch\_tau005 & ternary (per\_epoch) & 5 & 0.5422 ± 0.1061 & 0.1016 & 1.037 &  \\
-adult & real & accuracy & 0.8595 ± 0.0002 & dfa\_float & off (off) & 3 & 0.8595 ± 0.0002 & 0.0000 & 0.000 &  \\
-ag\_news & offline & accuracy & 0.4813 ± 0.1840 & dfa\_ternary\_epoch\_tau005 & ternary (per\_epoch) & 5 & 0.4125 ± 0.0704 & 0.0688 & 0.493 &  \\
-ag\_news & real & accuracy & 0.9005 ± 0.0007 & backprop\_float & off (off) & 2 & 0.9005 ± 0.0007 & 0.0000 & 0.000 &  \\
-california\_housing & offline & r2 & 0.0840 ± 0.0556 & dfa\_float & off (off) & 3 & 0.0840 ± 0.0556 & 0.0000 & 0.000 &  \\
-california\_housing & real & r2 & 0.5561 ± 0.0065 & dfa\_float & off (off) & 5 & 0.5561 ± 0.0065 & 0.0000 & 0.000 &  \\
-fashion\_mnist & offline & accuracy & 1.0000 ± 0.0000 & dfa\_float\_lr15 & off (off) & 5 & 1.0000 ± 0.0000 & 0.0000 & \textemdash{} & saturated \\
-fashion\_mnist & real & accuracy & 0.8703 ± 0.0018 & backprop\_float & off (off) & 5 & 0.8703 ± 0.0018 & 0.0000 & 0.000 &  \\
-mnist & offline & accuracy & 1.0000 ± 0.0000 & ternary\_dfa\_step & ternary (per\_step) & 3 & 1.0000 ± 0.0000 & 0.0000 & \textemdash{} & saturated \\
-mnist & real & accuracy & 0.9649 ± 0.0001 & backprop\_float\_lr15 & off (off) & 3 & 0.9649 ± 0.0001 & 0.0000 & 0.000 &  \\
-ucr & offline & accuracy & 1.0000 ± 0.0000 & ternary\_dfa\_step & ternary (per\_step) & 3 & 1.0000 ± 0.0000 & 0.0000 & \textemdash{} & saturated \\
-ucr & real & accuracy & 1.0000 ± 0.0000 & ternary\_dfa\_step & ternary (per\_step) & 3 & 1.0000 ± 0.0000 & 0.0000 & \textemdash{} & saturated \\
+Dataset & Mode & Primary & Best (mean+/-CI95) & Variant & Flip & n & Baseline & Delta & Effect & Note \
+20newsgroups & offline & accuracy & 0.3906 \(\pm 0.1692\) & backprop\_ternary\_step & ternary (per\_step) & 3 & 0.1771 \(\pm 0.1793\) & 0.2135 & 3.043 &  \\
+20newsgroups & real & accuracy & 0.3206 \(\pm 0.0113\) & dfa\_float\_lr15 & off (off) & 3 & 0.3206 \(\pm 0.0113\) & 0.0000 & 0.000 &  \\
+adult & offline & accuracy & 0.9089 \(\pm 0.0784\) & dfa\_float\_lr15 & off (off) & 3 & 0.9089 \(\pm 0.0784\) & 0.0000 & 0.000 &  \\
+adult & real & accuracy & 0.8595 \(\pm 0.0006\) & dfa\_float & off (off) & 3 & 0.8595 \(\pm 0.0006\) & 0.0000 & 0.000 &  \\
+ag\_news & offline & accuracy & 0.4813 \(\pm 0.2285\) & dfa\_ternary\_epoch\_tau005 & ternary (per\_epoch) & 5 & 0.4125 \(\pm 0.0874\) & 0.0688 & 0.493 &  \\
+ag\_news & real & accuracy & 0.9005 \(\pm 0.0012\) & backprop\_float & off (off) & 3 & 0.9005 \(\pm 0.0012\) & 0.0000 & 0.000 &  \\
+california\_housing & offline & r2 & 0.0840 \(\pm 0.1381\) & dfa\_float & off (off) & 3 & 0.0840 \(\pm 0.1381\) & 0.0000 & 0.000 &  \\
+california\_housing & real & r2 & 0.5561 \(\pm 0.0081\) & dfa\_float & off (off) & 5 & 0.5561 \(\pm 0.0081\) & 0.0000 & 0.000 &  \\
+cifar10 & offline & accuracy & 1.0000 \(\pm 0.0000\) & dfa\_float\_lr15 & off (off) & 5 & 1.0000 \(\pm 0.0000\) & 0.0000 & \textemdash{} & saturated \\
+fashion\_mnist & offline & accuracy & 1.0000 \(\pm 0.0000\) & dfa\_float\_lr15 & off (off) & 5 & 1.0000 \(\pm 0.0000\) & 0.0000 & \textemdash{} & saturated \\
+fashion\_mnist & real & accuracy & 0.8738 \(\pm 0.0032\) & backprop\_float\_lr15 & off (off) & 5 & 0.8738 \(\pm 0.0032\) & 0.0000 & 0.000 &  \\
+mnist & offline & accuracy & 1.0000 \(\pm 0.0000\) & dfa\_float\_lr15 & off (off) & 5 & 1.0000 \(\pm 0.0000\) & 0.0000 & \textemdash{} & saturated \\
+mnist & real & accuracy & 0.9646 \(\pm 0.0004\) & backprop\_float\_lr15 & off (off) & 5 & 0.9646 \(\pm 0.0004\) & 0.0000 & 0.000 &  \\
+ucr & offline & accuracy & 1.0000 \(\pm 0.0000\) & ternary\_dfa\_step & ternary (per\_step) & 3 & 1.0000 \(\pm 0.0000\) & 0.0000 & \textemdash{} & saturated \\
+ucr & real & accuracy & 1.0000 \(\pm 0.0000\) & ternary\_dfa\_step & ternary (per\_step) & 3 & 1.0000 \(\pm 0.0000\) & 0.0000 & \textemdash{} & saturated \\
 \end{tabular}

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "feedflipnets"
-version = "1.0.0-rc1"
-description = "Research implementation of Ternary DFA experiments"
+version = "2.0.0-rc1"
+description = "FeedFlip: shadow-free bit-flip training for ternary nets, Activation-Routed DFA, and the per-weight sign barrier"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
@@ -32,6 +32,12 @@ dev = [
 [tool.setuptools]
 py-modules = ["ternary_dfa_experiment"]
 
+[tool.setuptools.packages.find]
+include = ["feedflipnets*", "experiments*", "cli*"]
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]
+
+[project.scripts]
+feedflip = "cli.main:main"

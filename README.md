@@ -1,199 +1,129 @@
 FeedFlipNets
 ===========
 
-Deterministic training with Direct Feedback Alignment (DFA) and ternary forward weights. Small, standard benchmarks. Reproducible on a laptop.
+[![DOI](https://zenodo.org/badge/1017107032.svg)](https://doi.org/10.5281/zenodo.21152011)
 
-Project status: complete — no further development planned.
+FeedFlipNets trains ternary networks by **feedback-driven bit-flips**: weights are stored only as ternary `{-1,0,+1}` plus a small integer flip-accumulator (**no float shadow weights**), and a cheap feedback signal flips bits directly. A flip needs only the *sign* of "should this weight go up or down," so Direct Feedback Alignment (DFA) — a transport-free, shadow-free, lock-free signal — is the natural feedback. The project introduces **Activation-Routed DFA (AR-DFA)** to supply a better transport-free sign, and establishes the central finding that **per-weight sign correctness — not cosine alignment — is the binding constraint** for transport-free discrete/ternary learning.
 
+- Paper: [`docs/paper/main.pdf`](docs/paper/main.pdf)
+- Findings + numbers: [`data/report/`](data/report/) (per milestone: `m1`, `m2`, `m2b`, `speed`, `feedflip`)
+- Cite: [`CITATION.cff`](CITATION.cff) · DOI [10.5281/zenodo.21152011](https://doi.org/10.5281/zenodo.21152011) (all versions)
 
-Why FeedFlipNets
-----------------
-
-- Determinism: fixed seeds, offline fixtures, CPU‑friendly NumPy loops.
-- Stability: clear flip schedules (per_step, per_epoch) and structured feedback options.
-- Convergence: a compact theoretical treatment and alignment curves in the paper.
-
-Training updates float “shadow” weights V; the forward path exposes ternary weights W = Qτ(V) on a configurable schedule (“flip”).
+Status: a research artifact accompanying the paper. It is **not** a backprop replacement and **not** a mature training library — see *Scope & honest caveats* below.
 
 
-Highlights
+What it is
 ----------
 
-- Strategies: backprop, DFA (float), ternary‑DFA, structured feedback (orthogonal/Hadamard).
-- Flip controls: τ threshold, deterministic/stochastic ternarization, per_step/per_epoch schedules.
-- Artifacts: JSON/CSV logs, plots, and compiled tables under `data/report/`.
-- Presets: laptop‑safe MLPs for vision, text, and tabular datasets.
-- Paper: LaTeX manuscript with auto‑generated Key Metrics table.
+Three contributions, each pre-registered with numeric gates and honestly recorded (including the negatives):
+
+1. **The FeedFlip bit-flip mechanism.** Shadow-free, sign-driven ternary training: `c += -sign(grad)`; when the accumulator `|c|` crosses a threshold, flip the bit and reset. With an *accurate* sign it matches float-shadow backpropagation at **~5.6× less optimizer state and ~2× faster steps** on an MLP.
+
+2. **Activation-Routed DFA (AR-DFA).** A transport-free feedback rule that reuses the parts of a Transformer block's Jacobian already cached in the forward pass — the softmax routing matrix `A`, its Jacobian, the LayerNorm scale, the nonlinearity mask — and surrogates *only* the weight-transposes. This makes the value-path gradients **exact** (matching autograd to ~1e-15) and, with a perturbation-taught surrogate, cuts the worst-case attention-block **cosine**-alignment angle from ~90° to **46°**, all lock-free (verified by a probe with a positive control).
+
+3. **The per-weight sign barrier (the central, negative result).** AR-DFA's alignment gain does *not* help bit-flipping: on a ternary Transformer, transport-free flipping is worse than not flipping, and AR-DFA does not beat vanilla DFA — because per-weight **sign**-match to the true gradient stays near chance (`p ≈ 0.53`) *even as* cosine alignment improves sharply. **Aggregate (cosine) alignment is the wrong proxy; per-weight sign correctness is the binding constraint.** Corollaries (in `data/report/`): DFA is not backprop-competitive on accuracy, per-step cost, or wall-clock-to-target.
+
+
+Key results
+-----------
+
+| finding | numbers | source |
+| --- | --- | --- |
+| Bit-flips match float-shadow BP with a good sign | 0.629 vs 0.619 acc, **5.6× less state** | `data/report/feedflip/` |
+| AR-DFA value-path gradients are exact | `≤ 3.1e-15` vs autograd | `data/report/m2/` |
+| AR-DFA cuts worst-case attention alignment | 90.6° → **46.4°** (transport-free) | `data/report/m2/` |
+| …but per-weight sign-match stays ~chance | `p ≈ 0.53` (fixed-DFA and AR-DFA alike) | `data/report/feedflip/` |
+| Transport-free flipping fails on a Transformer | worse than freezing the blocks | `data/report/feedflip/` |
+| AR-DFA is not backprop-competitive (char-LM) | +1.93 bpc, ~30× slower/step | `data/report/m2b/` |
 
 
 Install
 -------
 
 ```bash
-git clone https://github.com/akigogikar/FeedFlipNets.git
+git clone https://github.com/Akhilesh-Gogikar/FeedFlipNets.git
 cd FeedFlipNets
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -U pip
-pip install -e .
+pip install -U pip && pip install -e .
 ```
 
-Requirements: Python 3.8+ (see `pyproject.toml` / `requirements-lock.txt`).
+Requirements: Python 3.8+. The AR-DFA / bit-flip Transformer experiments use CPU-only PyTorch (`requirements-extras.txt`). CPU is sufficient throughout — no GPU required.
 
 
-Quickstart
-----------
-
-- Smoke tests (fast, deterministic):
+Reproduce the findings
+----------------------
 
 ```bash
-FEEDFLIP_DATA_OFFLINE=1 pytest -q tests/test_datasets_smoke.py tests/test_training_loops.py tests/integration/test_cli.py
+# Full test suite (grad-checks, lock-free probe + positive control, alignment metrics)
+pytest -q
+
+# Analytical experiments (self-contained)
+python -m experiments.pipeline_cost_model            # DFA-pipeline vs tuned 1F1B throughput model
+python -m experiments.accuracy_transport_frontier    # how much transport buys back accuracy
 ```
 
-- Run a preset via CLI:
-
-```bash
-python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step --flip-threshold 0.05
-```
-
-- One‑click reproduction of curated benchmarks and report:
-
-```bash
-./reproduce_all.sh
-# Aggregations and plots: data/report/
-```
-
-Make targets
-------------
-
-```bash
-make setup        # create venv, install deps, pre-commit hooks
-make test         # run full test suite
-make smoke        # run deterministic preset sweep
-make bench ARGS=  # comprehensive benchmark + report
-make report       # aggregate metrics to data/report/
-make paper        # (simple) build of docs/paper/main.pdf
-```
-
-
-CLI and API
------------
-
-Presets live under `configs/presets/`. You can override any flag on the CLI or via config files.
-
-```bash
-# Short form using Make
-make run PRESET=mnist_mlp_dfa EXTRA_ARGS='--feedback dfa --flip ternary --flip-schedule per_step'
-```
-
-Python API example:
-
-```python
-from pathlib import Path
-import numpy as np
-from feedflipnets.core.strategies import DFA
-from feedflipnets.data.registry import get_dataset
-from feedflipnets.training.trainer import FeedForwardModel, SGDOptimizer, Trainer
-
-rng = np.random.default_rng(0)
-spec = get_dataset("mnist", offline=True, cache_dir=Path(".cache"))
-train_loader = spec.loader("train", batch_size=32)
-
-model = FeedForwardModel([784, 256, 10], tau=0.05, quant="det", seed=0)
-strategy = DFA(rng)
-optimizer = SGDOptimizer(lr=0.05)
-
-trainer = Trainer(model=model, strategy=strategy, optimizer=optimizer)
-result = trainer.run(
-    train_loader,
-    epochs=5,
-    seed=0,
-    steps_per_epoch=spec.splits["train"] // 32,
-    task_type="multiclass",
-    num_classes=10,
-    flip="ternary",
-    flip_schedule="per_step",
-    checkpoint_dir=Path("runs/example"),
-)
-print(result.metrics_path)
-```
-
-
-Reproducibility & artifacts
----------------------------
-
-- Offline by default with `FEEDFLIP_DATA_OFFLINE=1` and fixed seeds.
-- Metrics and manifests are written under `runs/` per run.
-- Aggregated summaries, tables, and plots land in `data/report/`:
-  - `data/report/benchmark_summary.md` / `.csv`
-  - `data/report/best_configs.*`
-  - `data/report/plots/`
+- The **mechanism + guards** live in `feedflipnets/core/` (`deep_mlp`, `transformer`, `lm`, `strategies`) and `feedflipnets/eval/` (`gradcheck`, `alignment`, `lockfree`).
+- Every result table has a committed JSON + README under `data/report/{m1,m2,m2b,speed,feedflip}/`.
+- Design specs and pre-registered plans are under `docs/superpowers/{specs,plans}/`.
 
 
 Build the paper
 ---------------
 
 ```bash
-scripts/build_pdf.sh           # latexmk/tectonic/pdflatex; auto‑generates Key Metrics from CSVs
-open docs/paper/main.pdf       # on macOS
+cd docs/paper && pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
+# or, if installed: latexmk -pdf main.tex   /   tectonic main.tex
+open docs/paper/main.pdf   # macOS
 ```
 
-The Key Metrics table on the first page is built from `data/report/benchmark_summary.csv`. To tweak formatting, edit `scripts/generate_key_metrics.py`.
+The source defaults to a blinded build (author "Anonymous"); set `\blindedfalse` for a camera-ready (non-anonymous) PDF.
 
 
-Configuration surface
----------------------
+Original ternary-DFA baseline harness (legacy)
+----------------------------------------------
 
-- `--feedback {backprop, dfa, ternary_dfa, structured}`
-- `--flip {off, ternary}` and `--flip-schedule {per_step, per_epoch}`
-- `--flip-threshold <float>` (τ)
-- Optimizer: `--lr`, `--batch-size` (or via config)
-- Seeds and dataset options; see presets in `configs/presets/`
+The repository also retains the earlier deterministic ternary-DFA baseline stack — float "shadow" weights `V`, ternary forward `W = Q_τ(V)`, DFA updates, structured (orthogonal/Hadamard) feedback — with CLI presets and offline fixtures. This is orthogonal to the contributions above and summarized in the paper's appendix.
+
+```bash
+FEEDFLIP_DATA_OFFLINE=1 pytest -q tests/test_datasets_smoke.py tests/test_training_loops.py
+python -m cli.main --preset mnist_mlp_dfa --feedback dfa --flip ternary --flip-schedule per_step
+make report   # aggregate legacy sweeps into data/report/
+```
 
 
 Repository layout
 -----------------
 
-- `cli/` — CLI entrypoint and commands
-- `feedflipnets/` — core library (data, core modules, training)
-- `configs/presets/` — runnable experiment presets
-- `scripts/` — reporting and benchmark utilities
-- `tests/` — unit, contract, integration, and performance tests
-- `docs/paper/` — LaTeX manuscript and references
-- `data/report/` — aggregated results and plots
+- `feedflipnets/core/` — deep MLP, Transformer block, stackable LM, feedback strategies (incl. AR-DFA)
+- `feedflipnets/eval/` — grad-check, alignment probe, lock-free probe (+ positive control)
+- `experiments/` — analytical cost model and transport-frontier scripts
+- `data/report/{m1,m2,m2b,speed,feedflip}/` — per-milestone results (JSON + README)
+- `docs/paper/` — LaTeX manuscript · `docs/superpowers/` — specs and plans
+- `cli/`, `configs/presets/`, `datasets/`, `scripts/` — legacy ternary-DFA baseline harness
 
 
-Results snapshot
-----------------
+Scope & honest caveats
+----------------------
 
-Exact numbers are maintained by the reporting pipeline. See:
-
-- `data/report/benchmark_summary.md` for consolidated metrics
-- `data/report/best_configs_table.*` for best settings by dataset
-- `data/report/plots/` for LR/τ sweeps, throughput, and alignment curves
+- **Not a backprop replacement.** Across accuracy, per-step cost, wall-clock-to-target, and bit-flip quality, DFA (including AR-DFA) does not beat backpropagation; the value is the efficient bit-flip *mechanism* and the *characterization* of why transport-free learning is hard.
+- **Small-scale, CPU, reproducibility-first.** Single-head blocks, small corpora, modest depth — chosen so every claim is exactly reproducible and reference gradients are affordable. The positive claims are bounded by this scale; the negative results are corroborated across independent axes.
+- **A research artifact, not a library.** No stable public API is promised.
 
 
-Troubleshooting
----------------
-
-- Missing LaTeX? Install TeX Live/MacTeX or use the simpler `make paper` target.
-- Slow downloads? Run with `FEEDFLIP_DATA_OFFLINE=1` to use fixtures.
-- Fresh environment? Run `make setup` to install deps and pre‑commit hooks.
-
-
-Citation & license
+Citation & License
 ------------------
 
-- Cite via `CITATION.cff` or the paper in `docs/paper/main.pdf`.
-- License: see `LICENSE`.
+License: MIT (see [`LICENSE`](LICENSE)). Cite via [`CITATION.cff`](CITATION.cff) or:
 
-**Do I need a GPU?**
+```bibtex
+@software{gogikar_feedflipnets_2026,
+  title     = {FeedFlipNets: Feedback-Driven Bit-Flips for Ternary Networks, Activation-Routed DFA, and the Per-Weight Sign Barrier to Transport-Free Learning},
+  author    = {Gogikar, Akhilesh},
+  year      = {2026},
+  version   = {2.0.0-rc1},
+  doi       = {10.5281/zenodo.21152011},
+  url       = {https://github.com/Akhilesh-Gogikar/FeedFlipNets}
+}
+```
 
-No. CPU is fine for the supported experiments and smoke tests.
-
-
-⸻
-
-Keywords
---------
-
-Deterministic Training, Direct Feedback Alignment, Ternary Networks, Quantized Training, Stability, Convergence, Reproducibility.
+Keywords: ternary networks · bit-flip training · direct feedback alignment · weight transport · sign correctness · attention · reproducible research.

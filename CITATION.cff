@@ -1,7 +1,34 @@
 cff-version: 1.2.0
-title: "FeedFlipNets: Deterministic Offline Framework for Feedback Alignment"
+title: "FeedFlipNets: Feedback-Driven Bit-Flips for Ternary Networks, Activation-Routed DFA, and the Per-Weight Sign Barrier to Transport-Free Learning"
+message: "If you use this software or its findings, please cite the paper (docs/paper/main.pdf)."
 authors:
   - family-names: "Gogikar"
-    given-names: "Aki"
-version: "1.0.0-rc1"
-date-released: "2024-03-20"
+    given-names: "Akhilesh"
+    affiliation: "Mendel Infolabs"
+abstract: >-
+  FeedFlipNets trains ternary networks by feedback-driven bit-flips with no float
+  shadow weights. It introduces Activation-Routed DFA, a transport-free feedback
+  rule that reuses a Transformer block's cached data-maps and surrogates only the
+  weight transposes (yielding value-path-exact gradients and a 90->46 degree
+  worst-case attention cosine-alignment gain), and establishes the central
+  negative finding: per-weight sign correctness -- not cosine alignment -- is the
+  binding constraint for transport-free discrete/ternary learning.
+keywords:
+  - ternary networks
+  - bit-flip training
+  - direct feedback alignment
+  - weight transport
+  - sign correctness
+  - reproducible research
+version: "2.0.0-rc1"
+date-released: "2026-07-02"
+license: MIT
+repository-code: "https://github.com/Akhilesh-Gogikar/FeedFlipNets"
+doi: "10.5281/zenodo.21152011"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21152011"
+    description: "Concept DOI (all versions)"
+  - type: doi
+    value: "10.5281/zenodo.21152012"
+    description: "Version DOI (v2.0.0-rc1)"
