@@ -1,9 +1,11 @@
 FeedFlipNets
 ===========
 
-Deterministic Direct Feedback Alignment (DFA) with ternary forward weights, implemented as a clear, reproducible baseline that runs on a laptop. The code accompanies the paper “FeedFlipNets: Deterministic DFA with Ternary Forwards—Stability and Convergence on Small, Standard Benchmarks” and reproduces its figures, tables, and results end‑to‑end.
+[![DOI](https://zenodo.org/badge/1017107032.svg)](https://doi.org/10.5281/zenodo.21152011)
 
-Project status: complete — no further development planned.
+FeedFlipNets trains ternary networks by **feedback-driven bit-flips**: weights are stored only as ternary `{-1,0,+1}` plus a small integer flip-accumulator (no float shadow weights), and a cheap feedback signal flips bits directly. It introduces **Activation-Routed DFA**, a transport-free feedback rule with value-exact value-path gradients and a large attention cosine-alignment gain, and establishes the central finding that **per-weight sign correctness — not cosine alignment — is the binding constraint** for transport-free discrete/ternary learning. Paper: `docs/paper/main.pdf`; findings in `data/report/`.
+
+Status: research artifact accompanying the paper. DOI: [10.5281/zenodo.21152011](https://doi.org/10.5281/zenodo.21152011) (all versions).
 
 - Paper PDF: `docs/paper/main.pdf`
 - Citation: see `CITATION.cff`
@@ -232,12 +234,13 @@ Citation & License
 
 BibTeX
 ```
-@misc{gogikar_feedflipnets_2024,
-  title   = {FeedFlipNets: Deterministic Offline Framework for Feedback Alignment},
-  author  = {Gogikar, Aki},
-  year    = {2024},
-  version = {1.0.0-rc1},
-  url     = {https://github.com/akigogikar/FeedFlipNets}
+@software{gogikar_feedflipnets_2026,
+  title     = {FeedFlipNets: Feedback-Driven Bit-Flips for Ternary Networks, Activation-Routed DFA, and the Per-Weight Sign Barrier to Transport-Free Learning},
+  author    = {Gogikar, Akhilesh},
+  year      = {2026},
+  version   = {2.0.0-rc1},
+  doi       = {10.5281/zenodo.21152011},
+  url       = {https://github.com/Akhilesh-Gogikar/FeedFlipNets}
 }
 ```
 

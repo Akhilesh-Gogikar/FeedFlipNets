@@ -22,3 +22,13 @@ keywords:
   - reproducible research
 version: "2.0.0-rc1"
 date-released: "2026-07-02"
+license: MIT
+repository-code: "https://github.com/Akhilesh-Gogikar/FeedFlipNets"
+doi: "10.5281/zenodo.21152011"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21152011"
+    description: "Concept DOI (all versions)"
+  - type: doi
+    value: "10.5281/zenodo.21152012"
+    description: "Version DOI (v2.0.0-rc1)"
