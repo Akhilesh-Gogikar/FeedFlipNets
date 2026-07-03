@@ -1,0 +1,57 @@
+# arXiv submission metadata for FeedFlipNets. Pre-filled from docs/paper/main.tex.
+# Review every field, then: python ~/.claude/skills/publish-to-arxiv/scripts/arxiv_submit.py \
+#   --metadata docs/paper/submission.yaml --tarball /tmp/ff.tar.gz --dry-run
+
+title: "FeedFlipNets: Feedback-Driven Bit-Flips for Ternary Networks, Activation-Routed DFA, and the Per-Weight Sign Barrier to Transport-Free Learning"
+
+authors:
+  - "Akhilesh Gogikar (Mendel Infolabs)"
+
+abstract: |
+  FeedFlipNets trains ternary networks by using a cheap feedback signal to flip
+  bits directly: weights are stored only as ternary values {-1, 0, +1} plus a
+  small integer flip-accumulator -- no float shadow weights -- and a per-weight
+  vote flips a bit when enough evidence accrues. Because a flip needs only the
+  sign of "should this weight go up or down," the natural feedback is Direct
+  Feedback Alignment (DFA): it broadcasts the output error transport-free, with no
+  backward lock and no shadow storage. We make three contributions. (i) The
+  bit-flip mechanism is genuinely efficient: with an accurate sign it matches
+  float-shadow backpropagation at about 5.6x less state and about 2x faster steps.
+  (ii) To supply a better transport-free sign we introduce Activation-Routed DFA
+  (AR-DFA), which reuses the parts of a Transformer block's Jacobian that are
+  already cached in the forward pass -- the softmax routing matrix, its Jacobian,
+  the LayerNorm scale, the nonlinearity mask -- and surrogates only the
+  weight-transposes; this makes the value-path gradients exact (matching autograd
+  to ~1e-15) and, with a perturbation-taught surrogate, cuts the worst-case
+  attention-block cosine-alignment angle from about 90 degrees to 46.4 degrees,
+  all lock-free. (iii) The central, and negative, finding: this alignment gain
+  does not help bit-flipping. On a ternary Transformer, transport-free flipping is
+  worse than not flipping at all, and AR-DFA does not beat vanilla DFA -- because
+  per-weight sign-match to the true gradient stays near chance (p ~ 0.53) even as
+  the cosine alignment improves sharply. Aggregate alignment is the wrong proxy:
+  the binding constraint for transport-free discrete/ternary learning is
+  per-weight sign correctness. We support this with pre-registered gates across
+  depth, attention, accuracy, per-step cost, an analytical pipeline model, and a
+  transport-fraction frontier; every guard and number is reproducible.
+
+# Ternary/efficient training + DFA feedback learning -> ML. Primary cs.LG;
+# stat.ML is the conventional ML cross-list; cs.NE fits ternary/bit-level nets.
+# Adjust if you'd rather lead with a different audience.
+primary_category: "cs.LG"
+cross_list:
+  - "stat.ML"
+  - "cs.NE"
+
+comments: "11 pages, 1 figure, 5 tables"
+
+# Reminder for the browser step (script pauses for you to pick this). CC BY 4.0 is
+# the common open-access choice; switch to the arXiv non-exclusive license if a
+# venue later requires it.
+license: "CC BY 4.0"
+
+# --- Optional; fill only once applicable (add later via a v2 replacement) ---
+report_number: ""
+journal_ref: ""
+doi: ""
+acm_class: ""
+msc_class: ""

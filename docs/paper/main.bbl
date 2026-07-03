@@ -1,16 +1,31 @@
-\begin{thebibliography}{13}
+\begin{thebibliography}{14}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Alistarh et~al.(2017)Alistarh, Grubic, Li, Tomioka, and
-  Vojnovic]{alistarh2017qsgd}
-Dan Alistarh, Demjan Grubic, Jerry Li, Ryota Tomioka, and Milan Vojnovic.
-\newblock Qsgd: Communication-efficient sgd via gradient quantization and
-  encoding.
-\newblock In \emph{NeurIPS}, 2017.
+\bibitem[Akrout et~al.(2019)Akrout, Wilson, Humphreys, Lillicrap, and
+  Tweed]{akrout2019deep}
+Mohamed Akrout, Collin Wilson, Peter~C. Humphreys, Timothy Lillicrap, and
+  Douglas~B. Tweed.
+\newblock Deep learning without weight transport.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2019.
+
+\bibitem[Bartunov et~al.(2018)Bartunov, Santoro, Richards, Marris, Hinton, and
+  Lillicrap]{bartunov2018assessing}
+Sergey Bartunov, Adam Santoro, Blake~A. Richards, Luke Marris, Geoffrey~E.
+  Hinton, and Timothy Lillicrap.
+\newblock Assessing the scalability of biologically-motivated deep learning
+  algorithms and architectures.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2018.
+
+\bibitem[Bernstein et~al.(2018)Bernstein, Wang, Azizzadenesheli, and
+  Anandkumar]{bernstein2018signsgd}
+Jeremy Bernstein, Yu-Xiang Wang, Kamyar Azizzadenesheli, and Animashree
+  Anandkumar.
+\newblock {signSGD}: Compressed optimisation for non-convex problems.
+\newblock In \emph{International Conference on Machine Learning}, 2018.
 
 \bibitem[Courbariaux et~al.(2015)Courbariaux, Bengio, and
   David]{courbariaux2015binaryconnect}
@@ -19,30 +34,26 @@ Matthieu Courbariaux, Yoshua Bengio, and Jean-Pierre David.
   during propagations.
 \newblock In \emph{NeurIPS}, 2015.
 
-\bibitem[Dettmers(2018)]{dettmers2018int8}
-Tim Dettmers.
-\newblock 8-bit approximations for parallelism in deep learning.
-\newblock In \emph{ICLR}, 2018.
+\bibitem[Frenkel et~al.(2021)Frenkel, Lefebvre, and Bol]{frenkel2021learning}
+Charlotte Frenkel, Martin Lefebvre, and David Bol.
+\newblock Learning without feedback: Fixed random learning signals allow for
+  feedforward training of deep neural networks.
+\newblock \emph{Frontiers in Neuroscience}, 15:\penalty0 629892, 2021.
 
-\bibitem[Girotti et~al.(2021)Girotti, Scetbon, and
-  Bruna]{girotti2021convergence}
-Luca Girotti, Meyer Scetbon, and Joan Bruna.
-\newblock Convergence analysis and implicit regularization of feedback
-  alignment for deep linear networks.
-\newblock \emph{arXiv preprint arXiv:2110.10815}, 2021.
+\bibitem[Huang et~al.(2019)Huang, Cheng, Bapna, Firat, Chen, Chen, Lee, Ngiam,
+  Le, Wu, and Chen]{huang2019gpipe}
+Yanping Huang, Youlong Cheng, Ankur Bapna, Orhan Firat, Mia~Xu Chen, Dehao
+  Chen, HyoukJoong Lee, Jiquan Ngiam, Quoc~V. Le, Yonghui Wu, and Zhifeng Chen.
+\newblock {GPipe}: Efficient training of giant neural networks using pipeline
+  parallelism.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2019.
 
-\bibitem[Han et~al.(2016)Han, Mao, and Dally]{han2015deepcompression}
-Song Han, Huizi Mao, and William~J Dally.
-\newblock Deep compression: Compressing deep neural networks with pruning,
-  trained quantization and huffman coding.
-\newblock In \emph{ICLR}, 2016.
-
-\bibitem[Hubara et~al.(2016)Hubara, Courbariaux, Soudry, El-Yaniv, and
-  Bengio]{hubara2016binarized}
-Itay Hubara, Matthieu Courbariaux, Daniel Soudry, Ran El-Yaniv, and Yoshua
-  Bengio.
-\newblock Binarized neural networks.
-\newblock In \emph{NeurIPS}, 2016.
+\bibitem[Jaderberg et~al.(2017)Jaderberg, Czarnecki, Osindero, Vinyals, Graves,
+  Silver, and Kavukcuoglu]{jaderberg2017decoupled}
+Max Jaderberg, Wojciech~Marian Czarnecki, Simon Osindero, Oriol Vinyals, Alex
+  Graves, David Silver, and Koray Kavukcuoglu.
+\newblock Decoupled neural interfaces using synthetic gradients.
+\newblock In \emph{International Conference on Machine Learning}, 2017.
 
 \bibitem[Launay et~al.(2020)Launay, Poli, Zdeborov{\'a}, Krzakala, Bect, and
   Pehlevan]{launay2020direct}
@@ -63,29 +74,30 @@ Timothy~P Lillicrap, Daniel Cownden, Douglas~B Tweed, and Colin~J Akerman.
   deep learning.
 \newblock \emph{Nature Communications}, 2016.
 
+\bibitem[Narayanan et~al.(2019)Narayanan, Harlap, Phanishayee, Seshadri,
+  Devanur, Ganger, Gibbons, and Zaharia]{narayanan2019pipedream}
+Deepak Narayanan, Aaron Harlap, Amar Phanishayee, Vivek Seshadri, Nikhil~R.
+  Devanur, Gregory~R. Ganger, Phillip~B. Gibbons, and Matei Zaharia.
+\newblock {PipeDream}: Generalized pipeline parallelism for {DNN} training.
+\newblock In \emph{ACM Symposium on Operating Systems Principles (SOSP)}, 2019.
+
 \bibitem[Nokland(2016)]{nokland2016direct}
 Arild Nokland.
 \newblock Direct feedback alignment provides learning in deep neural networks.
 \newblock In \emph{Advances in Neural Information Processing Systems}, 2016.
 
-\bibitem[Payeur et~al.(2020)Payeur, Guerguiev, Zenke, Richards, and
-  Naud]{payeur2020spike}
-Alexandre Payeur, Jordan Guerguiev, Friedemann Zenke, Blake~A. Richards, and
-  Richard Naud.
-\newblock Spike-train level direct feedback alignment.
-\newblock \emph{Frontiers in Neuroscience}, 14:\penalty0 143, 2020.
+\bibitem[Refinetti et~al.(2021)Refinetti, d'Ascoli, Ohana, and
+  Goldt]{refinetti2021align}
+Maria Refinetti, St\'ephane d'Ascoli, Ruben Ohana, and Sebastian Goldt.
+\newblock Align, then memorise: The dynamics of learning with feedback
+  alignment.
+\newblock In \emph{International Conference on Machine Learning}, 2021.
 
-\bibitem[Rastegari et~al.(2016)Rastegari, Ordonez, Redmon, and
-  Farhadi]{rastegari2016xnor}
-Mohammad Rastegari, Vicente Ordonez, Joseph Redmon, and Ali Farhadi.
-\newblock Xnor-net: Imagenet classification using binary convolutional neural
-  networks.
-\newblock In \emph{ECCV}, 2016.
-
-\bibitem[Zhou et~al.(2016)Zhou, Wu, Ni, Zhou, Wen, and Zou]{zhou2016dorefa}
-Shuchang Zhou, Yuxin Wu, Zekun Ni, Xinyu Zhou, He~Wen, and Yuheng Zou.
-\newblock Dorefa-net: Training low bitwidth convolutional neural networks with
-  low bitwidth gradients.
-\newblock In \emph{arXiv preprint arXiv:1606.06160}, 2016.
+\bibitem[Whittington and Bogacz(2017)]{whittington2017approximation}
+James C.~R. Whittington and Rafal Bogacz.
+\newblock An approximation of the error backpropagation algorithm in a
+  predictive coding network with local hebbian synaptic plasticity.
+\newblock \emph{Neural Computation}, 29\penalty0 (5):\penalty0 1229--1262,
+  2017.
 
 \end{thebibliography}

@@ -1,24 +1,17 @@
-\begin{center}
-\begingroup
-\setlength{\fboxsep}{8pt}%
-\setlength{\fboxrule}{0pt}%
-\colorbox{feedflipHighlight}{%
-\begin{minipage}{0.96\linewidth}
-\footnotesize
-\begin{tabularx}{\linewidth}{l X X}
-\toprule
-Metric & Definition & Notes \\
-\midrule
-E@90\% of best & First epoch where a run's validation metric reaches \(0.9\times\) its best value. & Computed per seed; we report mean $\pm$ 95\% t-CI over matched seeds. \\
+\begin{table}[H]
+        \centering
+        \footnotesize
+        \begin{tabularx}{\linewidth}{l X X}
+        \toprule
+        Metric & Definition & Notes \\
+        \midrule
+        E@90\% of best & First epoch where a run's validation metric reaches \(0.9\times\) its best value. & Computed per seed; we report mean $\pm$ 95\% t-CI over matched seeds. \\
 Early slope (e1→e3) & Finite difference between epochs 1 and 3 of the validation metric. & Captures initial learning speed; positive is faster. \\
 Stability CV & Coefficient of variation of validation loss across epochs in a run. & Lower is steadier; we average CV across matched seeds. \\
 Alignment AUC & Normalized area under the layerwise cosine-alignment curves \(\rho_\ell(t)\). & Reported as mean $\pm$ 95\% t-CI; higher implies backprop-like signals. \\
-TOST equivalence & Two one-sided tests on matched seeds with \(\delta=\pm0.5\) pp for accuracy (\(\pm0.01\) for $R^2$). & We declare equivalence when both one-sided p-values < 0.05. \\
-\bottomrule
-\end{tabularx}
-\vspace{0.25em}
-\captionof{table}{Metrics sidebar: definitions used in Sec.~\ref{sec:results}--\ref{sec:discussion}.}
-\label{sidebar:metrics-key}
-\end{minipage}}
-\endgroup
-\end{center}
+TOST equivalence & Two one-sided tests on matched seeds with \(\delta=\pm0.5\) pp for accuracy (\(\pm0.01\) for $R^2\)). & We declare equivalence when both one-sided p-values < 0.05. \\
+        \bottomrule
+        \end{tabularx}
+        \caption{Metrics key used in Sec.~7--9.}
+        \label{tab:metrics-key}
+        \end{table}

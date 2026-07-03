@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex docs/paper/main"] 1783000194.88986 "docs/paper/main.aux" "docs/paper/main.bbl" "docs/paper/main" 1783000195.61459 2
+["bibtex docs/paper/FeedFlipNets"] 1761055341.22866 "docs/paper/FeedFlipNets.aux" "docs/paper/FeedFlipNets.bbl" "docs/paper/FeedFlipNets" 1761055344.96432 0
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/natbib/plainnat.bst" 1233624470 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "docs/paper/main.aux" 1783000194.87628 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "docs/paper/references.bib" 1783000177.09403 6982 e3228251ebccd089424975d5b1c59ec7 ""
+  "docs/paper/FeedFlipNets.aux" 1761055344.44425 22002 21b874fb85e98f94aad3e4c9526bb8f6 "pdflatex"
+  "docs/paper/references.bib" 1760644352.34313 4223 f7a76e10520fc643fd24ec981dfe7ebd ""
   (generated)
-  "docs/paper/main.bbl"
-  "docs/paper/main.blg"
+  "docs/paper/FeedFlipNets.bbl"
+  "docs/paper/FeedFlipNets.blg"
   (rewritten before read)
-["pdflatex"] 1761054492.81141 "main.tex" "main.pdf" "main" 1761054496.45493 0
+["pdflatex"] 1761055341.39266 "docs/paper/camera_ready.tex" "docs/paper/FeedFlipNets.pdf" "FeedFlipNets" 1761055344.96456 0
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/tcrm0900.tfm" 1136768653 1536 c4f439db76ef96a9c53bc437f35ffe20 ""
@@ -265,26 +265,21 @@
   "docs/paper/../../data/report/plots/tau_sweep_mnist_real.png" 1760741605.16685 43828 7ec20599d9f23e67b3f11e8455efdee2 ""
   "docs/paper/../../data/report/plots/throughput_bar_adult_real.png" 1760442710.65581 58035 cf0a7464513e808ed21ee00b8203b09c ""
   "docs/paper/../../data/report/plots/throughput_bar_ag_news_real.png" 1760442704.03632 55823 ac29e365f841df91c91e9104ff00654b ""
-  "docs/paper/_generated/key_metrics_table.tex" 1761054492.67013 1150 c10fcae0c84c38bd9762d0152fd1bb75 ""
+  "docs/paper/FeedFlipNets.aux" 1761055344.44425 22002 21b874fb85e98f94aad3e4c9526bb8f6 "pdflatex"
+  "docs/paper/FeedFlipNets.bbl" 1761055341.38473 3828 08b84b7985f849e0048c771d8a1ce87e "bibtex docs/paper/FeedFlipNets"
+  "docs/paper/FeedFlipNets.out" 1761055344.44639 5769 9863bd4da56cfbfa9aff1a5990654135 "pdflatex"
+  "docs/paper/_generated/key_metrics_table.tex" 1761055333.41115 1150 c10fcae0c84c38bd9762d0152fd1bb75 ""
   "docs/paper/_generated/meta_convergence_summary.tex" 1760764231.34657 474 ade9d9a387fc6f49596872291d691f1d ""
   "docs/paper/_generated/schedule_delta.tex" 1760741571.677 200 8cd3e337c02bbe79089ad66d712031c7 ""
-  "docs/paper/docs/paper/_generated/key_metrics_table.tex" 1761054492.67013 1150 c10fcae0c84c38bd9762d0152fd1bb75 ""
+  "docs/paper/camera_ready.tex" 1761055327.80084 97 665b55a9d18512c5d1b66739a2e020bc ""
+  "docs/paper/docs/paper/_generated/key_metrics_table.tex" 1761055333.41115 1150 c10fcae0c84c38bd9762d0152fd1bb75 ""
   "docs/paper/docs/paper/_generated/meta_convergence_summary.tex" 1760764231.34657 474 ade9d9a387fc6f49596872291d691f1d ""
   "docs/paper/docs/paper/_generated/schedule_delta.tex" 1760741571.677 200 8cd3e337c02bbe79089ad66d712031c7 ""
-  "docs/paper/docs/paper/main.tex" 1761054486.10024 67619 a755044742c42d7fba67d4c61d7065bb ""
-  "docs/paper/main.aux" 1783000194.87628 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "docs/paper/main.bbl" 1783000195.59959 0 d41d8cd98f00b204e9800998ecf8427e "bibtex docs/paper/main"
-  "docs/paper/main.out" 1782908887.31307 5769 9863bd4da56cfbfa9aff1a5990654135 "pdflatex"
-  "docs/paper/main.tex" 1761054486.10024 67619 a755044742c42d7fba67d4c61d7065bb ""
-  "main.aux" 1783000194.87628 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "main.out" 1760741588.32913 5769 1792652b575adcec30c11d909bff1a54 ""
-  "main.tex" 0 -1 0 ""
+  "docs/paper/docs/paper/camera_ready.tex" 1761055327.80084 97 665b55a9d18512c5d1b66739a2e020bc ""
+  "docs/paper/main.tex" 1761055323.52005 67734 ca801bd863db93c7400dda2715ac80eb ""
   (generated)
-  "docs/paper/main.aux"
-  "docs/paper/main.log"
-  "docs/paper/main.out"
-  "docs/paper/main.pdf"
-  "main.aux"
-  "main.log"
-  "main.pdf"
+  "docs/paper/FeedFlipNets.aux"
+  "docs/paper/FeedFlipNets.log"
+  "docs/paper/FeedFlipNets.out"
+  "docs/paper/FeedFlipNets.pdf"
   (rewritten before read)

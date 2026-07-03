@@ -1,11 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  18 OCT 2025 00:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  21 OCT 2025 09:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**main.tex
-(./main.tex
+**docs/paper/camera_ready.tex
+(docs/paper/docs/paper/camera_ready.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
+(docs/paper/main.tex
 (/usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
 (/usr/local/texlive/2025/texmf-dist/tex/latex/base/size11.clo
@@ -935,18 +936,6 @@ Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
 \TX@cols=\count362
 \TX@ftn=\toks51
 )
-
-Package siunitx Info: Option "detect-weight" has been deprecated in this
-(siunitx)             release.
-(siunitx)
-(siunitx)             Use "reset-text-series = false, text-series-to-math =
-(siunitx)             true" as a replacement.
-
-
-
-Package siunitx Warning: Option "detect-inline-weight" has been removed in
-(siunitx)                this release.
-
 \c@theorem=\count363
 \c@lemma=\count364
 \c@corollary=\count365
@@ -954,33 +943,34 @@ Package siunitx Warning: Option "detect-inline-weight" has been removed in
 \c@proposition=\count367
 \c@remark=\count368
 Package translations Info: No language package found. I am going to use `englis
-h' as default language. on input line 66.
+h' as default language. on input line 82.
+
 (/usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count369
 \l__pdf_internal_box=\box101
 )
-(./main.aux)
-\openout1 = `main.aux'.
+(docs/paper/FeedFlipNets.aux)
+\openout1 = `FeedFlipNets.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1038,26 +1028,26 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 66.
+Package hyperref Info: Link coloring OFF on input line 82.
 
-(./main.out) (./main.out)
+(docs/paper/FeedFlipNets.out) (docs/paper/FeedFlipNets.out)
 \@outlinefile=\write4
-\openout4 = `main.out'.
+\openout4 = `FeedFlipNets.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 66.
-Package microtype Info: Applying patch `item' on input line 66.
-Package microtype Info: Applying patch `toc' on input line 66.
-Package microtype Info: Applying patch `eqnum' on input line 66.
-Package microtype Info: Applying patch `footnote' on input line 66.
-Package microtype Info: Applying patch `verbatim' on input line 66.
-LaTeX Info: Redefining \microtypesetup on input line 66.
+LaTeX Info: Redefining \microtypecontext on input line 82.
+Package microtype Info: Applying patch `item' on input line 82.
+Package microtype Info: Applying patch `toc' on input line 82.
+Package microtype Info: Applying patch `eqnum' on input line 82.
+Package microtype Info: Applying patch `footnote' on input line 82.
+Package microtype Info: Applying patch `verbatim' on input line 82.
+LaTeX Info: Redefining \microtypesetup on input line 82.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 66.
+LaTeX Info: Redefining \showhyphens on input line 82.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1075,8 +1065,8 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 66.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
+or `english'. on input line 82.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 84.
 
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -1085,7 +1075,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 84.
 
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -1107,7 +1097,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 [2{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 123.
+put line 139.
 
 
 [3]
@@ -1121,235 +1111,227 @@ put line 123.
 [7]
 
 [8]
-Overfull \hbox (2.60724pt too wide) in paragraph at lines 457--457
+
+[9]
+Overfull \hbox (2.60724pt too wide) in paragraph at lines 475--475
 |[][]
  []
 
 
-Overfull \hbox (2.14882pt too wide) in paragraph at lines 457--457
+Overfull \hbox (2.14882pt too wide) in paragraph at lines 475--475
 []|\OT1/cmr/m/n/9 (-20) saturated|
  []
 
 
-Overfull \hbox (2.14882pt too wide) in paragraph at lines 457--457
+Overfull \hbox (2.14882pt too wide) in paragraph at lines 475--475
 []|\OT1/cmr/m/n/9 (-20) saturated|
  []
 
 
-Overfull \hbox (2.14882pt too wide) in paragraph at lines 457--457
+Overfull \hbox (2.14882pt too wide) in paragraph at lines 475--475
 []|\OT1/cmr/m/n/9 (-20) saturated|
  []
 
 
-Overfull \hbox (2.14882pt too wide) in paragraph at lines 457--457
+Overfull \hbox (2.14882pt too wide) in paragraph at lines 475--475
 []|\OT1/cmr/m/n/9 (-20) saturated|
  []
 
-<../../data/report/plots/lr_sweep_mnist_real.png, id=308, 346.896pt x 231.264pt
+<../../data/report/plots/lr_sweep_mnist_real.png, id=321, 346.896pt x 231.264pt
 >
 File: ../../data/report/plots/lr_sweep_mnist_real.png Graphic file (type png)
 <use ../../data/report/plots/lr_sweep_mnist_real.png>
 Package pdftex.def Info: ../../data/report/plots/lr_sweep_mnist_real.png  used
-on input line 469.
+on input line 487.
 (pdftex.def)             Requested size: 225.4804pt x 150.31981pt.
-<../../data/report/plots/lr_sweep_20newsgroups_real.png, id=310, 346.896pt x 23
+<../../data/report/plots/lr_sweep_20newsgroups_real.png, id=323, 346.896pt x 23
 1.264pt>
 File: ../../data/report/plots/lr_sweep_20newsgroups_real.png Graphic file (type
  png)
 <use ../../data/report/plots/lr_sweep_20newsgroups_real.png>
 Package pdftex.def Info: ../../data/report/plots/lr_sweep_20newsgroups_real.png
-  used on input line 474.
+  used on input line 492.
 (pdftex.def)             Requested size: 225.4804pt x 150.31981pt.
-<../../data/report/plots/lr_sweep_fashion_mnist_offline.png, id=311, 346.896pt
+<../../data/report/plots/lr_sweep_fashion_mnist_offline.png, id=324, 346.896pt
 x 231.264pt>
 File: ../../data/report/plots/lr_sweep_fashion_mnist_offline.png Graphic file (
 type png)
 <use ../../data/report/plots/lr_sweep_fashion_mnist_offline.png>
 Package pdftex.def Info: ../../data/report/plots/lr_sweep_fashion_mnist_offline
-.png  used on input line 479.
+.png  used on input line 497.
 (pdftex.def)             Requested size: 225.4804pt x 150.31981pt.
 
 
-[9]
-<../../data/report/plots/tau_sweep_mnist_real.png, id=328, 346.896pt x 231.264p
+[10]
+<../../data/report/plots/tau_sweep_mnist_real.png, id=338, 346.896pt x 231.264p
 t>
 File: ../../data/report/plots/tau_sweep_mnist_real.png Graphic file (type png)
 <use ../../data/report/plots/tau_sweep_mnist_real.png>
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_mnist_real.png  used
- on input line 496.
+ on input line 514.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
-<../../data/report/plots/tau_sweep_20newsgroups_real.png, id=329, 346.896pt x 2
+<../../data/report/plots/tau_sweep_20newsgroups_real.png, id=339, 346.896pt x 2
 31.264pt>
 File: ../../data/report/plots/tau_sweep_20newsgroups_real.png Graphic file (typ
 e png)
 <use ../../data/report/plots/tau_sweep_20newsgroups_real.png>
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_20newsgroups_real.pn
-g  used on input line 501.
+g  used on input line 519.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
-<../../data/report/plots/tau_sweep_fashion_mnist_offline.png, id=330, 346.896pt
+<../../data/report/plots/tau_sweep_fashion_mnist_offline.png, id=340, 346.896pt
  x 231.264pt>
 File: ../../data/report/plots/tau_sweep_fashion_mnist_offline.png Graphic file
 (type png)
 <use ../../data/report/plots/tau_sweep_fashion_mnist_offline.png>
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_fashion_mnist_offlin
-e.png  used on input line 506.
+e.png  used on input line 524.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
-<../../data/report/plots/tau_sweep_california_housing_real.png, id=331, 346.896
+<../../data/report/plots/tau_sweep_california_housing_real.png, id=341, 346.896
 pt x 231.264pt>
 File: ../../data/report/plots/tau_sweep_california_housing_real.png Graphic fil
 e (type png)
 <use ../../data/report/plots/tau_sweep_california_housing_real.png>
 Package pdftex.def Info: ../../data/report/plots/tau_sweep_california_housing_r
-eal.png  used on input line 511.
+eal.png  used on input line 529.
 (pdftex.def)             Requested size: 230.18253pt x 153.45691pt.
 
 
-[10]
-
 [11]
 
-[12 <../../data/report/plots/lr_sweep_mnist_real.png> <../../data/report/plots/
-lr_sweep_20newsgroups_real.png> <../../data/report/plots/lr_sweep_fashion_mnist
-_offline.png>] (./docs/paper/_generated/key_metrics_table.tex
-Underfull \hbox (badness 1715) in paragraph at lines 22--22
-[]|\OT1/cmr/m/n/9 (+20) Normalized area un-der the lay-er-wise
- []
+[12 <docs/paper/../../data/report/plots/lr_sweep_mnist_real.png> <docs/paper/..
+/../data/report/plots/lr_sweep_20newsgroups_real.png> <docs/paper/../../data/re
+port/plots/lr_sweep_fashion_mnist_offline.png>]
 
-
-Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 22.
-See the caption package documentation for explanation.
-
-
-
-[13 <../../data/report/plots/tau_sweep_mnist_real.png> <../../data/report/plots
-/tau_sweep_20newsgroups_real.png> <../../data/report/plots/tau_sweep_fashion_mn
-ist_offline.png> <../../data/report/plots/tau_sweep_california_housing_real.png
->])
-<../../data/report/plots/meta_epochs_to_90pct_acc.png, id=369, 433.62pt x 216.8
+[13 <docs/paper/../../data/report/plots/tau_sweep_mnist_real.png> <docs/paper/.
+./../data/report/plots/tau_sweep_20newsgroups_real.png> <docs/paper/../../data/
+report/plots/tau_sweep_fashion_mnist_offline.png> <docs/paper/../../data/report
+/plots/tau_sweep_california_housing_real.png>]
+(docs/paper/docs/paper/_generated/key_metrics_table.tex)
+<../../data/report/plots/meta_epochs_to_90pct_acc.png, id=366, 433.62pt x 216.8
 1pt>
 File: ../../data/report/plots/meta_epochs_to_90pct_acc.png Graphic file (type p
 ng)
 <use ../../data/report/plots/meta_epochs_to_90pct_acc.png>
 Package pdftex.def Info: ../../data/report/plots/meta_epochs_to_90pct_acc.png
-used on input line 554.
+used on input line 572.
 (pdftex.def)             Requested size: 305.33789pt x 152.67572pt.
-<../../data/report/plots/throughput_bar_ag_news_real.png, id=373, 433.62pt x 24
+
+
+[14]
+<../../data/report/plots/throughput_bar_ag_news_real.png, id=377, 433.62pt x 24
 5.718pt>
 File: ../../data/report/plots/throughput_bar_ag_news_real.png Graphic file (typ
 e png)
 <use ../../data/report/plots/throughput_bar_ag_news_real.png>
 Package pdftex.def Info: ../../data/report/plots/throughput_bar_ag_news_real.pn
-g  used on input line 567.
+g  used on input line 585.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
-<../../data/report/plots/throughput_bar_adult_real.png, id=374, 433.62pt x 245.
+<../../data/report/plots/throughput_bar_adult_real.png, id=378, 433.62pt x 245.
 718pt>
 File: ../../data/report/plots/throughput_bar_adult_real.png Graphic file (type
 png)
 <use ../../data/report/plots/throughput_bar_adult_real.png>
 Package pdftex.def Info: ../../data/report/plots/throughput_bar_adult_real.png
- used on input line 573.
+ used on input line 591.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
 
 
-[14]
-<../../data/report/plots/alignment_curve_ag_news_real.png, id=386, 433.62pt x 2
+[15 <docs/paper/../../data/report/plots/meta_epochs_to_90pct_acc.png> <docs/pap
+er/../../data/report/plots/throughput_bar_ag_news_real.png> <docs/paper/../../d
+ata/report/plots/throughput_bar_adult_real.png>]
+<../../data/report/plots/alignment_curve_ag_news_real.png, id=393, 433.62pt x 2
 45.718pt>
 File: ../../data/report/plots/alignment_curve_ag_news_real.png Graphic file (ty
 pe png)
 <use ../../data/report/plots/alignment_curve_ag_news_real.png>
 Package pdftex.def Info: ../../data/report/plots/alignment_curve_ag_news_real.p
-ng  used on input line 589.
+ng  used on input line 607.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
-<../../data/report/plots/alignment_curve_adult_real.png, id=387, 433.62pt x 245
+<../../data/report/plots/alignment_curve_adult_real.png, id=394, 433.62pt x 245
 .718pt>
 File: ../../data/report/plots/alignment_curve_adult_real.png Graphic file (type
  png)
 <use ../../data/report/plots/alignment_curve_adult_real.png>
 Package pdftex.def Info: ../../data/report/plots/alignment_curve_adult_real.png
-  used on input line 595.
+  used on input line 613.
 (pdftex.def)             Requested size: 225.4804pt x 127.7741pt.
-
-
-[15 <../../data/report/plots/meta_epochs_to_90pct_acc.png> <../../data/report/p
-lots/throughput_bar_ag_news_real.png> <../../data/report/plots/throughput_bar_a
-dult_real.png>]
-<../../data/report/plots/bound_calibration.png, id=400, 361.35pt x 289.08pt>
+<../../data/report/plots/bound_calibration.png, id=397, 361.35pt x 289.08pt>
 File: ../../data/report/plots/bound_calibration.png Graphic file (type png)
 <use ../../data/report/plots/bound_calibration.png>
 Package pdftex.def Info: ../../data/report/plots/bound_calibration.png  used on
- input line 606.
+ input line 624.
 (pdftex.def)             Requested size: 244.27461pt x 195.42052pt.
-<../../data/report/plots/meta_early_slopes.png, id=403, 578.16pt x 216.81pt>
+<../../data/report/plots/meta_early_slopes.png, id=400, 578.16pt x 216.81pt>
 File: ../../data/report/plots/meta_early_slopes.png Graphic file (type png)
 <use ../../data/report/plots/meta_early_slopes.png>
 Package pdftex.def Info: ../../data/report/plots/meta_early_slopes.png  used on
- input line 617.
+ input line 634.
 (pdftex.def)             Requested size: 328.82707pt x 123.3084pt.
 
 
-[16 <../../data/report/plots/alignment_curve_ag_news_real.png> <../../data/repo
-rt/plots/alignment_curve_adult_real.png> <../../data/report/plots/bound_calibra
-tion.png> <../../data/report/plots/meta_early_slopes.png>]
-(./docs/paper/_generated/meta_convergence_summary.tex)
+[16 <docs/paper/../../data/report/plots/alignment_curve_ag_news_real.png> <docs
+/paper/../../data/report/plots/alignment_curve_adult_real.png> <docs/paper/../.
+./data/report/plots/bound_calibration.png>]
+(docs/paper/docs/paper/_generated/meta_convergence_summary.tex)
 
-[17]
+[17 <docs/paper/../../data/report/plots/meta_early_slopes.png>]
 
-[18] (./docs/paper/_generated/schedule_delta.tex) (./main.bbl
+[18] (docs/paper/docs/paper/_generated/schedule_delta.tex)
+(docs/paper/FeedFlipNets.bbl
 
 [19])
 
-[20] (./main.aux)
+[20] (docs/paper/FeedFlipNets.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: C2AA1C012E2BE0A93542471204E381CC;5769.
- )
+Package rerunfilecheck Info: File `FeedFlipNets.out' has not changed.
+(rerunfilecheck)             Checksum: 9863BD4DA56CFBFA9AFF1A5990654135;5769.
+ ) )
 Here is how much of TeX's memory you used:
- 34183 strings out of 473190
- 706834 string characters out of 5715801
- 1124747 words of memory out of 5000000
- 56492 multiletter control sequences out of 15000+600000
- 582530 words of font info for 234 fonts, out of 8000000 for 9000
+ 34208 strings out of 473190
+ 707500 string characters out of 5715801
+ 1121916 words of memory out of 5000000
+ 56497 multiletter control sequences out of 15000+600000
+ 582845 words of font info for 240 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 97i,19n,112p,1486b,1224s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
-></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></
-usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><
-/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></
-usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb
-></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb
-></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></
-usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></us
-r/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
-local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/lo
-cal/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/loca
-l/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/
-texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/te
-xlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texli
-ve/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/
-2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/202
-5/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2025/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2025/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2025/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2025/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2025/texmf-dist/fonts
-/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist/f
-onts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-di
-st/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2025/texmf-dist
-/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on main.pdf (20 pages, 1110242 bytes).
+ 102i,19n,115p,1616b,1216s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.p
+fb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pf
+b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb>
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb
+></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.p
+fb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.p
+fb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pf
+b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb>
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></
+usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></us
+r/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/
+local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/lo
+cal/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loca
+l/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/
+texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/tex
+live/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texliv
+e/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2
+025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2025
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2025/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2025/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2025/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2025/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2025/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2025/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2025/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2025/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2025/texmf-dist/fon
+ts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2025/texmf-dist
+/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2025/texmf-
+dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2025/texmf-di
+st/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on docs/paper/FeedFlipNets.pdf (20 pages, 1113514 bytes).
 PDF statistics:
- 618 PDF objects out of 1000 (max. 8388607)
- 492 compressed objects within 5 object streams
- 138 named destinations out of 1000 (max. 500000)
+ 617 PDF objects out of 1000 (max. 8388607)
+ 493 compressed objects within 5 object streams
+ 139 named destinations out of 1000 (max. 500000)
  46939 words of extra memory for PDF output out of 51595 (max. 10000000)
