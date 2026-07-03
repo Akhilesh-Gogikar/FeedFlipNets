@@ -1,0 +1,228 @@
+# Statistical Tests
+
+This report follows Demšar (2006) and Dror et al. for non-parametric comparisons.
+
+- CI: mean ± 95% CI (Student's t).
+
+- Within dataset: Wilcoxon signed-rank on seed-paired values vs baseline (best flip=off).
+
+- Across datasets: Friedman test on average ranks when ≥3 shared variants; otherwise Wilcoxon on paired dataset means.
+
+
+## Within-dataset (Wilcoxon)
+
+- 20newsgroups (offline), baseline=backprop_float, metric=accuracy
+  - backprop_ternary_step: n=3, medianΔ=0.2188, p=0.25, sig=no, outcome=tie
+  - dfa_float: n=3, medianΔ=-0.0312, p=0.5, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=0.1562, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-0.0156, p=1, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.0625, p=0.1573, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=0.0938, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-0.0625, p=0.1573, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=0.0312, p=0.75, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=0.0938, p=0.25, sig=no, outcome=tie
+- 20newsgroups (real), baseline=dfa_float_lr15, metric=accuracy
+  - backprop_float: n=3, medianΔ=-0.1989, p=0.25, sig=no, outcome=tie
+  - backprop_float_lr06: n=3, medianΔ=-0.2349, p=0.25, sig=no, outcome=tie
+  - backprop_float_lr10: n=3, medianΔ=-0.1989, p=0.25, sig=no, outcome=tie
+  - backprop_float_lr15: n=3, medianΔ=-0.1147, p=0.25, sig=no, outcome=tie
+  - backprop_ternary_step: n=3, medianΔ=-0.2630, p=0.25, sig=no, outcome=tie
+  - dfa_float: n=3, medianΔ=-0.0956, p=0.25, sig=no, outcome=tie
+  - dfa_float_lr06: n=3, medianΔ=-0.1822, p=0.25, sig=no, outcome=tie
+  - dfa_float_lr10: n=3, medianΔ=-0.0956, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=-0.1899, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=3, medianΔ=-0.2124, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=3, medianΔ=-0.1899, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=3, medianΔ=-0.2312, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-0.2611, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.2484, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=-0.2603, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-0.2325, p=0.25, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=-0.2614, p=0.25, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=-0.2614, p=0.25, sig=no, outcome=tie
+- adult (offline), baseline=dfa_float_lr15, metric=accuracy
+  - backprop_float: n=3, medianΔ=-0.3672, p=0.25, sig=no, outcome=tie
+  - backprop_float_lr06: n=3, medianΔ=-0.3594, p=0.25, sig=no, outcome=tie
+  - backprop_float_lr10: n=3, medianΔ=-0.3594, p=0.25, sig=no, outcome=tie
+  - backprop_float_lr15: n=3, medianΔ=-0.3125, p=0.25, sig=no, outcome=tie
+  - backprop_ternary_step: n=3, medianΔ=-0.3047, p=0.25, sig=no, outcome=tie
+  - dfa_float: n=3, medianΔ=-0.3984, p=0.25, sig=no, outcome=tie
+  - dfa_float_clip1: n=3, medianΔ=-0.3359, p=0.25, sig=no, outcome=tie
+  - dfa_float_lr06: n=3, medianΔ=-0.4453, p=0.25, sig=no, outcome=tie
+  - dfa_float_lr10: n=3, medianΔ=-0.0781, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=-0.2422, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=3, medianΔ=-0.3516, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=3, medianΔ=-0.2422, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=3, medianΔ=-0.3906, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-0.3828, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.3750, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=3, medianΔ=-0.3750, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=-0.3047, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-0.3750, p=0.25, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=-0.3281, p=0.25, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=-0.3047, p=0.25, sig=no, outcome=tie
+- adult (real), baseline=dfa_float, metric=accuracy
+  - backprop_float: n=3, medianΔ=-0.0027, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=3, medianΔ=-0.0531, p=0.25, sig=no, outcome=tie
+- ag_news (offline), baseline=backprop_float, metric=accuracy
+  - dfa_float: n=5, medianΔ=-0.0312, p=1, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=0.1406, p=0.625, sig=no, outcome=tie
+- ag_news (real), baseline=backprop_float, metric=accuracy
+  - dfa_float: n=2, medianΔ=-0.0007, p=1, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=2, medianΔ=-0.1267, p=0.5, sig=no, outcome=tie
+- california_housing (offline), baseline=dfa_float, metric=r2
+  - backprop_float: n=3, medianΔ=-0.0781, p=0.25, sig=no, outcome=tie
+  - backprop_ternary_step: n=3, medianΔ=-0.1621, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=-0.4854, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-1728.1029, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.0797, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=-0.5340, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-0.0806, p=0.25, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=-12010.3742, p=0.25, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=-20.6482, p=0.25, sig=no, outcome=tie
+- california_housing (real), baseline=dfa_float, metric=r2
+  - backprop_float: n=5, medianΔ=-0.0527, p=0.0625, sig=no, outcome=tie
+  - backprop_ternary_step: n=3, medianΔ=-7.5031, p=0.25, sig=no, outcome=tie
+  - dfa_float_clip1: n=3, medianΔ=-0.1125, p=0.25, sig=no, outcome=tie
+  - dfa_float_lr10: n=2, medianΔ=-3.6635, p=0.5, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=-3.6671, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=3, medianΔ=-3.6671, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=-3.6671, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=3, medianΔ=-3.6671, p=0.25, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-2962.3374, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.1862, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=3, medianΔ=-0.2108, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=-825.7523, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-1.6981, p=0.25, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=-2501.2947, p=0.25, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=-66.1930, p=0.25, sig=no, outcome=tie
+- cifar10 (offline), baseline=dfa_float_lr15, metric=accuracy
+  - backprop_float: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr06: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr10: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr15: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_ternary_step: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float_clip1: n=5, medianΔ=-0.8594, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr06: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float_lr10: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=5, medianΔ=0.0000, p=0.1797, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=0.0000, p=0.1797, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=5, medianΔ=-0.1719, p=0.06789, sig=no, outcome=tie
+  - dfa_ternary_step: n=5, medianΔ=-0.0234, p=0.1088, sig=no, outcome=tie
+  - structured_hadamard_float: n=5, medianΔ=-0.1094, p=0.06789, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=5, medianΔ=-0.2109, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=5, medianΔ=-0.1719, p=0.0625, sig=no, outcome=tie
+  - structured_orth_float: n=5, medianΔ=-0.1094, p=0.1088, sig=no, outcome=tie
+  - structured_orth_ternary: n=5, medianΔ=-0.2109, p=0.0625, sig=no, outcome=tie
+  - ternary_dfa_step: n=5, medianΔ=-0.1016, p=0.06789, sig=no, outcome=tie
+- fashion_mnist (offline), baseline=dfa_float_lr15, metric=accuracy
+  - backprop_float: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr06: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr10: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr15: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_ternary_step: n=5, medianΔ=0.0000, p=0.3173, sig=no, outcome=tie
+  - dfa_float: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float_clip1: n=5, medianΔ=-0.7812, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr06: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float_lr10: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=5, medianΔ=0.0000, p=0.3173, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=5, medianΔ=-0.0391, p=0.06789, sig=no, outcome=tie
+  - dfa_ternary_step: n=5, medianΔ=-0.1406, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_float: n=5, medianΔ=-0.1016, p=0.06789, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=5, medianΔ=-0.1797, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=5, medianΔ=-0.1016, p=0.0625, sig=no, outcome=tie
+  - structured_orth_float: n=5, medianΔ=-0.1172, p=0.06789, sig=no, outcome=tie
+  - structured_orth_ternary: n=5, medianΔ=-0.1094, p=0.0625, sig=no, outcome=tie
+  - ternary_dfa_step: n=5, medianΔ=0.0000, p=0.1797, sig=no, outcome=tie
+- fashion_mnist (real), baseline=backprop_float_lr15, metric=accuracy
+  - backprop_float: n=5, medianΔ=-0.0034, p=0.0625, sig=no, outcome=tie
+  - backprop_float_lr06: n=5, medianΔ=-0.0093, p=0.0625, sig=no, outcome=tie
+  - backprop_float_lr10: n=5, medianΔ=-0.0034, p=0.0625, sig=no, outcome=tie
+  - backprop_ternary_step: n=5, medianΔ=-0.7730, p=0.0625, sig=no, outcome=tie
+  - dfa_float: n=5, medianΔ=-0.0987, p=0.0625, sig=no, outcome=tie
+  - dfa_float_clip1: n=5, medianΔ=-0.0365, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr06: n=5, medianΔ=-0.0866, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr10: n=5, medianΔ=-0.0987, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr15: n=5, medianΔ=-0.1076, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=5, medianΔ=-0.2633, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=5, medianΔ=-0.2752, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=-0.2633, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=5, medianΔ=-0.2358, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_step: n=5, medianΔ=-0.5652, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_float: n=5, medianΔ=-0.7744, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=5, medianΔ=-0.1515, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=5, medianΔ=-0.6243, p=0.0625, sig=no, outcome=tie
+  - structured_orth_float: n=5, medianΔ=-0.7724, p=0.0625, sig=no, outcome=tie
+  - structured_orth_ternary: n=5, medianΔ=-0.4783, p=0.0625, sig=no, outcome=tie
+  - ternary_dfa_step: n=5, medianΔ=-0.6797, p=0.0625, sig=no, outcome=tie
+- mnist (offline), baseline=dfa_float_lr15, metric=accuracy
+  - backprop_float: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr06: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr10: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_float_lr15: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_ternary_step: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float_clip1: n=5, medianΔ=-0.8125, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr06: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_float_lr10: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=5, medianΔ=0.0000, p=0.1797, sig=no, outcome=tie
+  - dfa_ternary_step: n=5, medianΔ=-0.0391, p=0.06789, sig=no, outcome=tie
+  - structured_hadamard_float: n=5, medianΔ=-0.1094, p=0.06789, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=5, medianΔ=-0.4844, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=5, medianΔ=-0.1484, p=0.0625, sig=no, outcome=tie
+  - structured_orth_float: n=5, medianΔ=-0.1562, p=0.0625, sig=no, outcome=tie
+  - structured_orth_ternary: n=5, medianΔ=-0.1328, p=0.0625, sig=no, outcome=tie
+  - ternary_dfa_step: n=5, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+- mnist (real), baseline=backprop_float_lr15, metric=accuracy
+  - backprop_float: n=5, medianΔ=-0.0049, p=0.0625, sig=no, outcome=tie
+  - backprop_float_lr06: n=5, medianΔ=-0.0139, p=0.0625, sig=no, outcome=tie
+  - backprop_float_lr10: n=5, medianΔ=-0.0049, p=0.0625, sig=no, outcome=tie
+  - backprop_ternary_step: n=5, medianΔ=-0.5929, p=0.0625, sig=no, outcome=tie
+  - dfa_float: n=5, medianΔ=-0.0299, p=0.0625, sig=no, outcome=tie
+  - dfa_float_clip1: n=5, medianΔ=-0.0273, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr06: n=5, medianΔ=-0.0129, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr10: n=5, medianΔ=-0.0299, p=0.0625, sig=no, outcome=tie
+  - dfa_float_lr15: n=5, medianΔ=-0.0314, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=5, medianΔ=-0.1495, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau002: n=5, medianΔ=-0.1463, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau005: n=5, medianΔ=-0.1495, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_epoch_tau010: n=5, medianΔ=-0.2053, p=0.0625, sig=no, outcome=tie
+  - dfa_ternary_step: n=5, medianΔ=-0.8001, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_float: n=5, medianΔ=-0.1672, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_float_clip1: n=5, medianΔ=-0.1595, p=0.0625, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=5, medianΔ=-0.6098, p=0.0625, sig=no, outcome=tie
+  - structured_orth_float: n=5, medianΔ=-0.1594, p=0.0625, sig=no, outcome=tie
+  - structured_orth_ternary: n=5, medianΔ=-0.6013, p=0.0625, sig=no, outcome=tie
+  - ternary_dfa_step: n=5, medianΔ=-0.6351, p=0.0625, sig=no, outcome=tie
+- ucr (offline), baseline=dfa_float, metric=accuracy
+  - backprop_float: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_ternary_step: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-0.2031, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.1719, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=-0.2031, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-0.2344, p=0.1797, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=-0.2031, p=0.25, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+- ucr (real), baseline=dfa_float, metric=accuracy
+  - backprop_float: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - backprop_ternary_step: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_epoch: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+  - dfa_ternary_step: n=3, medianΔ=-0.2031, p=0.25, sig=no, outcome=tie
+  - structured_hadamard_float: n=3, medianΔ=-0.1719, p=0.1797, sig=no, outcome=tie
+  - structured_hadamard_ternary: n=3, medianΔ=-0.2031, p=0.25, sig=no, outcome=tie
+  - structured_orth_float: n=3, medianΔ=-0.2344, p=0.1797, sig=no, outcome=tie
+  - structured_orth_ternary: n=3, medianΔ=-0.2031, p=0.25, sig=no, outcome=tie
+  - ternary_dfa_step: n=3, medianΔ=0.0000, p=nan, sig=no, outcome=tie
+
+## Across-datasets
+
+- Mode=offline: Wilcoxon p=0.715; variants=backprop_float, dfa_float; medianΔ=0.0000
+- Mode=real: Wilcoxon p=0.7532; variants=backprop_float, dfa_float; medianΔ=0.0000
