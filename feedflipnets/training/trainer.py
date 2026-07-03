@@ -398,7 +398,9 @@ class Trainer:
                 grads, current_state = self.strategy.backward(activations, delta, current_state)
                 # Alignment probe on early steps
                 if want_align and step_idx < int(alignment_probe_steps or 0):
-                    bp_grads, _ = align_bp.backward(activations, delta, StrategyState())  # type: ignore[arg-type]
+                    bp_grads, _ = align_bp.backward(
+                        activations, delta, StrategyState()
+                    )  # type: ignore[arg-type]
                     # Initialize accumulators lazily
                     if not align_sums:
                         last_idx = len(activations.weights) - 1

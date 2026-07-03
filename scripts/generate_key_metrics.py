@@ -31,7 +31,9 @@ class MetricRow:
 METRICS: tuple[MetricRow, ...] = (
     MetricRow(
         name=r"E@90\% of best",
-        definition=r"First epoch where a run's validation metric reaches \(0.9\times\) its best value.",
+        definition=(
+            r"First epoch where a run's validation metric reaches " r"\(0.9\times\) its best value."
+        ),
         note=r"Computed per seed; we report mean $\pm$ 95\% t-CI over matched seeds.",
     ),
     MetricRow(

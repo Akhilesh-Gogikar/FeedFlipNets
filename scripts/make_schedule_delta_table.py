@@ -50,8 +50,8 @@ def main() -> None:
         "\\begin{tabular}{l r r r r r r}",
         "Dataset & E@90\\% best (ps) & S(ps) & E@90\\% best (pe) & S(pe) & dE & dS \\",
         "\\hline",
-        f"MNIST & {fmt(mn_e)} & {fmt(mn_s)} & {fmt(mne_e)} & {fmt(mne_s)} & {fmt(de_mn)} & {fmt(ds_mn)} \\",
-        f"20NG & {fmt(ng_e)} & {fmt(ng_s)} & {fmt(nge_e)} & {fmt(nge_s)} & {fmt(de_ng)} & {fmt(ds_ng)} \\",
+        f"MNIST & {fmt(mn_e)} & {fmt(mn_s)} & {fmt(mne_e)} & {fmt(mne_s)} & {fmt(de_mn)} & {fmt(ds_mn)} \\",  # noqa: E501
+        f"20NG & {fmt(ng_e)} & {fmt(ng_s)} & {fmt(nge_e)} & {fmt(nge_s)} & {fmt(de_ng)} & {fmt(ds_ng)} \\",  # noqa: E501
         "\\end{tabular}",
     ]
 

@@ -78,8 +78,9 @@ def softmax_jac_causal(A: Array, dA: Array) -> Array:
 
 
 def one_block_grads(P, c, e_attn, e_mlp, R_O, R_2):
-    """① A-routed, value-exact dW_O/dW_2, surrogate R_O/R_2. Returns (param grads summed over batch, dL/dx).
+    """① A-routed, value-exact dW_O/dW_2, surrogate R_O/R_2.
 
+    Returns (param grads summed over batch, dL/dx).
     e_attn ≈ dL/dx1 (attention broadcast), e_mlp ≈ dL/dx2 (MLP broadcast). Batched restatement of
     ActivationRoutedDFA.block_grads. Never dereferences W_Oᵀ / W_2ᵀ.
     """
@@ -181,8 +182,9 @@ class NumpyLM:
     """Embeddings + N causal pre-LN blocks + linear head, trained lock-free with DFA broadcast.
 
     mode ∈ {"ONE_TWO", "FIXED_DFA"}. Each pre-LN sublayer is its own DFA broadcast of the top error
-    e=dL/dlogits: e_attn=e@B_attn_ℓ, e_mlp=e@B_mlp_ℓ. ONE_TWO uses ① value-exact grads + ② adapts R_O;
-    FIXED_DFA ignores A. Head grad EXACT from e; embedding grad from the first-block input error.
+    e=dL/dlogits: e_attn=e@B_attn_ℓ, e_mlp=e@B_mlp_ℓ. ONE_TWO uses ① value-exact
+    grads + ② adapts R_O; FIXED_DFA ignores A. Head grad EXACT from e; embedding
+    grad from the first-block input error.
     """
 
     def __init__(self, V, d, h, N, T, seed, mode):
