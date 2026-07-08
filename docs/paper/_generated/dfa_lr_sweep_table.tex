@@ -1,0 +1,22 @@
+% Auto-generated from runs/dfa_sweep/*/fashion_mnist_dfa_metrics.json
+\begin{table}[t]
+\centering
+\caption{Learning-rate sensitivity of convolutional DFA on Fashion-MNIST (single seed, GPU).
+Short-budget sweep (4 epochs) plus an extended run at the stable setting (8 epochs).
+Test accuracy oscillates epoch-to-epoch even at the stable learning rate, while train
+accuracy climbs monotonically; the headline result in Table~\ref{tab:cnn-gap} (63.7\%)
+remains our best final-epoch DFA accuracy.}
+\label{tab:dfa-lr-sweep}
+\begin{tabular}{lrrrrl}
+\toprule
+LR & Epochs & Peak test acc. & @ep & Final test acc. & Final test loss \\
+\midrule
+0.002 & 4 & 50.8\% & 4 & 50.8\% & 1.63 \\
+0.005 & 4 & 57.7\% & 4 & 57.7\% & 1.27 \\
+0.005 & 8 & 58.3\% & 5 & 30.0\% & 4.12 \\
+0.01  & 4 & 49.5\% & 4 & 49.5\% & 8.28 \\
+0.02  & 4 & 41.1\% & 2 & 36.5\% & $4.2\times10^{3}$ \\
+0.05  & 4 & 37.1\% & 2 & 30.3\% & $4.0\times10^{6}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
