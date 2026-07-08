@@ -1,0 +1,4 @@
+{"tag": "gpu_bp_full", "device": "cuda", "method": "bp", "limit": 0, "epochs": 8, "rc": 0, "wall_s": 44.54}
+{"tag": "gpu_dfa_full", "device": "cuda", "method": "dfa", "limit": 0, "epochs": 8, "rc": 0, "wall_s": 43.69}
+{"tag": "time_gpu", "device": "cuda", "method": "bp", "limit": 10000, "epochs": 3, "rc": 0, "wall_s": 6.11}
+{"tag": "time_cpu", "device": "cpu", "method": "bp", "limit": 10000, "epochs": 3, "rc": 0, "wall_s": 36.62}
