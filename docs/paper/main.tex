@@ -294,9 +294,11 @@ We now use the feedback signal in the setting that names the project: training t
 
 \paragraph{The mechanism.} Each weight is stored only as a ternary value $w\in\{-1,0,+1\}$ and a small signed integer accumulator $c$. At each step we form a per-weight descent vote from the \emph{sign} of the gradient estimate and integrate it, flipping the bit when the evidence crosses a threshold $K$:
 \begin{equation}
-c \leftarrow c - \mathrm{sign}(\hat g),\qquad
-\text{if } c \ge K:\ w \leftarrow \min(w{+}1,+1),\ c\leftarrow 0;\qquad
+\begin{aligned}
+&c \leftarrow c - \mathrm{sign}(\hat g),\\
+&\text{if } c \ge K:\ w \leftarrow \min(w{+}1,+1),\ c\leftarrow 0;\quad
 \text{if } c \le -K:\ w \leftarrow \max(w{-}1,-1),\ c\leftarrow 0.
+\end{aligned}
 \end{equation}
 The forward pass uses $w$ with a fixed per-layer scale. There is no float shadow and no full gradient---only a \emph{sign}. State per weight collapses from a $32$-bit shadow to $\approx\!1.58 + \log_2(2K{+}1)$ bits (e.g.\ $5.7$ bits at $K{=}8$). Because a flip needs only the sign, DFA is the natural feedback: it supplies that sign transport-free, shadow-free, and lock-free.
 
