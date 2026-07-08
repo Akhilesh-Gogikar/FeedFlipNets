@@ -1,0 +1,49 @@
+{
+  "source": "RunPod GPU campaign (device-fixed DFA), FashionMNIST CNN, 8 epochs, batch 128, lr 0.2, full data",
+  "bp_test_acc_pct": 80.24,
+  "dfa_test_acc_pct": 63.67,
+  "gap_test_pct": -16.57,
+  "bp_gpu_wall_s": 44.54,
+  "dfa_gpu_wall_s": 43.69,
+  "bp_gpu_vs_cpu_speedup": 5.99,
+  "dfa_test_loss_final": 4630182948660.839,
+  "dfa_loss_diverges": true,
+  "timing": [
+    {
+      "tag": "gpu_bp_full",
+      "device": "cuda",
+      "method": "bp",
+      "limit": 0,
+      "epochs": 8,
+      "rc": 0,
+      "wall_s": 44.54
+    },
+    {
+      "tag": "gpu_dfa_full",
+      "device": "cuda",
+      "method": "dfa",
+      "limit": 0,
+      "epochs": 8,
+      "rc": 0,
+      "wall_s": 43.69
+    },
+    {
+      "tag": "time_gpu",
+      "device": "cuda",
+      "method": "bp",
+      "limit": 10000,
+      "epochs": 3,
+      "rc": 0,
+      "wall_s": 6.11
+    },
+    {
+      "tag": "time_cpu",
+      "device": "cpu",
+      "method": "bp",
+      "limit": 10000,
+      "epochs": 3,
+      "rc": 0,
+      "wall_s": 36.62
+    }
+  ]
+}
