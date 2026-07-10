@@ -88,6 +88,48 @@ Attack arms (`attacks.json`, all 7.6 bits/w, n=3):
   (below fixed-B) while accuracy stays at baseline — perturbation-taught feedback
   stops imitating BP without finding a superior transport-free signal.
 
+## 5. Round 2 — the feedback-information budget (pre-registered): sign fidelity is NOT the bottleneck.
+`experiments/feedflip_feedback_budget.py`; pre-registration + gates frozen at commit
+`7075d13` (`PREREG_round2_feedback_budget.md`) **before** any full run. Same frozen
+benchmark as §4, K=32, n=3. New axis: bits of information flowing from W into the
+feedback path (`fb_comm` bits/w/step; one ternary W^T refresh = log2(3) ≈ 1.585,
+refreshed every k steps). Results (`feedflip_round2.json`):
+
+| arm | fb_comm (bits/w/step) | mean acc | sign-match `p` (late) |
+| --- | --------------------- | -------- | --------------------- |
+| bp_shadow (§4 anchor, 32 bits/w state) | — | 0.604 ± .013 | — |
+| sign_transport k=1 (bit-exact BP votes) | 1.585 | 0.551 ± .002 | **1.000** |
+| sign_transport k=8    | 0.198 | 0.555 ± .008 | 0.999 |
+| sign_transport k=64   | 0.025 | 0.542 ± .007 | 0.992 |
+| sign_transport k=512  | 0.003 | 0.557 ± .006 | 0.974 |
+| sign_transport k=4096 | 0.0004 | 0.557 ± .005 | 0.870 |
+| fa_random (control)   | 0 | 0.530 ± .004 | 0.717 |
+| kp_fa (Kolen–Pollack mirror) | 0 | 0.304 ± .037 | 0.328 |
+
+**Both gates NO-GO** (G-A1 kp_fa ≥ 0.60: no; G-A3 any k ≥ 8 ≥ 0.60: no) — and the
+pre-registered interpretation rule **P5 fired**: even k=1, which feeds the flip
+mechanism the *bit-exact BP backward pass* (`p = 1.0` by construction), reaches only
+0.551.
+
+- **The §4 "sign barrier" framing is overturned.** Going from p ≈ 0.70 (random B) to
+  p = 1.0 (perfect transport) buys only +0.015 of the 0.07 gap to bp_shadow. The
+  binding constraint is the magnitude-blind vote/flip accumulator, not feedback sign
+  fidelity: what the float shadow buys is *magnitude accumulation*, not better signs.
+- **Sign fidelity is nearly free anyway:** acc(k) is flat out to k=4096
+  (0.0004 bits/w/step, late p 0.87, acc 0.557) — stale ternary W^T is as good as
+  fresh transport. P1 (monotone decay in k) is not observed in this regime.
+- **kp_fa diverged** (P3 falsified): gradient co-mirroring under flip dynamics
+  bootstraps its own feedback target (late p 0.33, acc 0.30); the KP theorem's
+  shared-update premise genuinely matters — W moving by flips breaks it.
+- **P4 confirmed:** fa_random (0.530) ≈ dfa_k32 (0.536) — chaining topology alone
+  changes nothing.
+
+Consequences: registered arms A2 (prealigned init) and A4 (forward-gradient control
+variate) target sign fidelity and are now predicted capped near 0.55; A5 (wall-clock
+throughput) is unaffected. A round-3 attack should target the *mechanism*:
+magnitude-carrying votes (e.g. `c += -sign(g)·q(|g|)` with a 2–3-bit quantizer,
+or stochastic-rounding flips with P(flip) ∝ |g|), staying ≤ 8 state bits/w.
+
 ## The unifying insight: cosine alignment ≠ per-weight sign
 AR-DFA's large *cosine*-alignment gain on attention (worst-case angle 90°→46°, `data/report/m2/`)
 does **not** translate into per-weight *sign* correctness (`p ≈ 0.53`, barely above chance). Bit-flips
@@ -96,3 +138,8 @@ transport-free discrete/ternary learning is per-weight sign accuracy, and "align
 standard DFA metric) is the wrong proxy for it.** The FeedFlip *mechanism* is genuinely efficient
 (≈5.6× less state, ~2× faster, shadow-free); the open problem is a transport-free rule whose
 per-weight sign — not just its aggregate direction — is reliably correct at depth and through attention.
+
+**Round-2 revision (§5):** on the MLP benchmark, sign accuracy is *necessary but not sufficient* —
+even p = 1.0 (bit-exact BP votes) recovers only 0.551 vs bp_shadow's 0.604. Beyond sign
+correctness, the deeper constraint is the flip accumulator's magnitude-blindness: the
+K-threshold vote counter discards |g|, which is exactly what the float shadow retains.
