@@ -1,0 +1,433 @@
+{
+  "rows": [
+    {
+      "arm": "magq2_st512",
+      "seed": 0,
+      "acc": 0.57666015625,
+      "gap_closure": 0.418,
+      "ms_per_step": 0.6617396978836041,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9041041002901576,
+      "sign_match_p_late": 0.9249156798838988
+    },
+    {
+      "arm": "magq2_st512",
+      "seed": 1,
+      "acc": 0.583984375,
+      "gap_closure": 0.574,
+      "ms_per_step": 0.6701806197379483,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9118403684446863,
+      "sign_match_p_late": 0.9302103007514454
+    },
+    {
+      "arm": "magq2_st512",
+      "seed": 2,
+      "acc": 0.52001953125,
+      "gap_closure": -0.787,
+      "ms_per_step": 0.6751834947499447,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.8877935579878572,
+      "sign_match_p_late": 0.9003488803668107
+    },
+    {
+      "arm": "magq2_farand",
+      "seed": 0,
+      "acc": 0.52783203125,
+      "gap_closure": -0.621,
+      "ms_per_step": 0.6864946302521275,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.7442945119470258,
+      "sign_match_p_late": 0.7718932687495021
+    },
+    {
+      "arm": "magq2_farand",
+      "seed": 1,
+      "acc": 0.57177734375,
+      "gap_closure": 0.314,
+      "ms_per_step": 0.7830403019906953,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.7566231165730403,
+      "sign_match_p_late": 0.7811218474549886
+    },
+    {
+      "arm": "magq2_farand",
+      "seed": 2,
+      "acc": 0.564453125,
+      "gap_closure": 0.159,
+      "ms_per_step": 0.7265247864997946,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.7439907272619227,
+      "sign_match_p_late": 0.7736865484065025
+    },
+    {
+      "arm": "stoch1_st512",
+      "seed": 0,
+      "acc": 0.56591796875,
+      "gap_closure": 0.19,
+      "ms_per_step": 0.7065403593733208,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.945781634839352,
+      "sign_match_p_late": 0.9721432247993215
+    },
+    {
+      "arm": "stoch1_st512",
+      "seed": 1,
+      "acc": 0.5869140625,
+      "gap_closure": 0.636,
+      "ms_per_step": 0.79936508325045,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9489135446679202,
+      "sign_match_p_late": 0.9815991531686475
+    },
+    {
+      "arm": "stoch1_st512",
+      "seed": 2,
+      "acc": 0.5703125,
+      "gap_closure": 0.283,
+      "ms_per_step": 0.710003010375658,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9443586493645643,
+      "sign_match_p_late": 0.972678964215344
+    },
+    {
+      "arm": "stoch1_farand",
+      "seed": 0,
+      "acc": 0.5400390625,
+      "gap_closure": -0.361,
+      "ms_per_step": 0.713217614509631,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.6857411349483536,
+      "sign_match_p_late": 0.7188260765843438
+    },
+    {
+      "arm": "stoch1_farand",
+      "seed": 1,
+      "acc": 0.552734375,
+      "gap_closure": -0.091,
+      "ms_per_step": 0.764016468761838,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.7164825514142271,
+      "sign_match_p_late": 0.7466347209488606
+    },
+    {
+      "arm": "stoch1_farand",
+      "seed": 2,
+      "acc": 0.5400390625,
+      "gap_closure": -0.361,
+      "ms_per_step": 0.7064248697570292,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.6887153090938216,
+      "sign_match_p_late": 0.7193961594238182
+    },
+    {
+      "arm": "stoch4_st512",
+      "seed": 0,
+      "acc": 0.58056640625,
+      "gap_closure": 0.501,
+      "ms_per_step": 0.6854068749962607,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9406619661089771,
+      "sign_match_p_late": 0.9679960650763937
+    },
+    {
+      "arm": "stoch4_st512",
+      "seed": 1,
+      "acc": 0.56494140625,
+      "gap_closure": 0.169,
+      "ms_per_step": 0.6966271198762115,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9411375456928832,
+      "sign_match_p_late": 0.9678944840993482
+    },
+    {
+      "arm": "stoch4_st512",
+      "seed": 2,
+      "acc": 0.56298828125,
+      "gap_closure": 0.127,
+      "ms_per_step": 0.6718003019923344,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.9427057400495163,
+      "sign_match_p_late": 0.9717084570759174
+    },
+    {
+      "arm": "stoch4_farand",
+      "seed": 0,
+      "acc": 0.560546875,
+      "gap_closure": 0.075,
+      "ms_per_step": 0.751599192750291,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.6949058926048712,
+      "sign_match_p_late": 0.7691987707966086
+    },
+    {
+      "arm": "stoch4_farand",
+      "seed": 1,
+      "acc": 0.58056640625,
+      "gap_closure": 0.501,
+      "ms_per_step": 0.6543270572437905,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.7259694436200137,
+      "sign_match_p_late": 0.7903063574288095
+    },
+    {
+      "arm": "stoch4_farand",
+      "seed": 2,
+      "acc": 0.5615234375,
+      "gap_closure": 0.096,
+      "ms_per_step": 0.6705803488730453,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.6997197167434394,
+      "sign_match_p_late": 0.76167769064795
+    },
+    {
+      "arm": "ishad2_st512",
+      "seed": 0,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5667493176297285,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.5941292852504819,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad2_st512",
+      "seed": 1,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5499832292553037,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.6186131157196831,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad2_st512",
+      "seed": 2,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5481368228793144,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.5614001694644677,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad2_farand",
+      "seed": 0,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5510998593817931,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.5479325613518712,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad2_farand",
+      "seed": 1,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5564579531201161,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.5670653265280509,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad2_farand",
+      "seed": 2,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5511762031237595,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.5630333079019232,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad8_st512",
+      "seed": 0,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5476362447516294,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.5905823317702998,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad8_st512",
+      "seed": 1,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5616195781331044,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.6195232499580325,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad8_st512",
+      "seed": 2,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5510255416302243,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "sign_match_p": 0.5682121648039541,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad8_farand",
+      "seed": 0,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5506108801346272,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.5381730864116312,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad8_farand",
+      "seed": 1,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5516157447564183,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.5376047790830976,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "ishad8_farand",
+      "seed": 2,
+      "acc": 0.330078125,
+      "gap_closure": -4.828,
+      "ms_per_step": 0.5497098385094432,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "sign_match_p": 0.5305338945261945,
+      "sign_match_p_late": null
+    }
+  ],
+  "summary": {
+    "magq2_st512": {
+      "mean_acc": 0.5602213541666666,
+      "std_acc": 0.02858380624808077,
+      "mean_gap_closure": 0.06833333333333332,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "mean_sign_match_p_late": 0.9184916203340516,
+      "n_seeds_with_sign_metric": 3
+    },
+    "magq2_farand": {
+      "mean_acc": 0.5546875,
+      "std_acc": 0.019223652036161647,
+      "mean_gap_closure": -0.04933333333333333,
+      "state_bits_per_w": 7.69,
+      "fb_comm_bits_per_w_step": 0.0,
+      "mean_sign_match_p_late": 0.7755672215369978,
+      "n_seeds_with_sign_metric": 3
+    },
+    "stoch1_st512": {
+      "mean_acc": 0.5743815104166666,
+      "std_acc": 0.009041630476778093,
+      "mean_gap_closure": 0.36966666666666664,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "mean_sign_match_p_late": 0.975473780727771,
+      "n_seeds_with_sign_metric": 3
+    },
+    "stoch1_farand": {
+      "mean_acc": 0.5442708333333334,
+      "std_acc": 0.005984627705354895,
+      "mean_gap_closure": -0.27099999999999996,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "mean_sign_match_p_late": 0.7282856523190077,
+      "n_seeds_with_sign_metric": 3
+    },
+    "stoch4_st512": {
+      "mean_acc": 0.5694986979166666,
+      "std_acc": 0.007866566389058968,
+      "mean_gap_closure": 0.26566666666666666,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "mean_sign_match_p_late": 0.969199668750553,
+      "n_seeds_with_sign_metric": 3
+    },
+    "stoch4_farand": {
+      "mean_acc": 0.5675455729166666,
+      "std_acc": 0.009215747178966189,
+      "mean_gap_closure": 0.22399999999999998,
+      "state_bits_per_w": 7.6,
+      "fb_comm_bits_per_w_step": 0.0,
+      "mean_sign_match_p_late": 0.7737276062911227,
+      "n_seeds_with_sign_metric": 3
+    },
+    "ishad2_st512": {
+      "mean_acc": 0.330078125,
+      "std_acc": 0.0,
+      "mean_gap_closure": -4.828,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "mean_sign_match_p_late": null,
+      "n_seeds_with_sign_metric": 0
+    },
+    "ishad2_farand": {
+      "mean_acc": 0.330078125,
+      "std_acc": 0.0,
+      "mean_gap_closure": -4.828,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "mean_sign_match_p_late": null,
+      "n_seeds_with_sign_metric": 0
+    },
+    "ishad8_st512": {
+      "mean_acc": 0.330078125,
+      "std_acc": 0.0,
+      "mean_gap_closure": -4.828,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0031,
+      "mean_sign_match_p_late": null,
+      "n_seeds_with_sign_metric": 0
+    },
+    "ishad8_farand": {
+      "mean_acc": 0.330078125,
+      "std_acc": 0.0,
+      "mean_gap_closure": -4.828,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.0,
+      "mean_sign_match_p_late": null,
+      "n_seeds_with_sign_metric": 0
+    }
+  },
+  "gate": {
+    "gate_acc": 0.6,
+    "G_R3": false,
+    "G_R3_strict_matched_bp_shadow": false,
+    "P4_vote_mechanism_go": false,
+    "go": false
+  }
+}

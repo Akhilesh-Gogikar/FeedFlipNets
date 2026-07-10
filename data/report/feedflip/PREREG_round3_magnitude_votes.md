@@ -90,4 +90,54 @@ GC = (acc - .557) / (.604 - .557) using the round-2 sign-only reference
 
 ## Deviations
 
-(none yet)
+None post-freeze. The harness was not modified after the freeze commit
+(`06b13da`); the ishad collapse diagnostic below is exploratory analysis only
+(no re-runs of registered arms, no gate impact). Pre-freeze, one smoke-exposed
+crash fix (None-safe summary aggregation when a row has no valid sign-metric
+pairs) landed inside the freeze commit itself.
+
+---
+
+## RESULTS (appended after the frozen run; `feedflip_round3.json`, no exclusions)
+
+| arm | mean acc | std | GC | late sign-match p | bits/w | fb bits/w/step |
+| --- | -------- | --- | -- | ----------------- | ------ | -------------- |
+| stoch1_st512 | **0.574** | .009 | 0.37 | **0.975** | 7.60 | 0.0031 |
+| stoch4_st512 | 0.569 | .008 | 0.27 | 0.969 | 7.60 | 0.0031 |
+| stoch4_farand | 0.568 | .009 | 0.22 | 0.774 | 7.60 | 0 |
+| magq2_st512 | 0.560 | .029 | 0.07 | 0.918 | 7.69 | 0.0031 |
+| magq2_farand | 0.555 | .019 | −0.05 | 0.776 | 7.69 | 0 |
+| stoch1_farand | 0.544 | .006 | −0.27 | 0.728 | 7.60 | 0 |
+| ishad{2,8}_{st512,farand} | 0.330 | .000 | −4.83 | — (g ≡ 0) | 8.00 | — |
+
+### Gates: **NO-GO on all three**
+
+- **G-R3 FAIL** — best arm stoch1_st512 0.574 ± .009 < 0.60.
+- **G-R3-strict FAIL** — no arm ≥ 0.604.
+- **P4 vote-mechanism GO FAIL** — no vote arm ≥ 0.60.
+
+### Predictions scored
+
+- **P1 REFUTED** — ordering inverted at the top: ishad arms finish dead last
+  (0.330, see collapse note), stoch1 ≥ stoch4 ≥ magq2 among survivors.
+- **P2 MARGINAL MISS** — stoch1_st512 beats 0.557 by +0.017 = 1.9σ
+  (seed std .009); the frozen bar was > 2σ, so not confirmed.
+- **P3 VIOLATED for stoch1** — st512 − farand = +0.030 > 0.02 (late p 0.975
+  vs 0.728). Holds for magq2 (+0.006) and stoch4 (+0.002). Feedback quality
+  re-emerges as first-order exactly for the unbiased high-rate vote mechanism.
+- **P4 rule FIRES** (both ishad < 0.60) → the registered interpretation is a
+  **state-bits frontier**: sign-only votes 0.557 (≈7.6 bits) → magnitude votes
+  0.574 (7.6 bits) → float32 shadow 0.604 (32 bits). CAVEAT: the ishad arms do
+  not support this reading independently — they collapsed for a dynamics
+  reason (below) and are uninformative about SR-SGD at gentler step sizes; the
+  frontier reading rests on the vote arms.
+
+### Exploratory diagnostic: ishad collapse mode (post-hoc, non-gating)
+
+Not int8 range saturation (sat_frac ≤ 0.19 at all layers). The E-scaled SR
+steps (per-step shadow increment ~E vs initial shadow scale 8) churn weights
+through the 0.7·mean|a| ternarizer; deeper layers lose nonzero weights
+(0.56 → 0.33 by step ~60), active paths die, and the network enters a
+zero-gradient absorbing state: mean|g| = 0 exactly ⇒ SR(0) = 0 ⇒ frozen
+forever at majority-class accuracy 0.330 — identically across all seeds and
+both feedback types (death precedes any feedback influence).

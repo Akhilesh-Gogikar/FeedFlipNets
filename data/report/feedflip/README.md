@@ -130,6 +130,47 @@ throughput) is unaffected. A round-3 attack should target the *mechanism*:
 magnitude-carrying votes (e.g. `c += -sign(g)·q(|g|)` with a 2–3-bit quantizer,
 or stochastic-rounding flips with P(flip) ∝ |g|), staying ≤ 8 state bits/w.
 
+## 6. Round 3 — magnitude-carrying votes (pre-registered): the residual gap is state *precision*, not information.
+`experiments/feedflip_magnitude_votes.py`; pre-registration + gates frozen at commit
+`06b13da` (`PREREG_round3_magnitude_votes.md`) **before** any full run. Same frozen
+benchmark; new axis: gradient *magnitude* inside the ≤ 8 bits/w accumulator.
+Mechanisms — magq2 (2-bit weighted votes), stochT (Bernoulli vote rate ∝ |g|;
+unbiased integrator), ishadE (int8 SR shadow) — each × {st512 stale ternary
+transport (0.0031 bits/w/step), farand (0 bits)}. Results (`feedflip_round3.json`):
+
+| arm | mean acc | late sign-match `p` | state bits/w |
+| --- | -------- | ------------------- | ------------ |
+| bp_shadow (§4 anchor) | 0.604 ± .013 | — | 32.0 |
+| **stoch1_st512** | **0.574** ± .009 | **0.975** | 7.60 |
+| stoch4_st512 | 0.569 ± .008 | 0.969 | 7.60 |
+| stoch4_farand | 0.568 ± .009 | 0.774 | 7.60 |
+| magq2_st512 | 0.560 ± .029 | 0.918 | 7.69 |
+| magq2_farand | 0.555 ± .019 | 0.776 | 7.69 |
+| sign-only reference (§5, k=512) | 0.557 ± .006 | 0.974 | 7.60 |
+| stoch1_farand | 0.544 ± .006 | 0.728 | 7.60 |
+| ishad{2,8}_* (int8 SR shadow) | 0.330 ± .000 | — (`g ≡ 0`) | 8.00 |
+
+**All gates NO-GO** (best 0.574 < 0.60; strict 0.604 unreached; no vote arm ≥ 0.60).
+Three findings survive:
+
+- **A state-precision frontier, not an information gap.** With late sign-match
+  at 0.975 *and* quantized magnitude in the votes, accuracy gains only +0.017
+  over sign-only — ~37% of the gap to the float shadow. The information
+  channel is saturated; what float32 still buys is *precision of
+  accumulation*: 0.557 (sign-only, 7.6 b) → 0.574 (magnitude votes, 7.6 b) →
+  0.604 (float shadow, 32 b). P2 missed its frozen bar narrowly (+1.9σ vs > 2σ).
+- **Feedback quality re-emerges once votes are unbiased (P3 violated for
+  stoch1):** st512 − farand = +0.030 (late `p` 0.975 vs 0.728) — the first
+  arm family in this series where transport quality moves accuracy beyond
+  noise. Round 2's "sign fidelity is nearly free" holds only for
+  magnitude-blind votes.
+- **ishad caveat (exploratory diagnostic):** both int8 SR-shadow arms entered a
+  zero-gradient absorbing state by ~step 60 (E-scaled SR steps churn weights
+  through the ternarizer; units die; `g ≡ 0` ⇒ SR(0) = 0; 0.330 identically
+  across seeds/feedback). Not int8 saturation — a step-size dynamics failure.
+  The frontier reading therefore rests on the vote arms, and P1's predicted
+  ordering (ishad ≥ stoch ≥ magq2) is refuted.
+
 ## The unifying insight: cosine alignment ≠ per-weight sign
 AR-DFA's large *cosine*-alignment gain on attention (worst-case angle 90°→46°, `data/report/m2/`)
 does **not** translate into per-weight *sign* correctness (`p ≈ 0.53`, barely above chance). Bit-flips
@@ -143,3 +184,13 @@ per-weight sign — not just its aggregate direction — is reliably correct at 
 even p = 1.0 (bit-exact BP votes) recovers only 0.551 vs bp_shadow's 0.604. Beyond sign
 correctness, the deeper constraint is the flip accumulator's magnitude-blindness: the
 K-threshold vote counter discards |g|, which is exactly what the float shadow retains.
+
+**Round-3 revision (§6):** magnitude-blindness was also not the last wall. With sign
+fidelity saturated (late p 0.975) *and* 2-bit/stochastic magnitude in the votes,
+transport-free ternary training still caps at 0.574 vs 0.604. After three pre-registered
+NO-GO rounds the residual gap traces a diminishing-returns **state-bits frontier** —
+0.557 (sign-only, ~7.6 b/w) → 0.574 (magnitude votes, 7.6 b/w) → 0.604 (float32 shadow,
+32 b/w) — i.e. what backprop's shadow ultimately buys on this benchmark is *accumulation
+precision*. One second-order reversal: transport quality becomes first-order again
+(+0.030) once votes are unbiased and high-rate (stoch1), so "stale/random feedback is
+free" is a property of magnitude-blind voting, not of the mechanism family.
