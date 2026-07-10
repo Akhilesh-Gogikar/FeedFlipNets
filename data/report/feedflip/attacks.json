@@ -1,0 +1,161 @@
+{
+  "rows": [
+    {
+      "arm": "conf_gate",
+      "seed": 0,
+      "acc": 0.5341796875,
+      "ms_per_step": 0.6815115312492708,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7134340582546965
+    },
+    {
+      "arm": "conf_gate",
+      "seed": 1,
+      "acc": 0.55126953125,
+      "ms_per_step": 0.598292520880932,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7237872079691945
+    },
+    {
+      "arm": "conf_gate",
+      "seed": 2,
+      "acc": 0.5322265625,
+      "ms_per_step": 0.5936440781370038,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.713042028310855
+    },
+    {
+      "arm": "k_anneal",
+      "seed": 0,
+      "acc": 0.53271484375,
+      "ms_per_step": 0.6339942916238215,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7146397936272567
+    },
+    {
+      "arm": "k_anneal",
+      "seed": 1,
+      "acc": 0.5361328125,
+      "ms_per_step": 0.5501758437458193,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7221282491150358
+    },
+    {
+      "arm": "k_anneal",
+      "seed": 2,
+      "acc": 0.53369140625,
+      "ms_per_step": 0.5299198385037016,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7132856906231766
+    },
+    {
+      "arm": "k_layerwise",
+      "seed": 0,
+      "acc": 0.43115234375,
+      "ms_per_step": 0.5268002499942668,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7016394802959214
+    },
+    {
+      "arm": "k_layerwise",
+      "seed": 1,
+      "acc": 0.5283203125,
+      "ms_per_step": 0.5313924218789907,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7091861885953283
+    },
+    {
+      "arm": "k_layerwise",
+      "seed": 2,
+      "acc": 0.5107421875,
+      "ms_per_step": 0.5277793177519925,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7037504285368172
+    },
+    {
+      "arm": "taught_B",
+      "seed": 0,
+      "acc": 0.498046875,
+      "ms_per_step": 1.0019696250092238,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.5727618429916205
+    },
+    {
+      "arm": "taught_B",
+      "seed": 1,
+      "acc": 0.498046875,
+      "ms_per_step": 0.9563600312394556,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.572566378401851
+    },
+    {
+      "arm": "taught_B",
+      "seed": 2,
+      "acc": 0.5234375,
+      "ms_per_step": 1.0358277864870615,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.5718955517915877
+    },
+    {
+      "arm": "combo",
+      "seed": 0,
+      "acc": 0.5546875,
+      "ms_per_step": 0.6049701771116816,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7565617918815403
+    },
+    {
+      "arm": "combo",
+      "seed": 1,
+      "acc": 0.53662109375,
+      "ms_per_step": 0.6170474531245418,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7416466416930574
+    },
+    {
+      "arm": "combo",
+      "seed": 2,
+      "acc": 0.5322265625,
+      "ms_per_step": 0.6031511875044089,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7427590055826427
+    }
+  ],
+  "summary": {
+    "conf_gate": {
+      "mean_acc": 0.5392252604166666,
+      "std_acc": 0.008553830301738875,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.7167544315115819
+    },
+    "k_anneal": {
+      "mean_acc": 0.5341796875,
+      "std_acc": 0.0014374610785038813,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.7166845777884898
+    },
+    "k_layerwise": {
+      "mean_acc": 0.4900716145833333,
+      "std_acc": 0.04227574542041547,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.704858699142689
+    },
+    "taught_B": {
+      "mean_acc": 0.5065104166666666,
+      "std_acc": 0.011969255410709789,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.5724079243950198
+    },
+    "combo": {
+      "mean_acc": 0.5411783854166666,
+      "std_acc": 0.009719400147678135,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.7469891463857468
+    }
+  },
+  "gate": {
+    "gate_acc": 0.6,
+    "gate_bits": 8.0,
+    "go": false
+  }
+}

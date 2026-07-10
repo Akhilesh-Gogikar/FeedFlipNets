@@ -1,0 +1,191 @@
+{
+  "rows": [
+    {
+      "arm": "bp_shadow",
+      "seed": 0,
+      "acc": 0.60302734375,
+      "ms_per_step": 0.3609177863691002,
+      "bits_per_w": 32.0,
+      "sign_match_p": null
+    },
+    {
+      "arm": "bp_shadow",
+      "seed": 1,
+      "acc": 0.58740234375,
+      "ms_per_step": 0.3294940156338271,
+      "bits_per_w": 32.0,
+      "sign_match_p": null
+    },
+    {
+      "arm": "bp_shadow",
+      "seed": 2,
+      "acc": 0.6201171875,
+      "ms_per_step": 0.322593791745021,
+      "bits_per_w": 32.0,
+      "sign_match_p": null
+    },
+    {
+      "arm": "feedflip_bp_k8",
+      "seed": 0,
+      "acc": 0.4921875,
+      "ms_per_step": 0.31201763538410887,
+      "bits_per_w": 5.67,
+      "sign_match_p": null
+    },
+    {
+      "arm": "feedflip_bp_k8",
+      "seed": 1,
+      "acc": 0.47802734375,
+      "ms_per_step": 0.30972181250399444,
+      "bits_per_w": 5.67,
+      "sign_match_p": null
+    },
+    {
+      "arm": "feedflip_bp_k8",
+      "seed": 2,
+      "acc": 0.4970703125,
+      "ms_per_step": 0.32363961449300405,
+      "bits_per_w": 5.67,
+      "sign_match_p": null
+    },
+    {
+      "arm": "feedflip_dfa_k8",
+      "seed": 0,
+      "acc": 0.41650390625,
+      "ms_per_step": 0.5582060312590329,
+      "bits_per_w": 5.67,
+      "sign_match_p": 0.7029566312326252
+    },
+    {
+      "arm": "feedflip_dfa_k8",
+      "seed": 1,
+      "acc": 0.50244140625,
+      "ms_per_step": 0.527800531257526,
+      "bits_per_w": 5.67,
+      "sign_match_p": 0.7074802923824516
+    },
+    {
+      "arm": "feedflip_dfa_k8",
+      "seed": 2,
+      "acc": 0.4990234375,
+      "ms_per_step": 0.5480200781166786,
+      "bits_per_w": 5.67,
+      "sign_match_p": 0.6934418666781427
+    },
+    {
+      "arm": "feedflip_dfa_k32",
+      "seed": 0,
+      "acc": 0.54345703125,
+      "ms_per_step": 0.541482687505777,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.707760654674944
+    },
+    {
+      "arm": "feedflip_dfa_k32",
+      "seed": 1,
+      "acc": 0.533203125,
+      "ms_per_step": 0.5360696978750639,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7089540144853237
+    },
+    {
+      "arm": "feedflip_dfa_k32",
+      "seed": 2,
+      "acc": 0.53271484375,
+      "ms_per_step": 0.5425976510014152,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7031442565051512
+    },
+    {
+      "arm": "feedflip_dfa_ortho_k8",
+      "seed": 0,
+      "acc": 0.4833984375,
+      "ms_per_step": 0.5305639583821176,
+      "bits_per_w": 5.67,
+      "sign_match_p": 0.7170088365869073
+    },
+    {
+      "arm": "feedflip_dfa_ortho_k8",
+      "seed": 1,
+      "acc": 0.4638671875,
+      "ms_per_step": 0.5287168698851019,
+      "bits_per_w": 5.67,
+      "sign_match_p": 0.700126047368276
+    },
+    {
+      "arm": "feedflip_dfa_ortho_k8",
+      "seed": 2,
+      "acc": 0.501953125,
+      "ms_per_step": 0.5622328177560121,
+      "bits_per_w": 5.67,
+      "sign_match_p": 0.6995386363037592
+    },
+    {
+      "arm": "feedflip_dfa_ortho_k32",
+      "seed": 0,
+      "acc": 0.53857421875,
+      "ms_per_step": 0.5726854895037832,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7195862355751464
+    },
+    {
+      "arm": "feedflip_dfa_ortho_k32",
+      "seed": 1,
+      "acc": 0.5302734375,
+      "ms_per_step": 0.5195030519971624,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.713978562497514
+    },
+    {
+      "arm": "feedflip_dfa_ortho_k32",
+      "seed": 2,
+      "acc": 0.53173828125,
+      "ms_per_step": 0.5414582343655638,
+      "bits_per_w": 7.6,
+      "sign_match_p": 0.7097329372915319
+    }
+  ],
+  "summary": {
+    "bp_shadow": {
+      "mean_acc": 0.603515625,
+      "std_acc": 0.013360241123848393,
+      "bits_per_w": 32.0,
+      "mean_sign_match_p": null
+    },
+    "feedflip_bp_k8": {
+      "mean_acc": 0.4890950520833333,
+      "std_acc": 0.008075935045608903,
+      "bits_per_w": 5.67,
+      "mean_sign_match_p": null
+    },
+    "feedflip_dfa_k8": {
+      "mean_acc": 0.47265625,
+      "std_acc": 0.0397302144390355,
+      "bits_per_w": 5.67,
+      "mean_sign_match_p": 0.7012929300977397
+    },
+    "feedflip_dfa_k32": {
+      "mean_acc": 0.5364583333333334,
+      "std_acc": 0.004952839861556946,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.7066196418884729
+    },
+    "feedflip_dfa_ortho_k8": {
+      "mean_acc": 0.4830729166666667,
+      "std_acc": 0.015550222542312742,
+      "bits_per_w": 5.67,
+      "mean_sign_match_p": 0.7055578400863141
+    },
+    "feedflip_dfa_ortho_k32": {
+      "mean_acc": 0.5335286458333334,
+      "std_acc": 0.003617531049950011,
+      "bits_per_w": 7.6,
+      "mean_sign_match_p": 0.7144325784547307
+    }
+  },
+  "gate": {
+    "gate_acc": 0.6,
+    "gate_bits": 8.0,
+    "go": false
+  }
+}

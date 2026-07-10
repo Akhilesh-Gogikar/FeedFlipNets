@@ -57,6 +57,37 @@ Stacked ternary char-LM (CFG corpus, floor 2.88 bpc, no float shadow), n=3:
 - **AR-DFA does not rescue it:** it ties fixed-DFA, and per-weight sign-match `p ≈ 0.53` for **both** —
   barely above chance.
 
+## 4. Pre-registered attack on the sign barrier (MLP rebuild) — NO-GO; the barrier held.
+The §2 prototype was never committed. `experiments/feedflip_bitflip.py` is a committed,
+reproducible rebuild: task difficulty calibrated on **baseline arms only**, then frozen
+(D_IN=32, C=10, MLP [32,64,64,64,64,10], 8000 steps, batch 16, n_train 16384, n=3);
+attack arms and the GO/NO-GO gate (any transport-free arm ≥ 0.60 mean acc at ≤ 8 bits/w)
+were pre-registered in the file docstring before any attack was run.
+
+Frozen baselines (`baselines.json`): bp_shadow **0.604** ± .013 (32 bits/w) ·
+dfa_k32 0.536 · dfa_ortho_k32 0.534 (7.6 bits/w) · feedflip_bp_k8 0.489 ·
+dfa_ortho_k8 0.483 · dfa_k8 0.473 (5.67 bits/w). Rebuild caveat: unlike the §2 table,
+BP-sign flips here **lag** the float-shadow anchor (0.489 vs 0.604) — the uncommitted
+0.629 config could not be recovered, so §2's feedflip_bp≈bp_shadow claim should be
+treated as unreproduced until shown otherwise.
+
+Attack arms (`attacks.json`, all 7.6 bits/w, n=3):
+
+| arm | mean acc | sign-match `p` |
+| --- | -------- | -------------- |
+| combo (gate+anneal+ortho) | **0.541** ± .010 | **0.747** |
+| conf_gate   | 0.539 ± .009 | 0.717 |
+| k_anneal    | 0.534 ± .001 | 0.717 |
+| taught_B ②  | 0.507 ± .012 | **0.572** |
+| k_layerwise | 0.490 ± .042 | 0.705 |
+
+**Gate: NO-GO** (best 0.541 < 0.60). Two diagnostics survive the negative result:
+- **Sign-match is not the binding constraint at this margin:** combo raised `p`
+  0.71→0.75 yet gained only +0.005 over dfa_k32 — within seed noise.
+- **taught_B ② learns a *different* direction, not a better one:** `p` drops to 0.57
+  (below fixed-B) while accuracy stays at baseline — perturbation-taught feedback
+  stops imitating BP without finding a superior transport-free signal.
+
 ## The unifying insight: cosine alignment ≠ per-weight sign
 AR-DFA's large *cosine*-alignment gain on attention (worst-case angle 90°→46°, `data/report/m2/`)
 does **not** translate into per-weight *sign* correctness (`p ≈ 0.53`, barely above chance). Bit-flips
