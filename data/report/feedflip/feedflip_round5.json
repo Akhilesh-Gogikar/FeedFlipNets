@@ -1,0 +1,330 @@
+{
+  "rows": [
+    {
+      "arm": "i8clone_g8",
+      "role": "oracle",
+      "seed": 0,
+      "acc": 0.55859375,
+      "gap_closure": -0.419,
+      "ms_per_step": 0.4615537134999954,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0004,
+      "alpha_ratio": 2.831
+    },
+    {
+      "arm": "i8clone_g8",
+      "role": "oracle",
+      "seed": 1,
+      "acc": 0.5576171875,
+      "gap_closure": -0.449,
+      "ms_per_step": 0.6071971353749746,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0004,
+      "alpha_ratio": 2.705
+    },
+    {
+      "arm": "i8clone_g8",
+      "role": "oracle",
+      "seed": 2,
+      "acc": 0.57177734375,
+      "gap_closure": -0.007,
+      "ms_per_step": 0.5242950728750202,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0002,
+      "alpha_ratio": 2.788
+    },
+    {
+      "arm": "i8clone_g16",
+      "role": "oracle",
+      "seed": 0,
+      "acc": 0.60546875,
+      "gap_closure": 1.046,
+      "ms_per_step": 0.49216890624995807,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0032,
+      "alpha_ratio": 2.371
+    },
+    {
+      "arm": "i8clone_g16",
+      "role": "oracle",
+      "seed": 1,
+      "acc": 0.59765625,
+      "gap_closure": 0.802,
+      "ms_per_step": 0.5220206458749885,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0028,
+      "alpha_ratio": 2.29
+    },
+    {
+      "arm": "i8clone_g16",
+      "role": "oracle",
+      "seed": 2,
+      "acc": 0.5712890625,
+      "gap_closure": -0.022,
+      "ms_per_step": 0.5344675260000145,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0038,
+      "alpha_ratio": 2.321
+    },
+    {
+      "arm": "i8clone_g32",
+      "role": "oracle",
+      "seed": 0,
+      "acc": 0.62255859375,
+      "gap_closure": 1.58,
+      "ms_per_step": 0.5008123697499514,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0116,
+      "alpha_ratio": 1.844
+    },
+    {
+      "arm": "i8clone_g32",
+      "role": "oracle",
+      "seed": 1,
+      "acc": 0.6025390625,
+      "gap_closure": 0.954,
+      "ms_per_step": 0.4755227863749951,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0123,
+      "alpha_ratio": 1.798
+    },
+    {
+      "arm": "i8clone_g32",
+      "role": "oracle",
+      "seed": 2,
+      "acc": 0.6005859375,
+      "gap_closure": 0.893,
+      "ms_per_step": 0.4326770103750164,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0093,
+      "alpha_ratio": 1.812
+    },
+    {
+      "arm": "bps_e025",
+      "role": "oracle",
+      "seed": 0,
+      "acc": 0.330078125,
+      "gap_closure": -7.56,
+      "ms_per_step": 0.5021601509999982,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 6,
+      "dead_step": 62,
+      "sat_frac": 0.1558,
+      "sign_match_p": null,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "bps_e025",
+      "role": "oracle",
+      "seed": 1,
+      "acc": 0.330078125,
+      "gap_closure": -7.56,
+      "ms_per_step": 0.5266822135000098,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 177,
+      "dead_step": 124,
+      "sat_frac": 0.114,
+      "sign_match_p": null,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "bps_e025",
+      "role": "oracle",
+      "seed": 2,
+      "acc": 0.330078125,
+      "gap_closure": -7.56,
+      "ms_per_step": 0.5908798020000177,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 315,
+      "dead_step": 11,
+      "sat_frac": 0.1278,
+      "sign_match_p": null,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "bps_e05",
+      "role": "oracle",
+      "seed": 0,
+      "acc": 0.330078125,
+      "gap_closure": -7.56,
+      "ms_per_step": 0.5921237500000416,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 6451,
+      "dead_step": 173,
+      "sat_frac": 0.174,
+      "sign_match_p": null,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "bps_e05",
+      "role": "oracle",
+      "seed": 1,
+      "acc": 0.330078125,
+      "gap_closure": -7.56,
+      "ms_per_step": 0.6233473437499697,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 7996,
+      "dead_step": 4,
+      "sat_frac": 0.0306,
+      "sign_match_p": null,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "bps_e05",
+      "role": "oracle",
+      "seed": 2,
+      "acc": 0.330078125,
+      "gap_closure": -7.56,
+      "ms_per_step": 0.5718861822500116,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": null,
+      "n_dead": 7883,
+      "dead_step": 47,
+      "sat_frac": 0.0299,
+      "sign_match_p": null,
+      "sign_match_p_late": null
+    },
+    {
+      "arm": "st512s_e025",
+      "role": "gate",
+      "seed": 0,
+      "acc": 0.5771484375,
+      "gap_closure": 0.161,
+      "ms_per_step": 0.7181444427499741,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.015625,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0412,
+      "sign_match_p": 0.9053597918717555,
+      "sign_match_p_late": 0.9419678113660599
+    },
+    {
+      "arm": "st512s_e025",
+      "role": "gate",
+      "seed": 1,
+      "acc": 0.5322265625,
+      "gap_closure": -1.243,
+      "ms_per_step": 0.8296921718749672,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.015625,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0661,
+      "sign_match_p": 0.8852318186336803,
+      "sign_match_p_late": 0.9121956940351302
+    },
+    {
+      "arm": "st512s_e025",
+      "role": "gate",
+      "seed": 2,
+      "acc": 0.55419921875,
+      "gap_closure": -0.556,
+      "ms_per_step": 0.8649808646249539,
+      "state_bits_per_w": 8.0,
+      "fb_comm_bits_per_w_step": 0.015625,
+      "n_dead": 0,
+      "dead_step": null,
+      "sat_frac": 0.0413,
+      "sign_match_p": 0.8912985685827558,
+      "sign_match_p_late": 0.9283425139387828
+    }
+  ],
+  "summary": {
+    "i8clone_g8": {
+      "mean_acc": 0.5627,
+      "accs": [
+        0.5586,
+        0.5576,
+        0.5718
+      ],
+      "valid": true
+    },
+    "i8clone_g16": {
+      "mean_acc": 0.5915,
+      "accs": [
+        0.6055,
+        0.5977,
+        0.5713
+      ],
+      "valid": true
+    },
+    "i8clone_g32": {
+      "mean_acc": 0.6086,
+      "accs": [
+        0.6226,
+        0.6025,
+        0.6006
+      ],
+      "valid": true
+    },
+    "bps_e025": {
+      "mean_acc": 0.3301,
+      "accs": [
+        0.3301,
+        0.3301,
+        0.3301
+      ],
+      "valid": false
+    },
+    "bps_e05": {
+      "mean_acc": 0.3301,
+      "accs": [
+        0.3301,
+        0.3301,
+        0.3301
+      ],
+      "valid": false
+    },
+    "st512s_e025": {
+      "mean_acc": 0.5545,
+      "accs": [
+        0.5771,
+        0.5322,
+        0.5542
+      ],
+      "valid": true
+    },
+    "P5": {
+      "C5": 0.6086,
+      "arm": "i8clone_g32",
+      "verdict": "precision NOT binding at 8 bits/w (P5: gap attributable elsewhere)"
+    },
+    "gate_R5": {
+      "go": false,
+      "strict": false
+    }
+  }
+}

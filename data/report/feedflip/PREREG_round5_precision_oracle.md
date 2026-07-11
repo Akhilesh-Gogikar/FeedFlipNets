@@ -84,3 +84,19 @@ a Deviation in the results doc.
 LR_SHADOW=0.1 · ISHAD_CLIP=127 · EMA=0.99 · ST_K=512 · G∈{8,16,32} ·
 E∈{0.25,0.5} · REF_BP_SHADOW=0.604 · REF_BEST_8BIT=0.572 · CEIL_HIGH=0.604 ·
 CEIL_LOW=0.59 · thr=0.7·absmean · SR = floor + Bernoulli(frac), stream seed+1300.
+
+## Deviations (recorded post-run)
+
+None to the harness — no arm, grid, or constant changed after the freeze commit
+(`08daadb`); the full run used the frozen defaults verbatim.
+
+Outcome note (not a deviation): the `bps_e025`/`bps_e05` fallback oracles both
+collapsed to the majority class (n_dead 6–7996 of 8000), so the validity guard
+excluded them from C5 exactly as the frozen rule specifies. The smoke run had
+already flagged this liveness risk (bps arms died at 300 steps); it was left in
+per the frozen "all arms run, no post-hoc selection" policy, and the primary
+`i8clone` oracle — which is the one designed to answer P5 — stayed valid on all
+seeds and produced C5 = 0.609. P5 is therefore resolved on a valid oracle, and
+the "liveness-protected" label for `bps` is retracted in the §8 findings (the
+round-4 death mode is activity death, which backward-path rerouting does not
+address).

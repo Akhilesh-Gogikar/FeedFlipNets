@@ -34,8 +34,8 @@ Key results
 | AR-DFA cuts worst-case attention alignment | 90.6° → **46.4°** (transport-free) | `data/report/m2/` |
 | …but per-weight sign-match stays ~chance | `p ≈ 0.53` (fixed-DFA and AR-DFA alike) | `data/report/feedflip/` |
 | Transport-free flipping fails on a Transformer | worse than freezing the blocks | `data/report/feedflip/` |
-| 3 pre-registered attack rounds on the gap: all NO-GO | best ≤8 bits/w arm 0.574 vs shadow 0.604 | `data/report/feedflip/` |
-| The gap is a *state-bits frontier*, not sign fidelity | p=1.0 signs → 0.551; +magnitude votes → 0.574 | `data/report/feedflip/` |
+| 5 pre-registered attack rounds; transport-free gate never GO | best transport-free ≤8 b/w arm 0.574 vs shadow 0.604 | `data/report/feedflip/` |
+| The gap is neither sign fidelity nor bit-precision — it's the update rule | 8-bit shadow **matches** the anchor (0.609) with magnitude-scaled steps + full transport | `data/report/feedflip/` |
 | AR-DFA is not backprop-competitive (char-LM) | +1.93 bpc, ~30× slower/step | `data/report/m2b/` |
 
 

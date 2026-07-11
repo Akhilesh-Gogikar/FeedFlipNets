@@ -214,6 +214,54 @@ survived dead-free. Findings:
   built to answer — would bit-exact BP through an 8-bit accumulator reach 0.604? —
   remains open and needs a liveness-protected oracle design.
 
+## 8. Round 5 — precision oracle (pre-registered): the frontier's far end falls; 8-bit state DOES reach the anchor.
+
+PREREG frozen at `08daadb` before any full run
+(`data/report/feedflip/PREREG_round5_precision_oracle.md`, harness
+`experiments/feedflip_precision_oracle.py`, results `feedflip_round5.json`).
+The design exploits a mechanical fact about the 0.604 anchor itself:
+`bp_shadow` already backprops *through the ternarized weights* (STE-style),
+re-deriving alpha and the ternary pattern from the shadow's absmean every
+step — the only thing an 8-bit arm cannot copy is the float32 storage. So
+the primary oracle is an **int8 SR clone of the anchor's exact loop**
+(per-layer grid `q_l = mean|Wf_l(init)|/G`, update `n += SR(−0.1·g/q_l)`,
+clip ±127), moving *only* the precision axis. G ∈ {8, 16, 32} all ran (no
+selection); a backward-through-shadow arm (`bps`) served as
+liveness-protected fallback, and `st512s` (stale 8-bit shadow feedback,
+0.0156 b/w/step) was the gate-eligible arm.
+
+| arm | mean acc (n=3) | valid (n_dead=0) |
+|---|---|---|
+| i8clone_g8 | 0.563 | yes |
+| i8clone_g16 | 0.592 | yes |
+| **i8clone_g32** | **0.609** (0.623/0.603/0.601) | **yes** |
+| bps_e025 / bps_e05 | 0.330 (collapse) | no — guard fired |
+| st512s_e025 (gate) | 0.554 | yes |
+
+**P5 resolved: C5 = 0.609 ≥ 0.604 — precision is NOT binding at 8 bits/w.**
+The frozen decision rule lands in the overturn zone: an 8-bit stochastically
+rounded shadow, given the anchor's own update rule and transport, matches the
+float32 anchor dead-free on all seeds (sat ≤ 1.2%, alpha drift 1.8×).
+**Gate: NO-GO** (0.554 < 0.60). Findings:
+
+- **The ≈0.57 plateau was never a precision cost.** What separates the plateau
+  arms from the anchor is the *update rule*: rounds 3–4 arms take
+  s_ema-normalized fixed-size steps (magnitude re-blinded per step), while the
+  anchor and i8clone take magnitude-scaled steps `−0.1·g` on a fixed grid.
+  Carrying |g| into the *step size* — not merely into vote rates — is worth the
+  final +0.03 even under 8-bit accumulation.
+- **Grid resolution is monotone and saturates within int8**: 0.563 → 0.592 →
+  0.609 for G = 8/16/32 (typical init cell ±G, clip 127 leaves 4× headroom at
+  G=32 with ~1% saturation).
+- **"Liveness-protected" backward-through-shadow is not protected.** Both bps
+  arms collapsed to the majority class (bps_e05 near-absorbing: 6.5–8.0k dead
+  steps of 8k). The round-4 death mode is *activity* death (all hidden ReLUs
+  off ⇒ zero inputs ⇒ zero g everywhere), not backward-path death — rerouting
+  the backward matrices around the ternary zeros does not prevent it.
+- **Higher-fidelity stale transport did not help the gate arm**: shipping 8-bit
+  shadow values instead of ternary signs (5× the refresh bits of round-4's
+  st512) *lost* 0.018 vs round 4's 0.572 despite late sign-match p ≈ 0.91–0.94.
+
 ## The unifying insight: cosine alignment ≠ per-weight sign
 AR-DFA's large *cosine*-alignment gain on attention (worst-case angle 90°→46°, `data/report/m2/`)
 does **not** translate into per-weight *sign* correctness (`p ≈ 0.53`, barely above chance). Bit-flips
@@ -249,3 +297,20 @@ are dynamically unstable in ternary nets (gradient paths die through ternarized
 layers, an absorbing state that transport-free feedback happens to be immune to) —
 so "precision is what the shadow buys" rests on the vote/shadow plateau, pending a
 liveness-protected oracle.
+
+**Round-5 revision (§8) — corrects §6–§7.** The precision oracle resolves the open
+question and *overturns* the "state-bits frontier" reading: an int8 (8 b/w) stochastic
+shadow reaches **0.609 ≥ 0.604** when it uses the anchor's own update rule, dead-free
+on all seeds. So the residual 0.57→0.60 gap was **never a bit-precision cost** — it is
+the **update rule**. Rounds 1–4's ≤8-bit arms all take *step-normalized* moves
+(each step re-normalizes by the per-layer gradient scale `s_ema`, re-discarding |g|'s
+across-step dynamic range); the anchor and the i8clone take *magnitude-scaled* SGD
+steps `−0.1·g` on a fixed grid, which preserves the relative size of large vs. small
+gradients across steps. Carrying magnitude into the **step size** (not just the vote
+rate) closes the gap at 8 bits. The genuinely hard, still-open problem is therefore
+narrower and sharper than the four-round arc suggested: **a transport-free feedback
+signal accurate enough to drive a magnitude-scaled fixed-grid step** — the gate arm
+(`st512s`, stale 8-bit transport) still stalls at 0.554, so the wall is feedback
+fidelity for magnitude-scaled updates, not accumulator precision and not sign
+correctness. The whole series' headline number to beat is unchanged (0.604 at 32 b/w),
+now matched at 8 b/w *with full transport*, and unmatched by anything transport-free.
