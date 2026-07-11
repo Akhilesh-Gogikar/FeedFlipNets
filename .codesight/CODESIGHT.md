@@ -1,0 +1,354 @@
+# FeedFlipNets — AI Context Map
+
+> **Stack:** raw-http | none | unknown | python
+
+> 0 routes | 0 models | 0 components | 75 lib files | 8 env vars | 4 middleware
+> **Token savings:** this file is ~0 tokens. Without it, AI exploration would cost ~0 tokens. **Saves ~0 tokens per conversation.**
+> **Last scanned:** 2026-07-10 20:08 — re-run after significant changes
+
+---
+
+# Libraries
+
+- `cli/main.py` — function parse_args: (argv) -> argparse.Namespace, function main: (argv) -> None
+- `datasets/mnist.py` — function load_mnist: (path) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+- `datasets/timeseries.py` — function load_ucr: (name, root) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+- `datasets/tinystories.py` — function load_tinystories: (path) -> Tuple[np.ndarray]
+- `datasets/utils.py`
+  - function download_file: (url, dest) -> str
+  - function normalize: (data, axis) -> np.ndarray
+  - function batch_iter: (data, labels, batch_size) -> Iterable[Tuple[np.ndarray, np.ndarray]]
+- `experiments/accuracy_transport_frontier.py`
+  - function teacher_data: (seed)
+  - function clip: (grads, maxnorm)
+  - function accuracy: (model, X, y)
+  - function run: (lam, seed, steps, lr, bs)
+  - function main: ()
+- `experiments/feedflip_bitflip.py`
+  - function make_task: (seed)
+  - function bp_deltas: (net, inputs, derivs, err) -> List[Array]
+  - function dfa_deltas: (net, derivs, err, B) -> List[Array]
+  - function make_B: (seed, ortho) -> List[Array]
+  - function taught_B_update: (net, B, inputs, err, Xb, yb, step, rng, rho, lr_B, n_samp)
+  - function run_arm: (arm, seed, steps) -> Dict[str, float]
+  - _...3 more_
+- `experiments/feedflip_feedback_budget.py`
+  - function fa_deltas: (derivs, err, B) -> List[Array]
+  - function make_B_fa: (seed) -> List[Optional[Array]]
+  - function transposed_ternary_B: (net) -> List[Optional[Array]]
+  - function run_arm2: (arm, seed, steps) -> Dict
+  - function main: () -> None
+- `experiments/feedflip_magnitude_votes.py`
+  - function ternarize_from_shadow: (a) -> Array
+  - function run_arm3: (arm, seed, steps) -> Dict
+  - function main: () -> None
+- `experiments/m1_depth_sweep.py`
+  - function run_condition: (strategy, depth, seed, steps, samples_per_step, lr) -> Dict[str, float]
+  - function fixed_dfa_slope_is_negative: () -> bool
+  - function main: () -> None
+- `experiments/m2_attention_alignment.py`
+  - function adapt_R_O_honest: (block, seed, steps, k_samples, rho, lr) -> np.ndarray
+  - function run_condition: (condition, depth, seed, n_draws, adapt_steps, adapt_K) -> Dict[str, float]
+  - function main: () -> None
+- `experiments/m2b_lm_ablation.py` — function run_condition: (condition, d, h, N, T, bs, steps, lr, rho, Ksamp, lrR, seed, corpus), function main: ()
+- `experiments/pipeline_cost_model.py`
+  - function bp_time_mem: (S, m, a, mem_budget)
+  - function dfa_time_mem: (S, m, a, tu)
+  - function throughput: (T, m)
+  - function scan: ()
+  - function main: ()
+- `experiments/ternary_dfa_experiment.py` — function parse_args: () -> argparse.Namespace, function main: (args) -> None
+- `feedflipnets/core/activations.py` — function relu: (x) -> Array, function hadamard_pre: (x) -> Array
+- `feedflipnets/core/deep_mlp.py`
+  - function relu: (x) -> Array
+  - function softmax: (z) -> Array
+  - function one_hot: (y, num_classes) -> Array
+  - function softmax_ce_per_sample: (logits, y) -> Array
+  - function output_error: (logits, y) -> Array
+  - function make_perturb_loss_fn: (model, X, y) -> Tuple[Callable[[int, Array], Array], Array, ActivationState]
+  - _...1 more_
+- `feedflipnets/core/lm.py`
+  - function ln_np: (x) -> Tuple[Array, Array]
+  - function ln_vjp: (x, g) -> Array
+  - function causal_mask: (T) -> Array
+  - function block_forward_np: (P, Array], x) -> Dict[str, Array]
+  - function softmax_jac_causal: (A, dA) -> Array
+  - function one_block_grads: (P, c, e_attn, e_mlp, R_O, R_2)
+  - _...4 more_
+- `feedflipnets/core/np_mlp.py`
+  - function relu: (x) -> Array
+  - function softmax: (z) -> Array
+  - function one_hot: (y, num_classes) -> Array
+  - function accuracy: (y_true, y_pred_logits) -> float
+  - function ce_loss: (p, y_oh) -> float
+  - function make_dataset: (n, d, seed) -> Tuple[Array, Array]
+  - _...5 more_
+- `feedflipnets/core/quant.py`
+  - function ternary: (x) -> Array
+  - function quantize_ternary_det: (weights, tau) -> Array
+  - function quantize_ternary_stoch: (weights, tau, rng) -> Array
+  - function pack_ternary: (weights) -> np.ndarray
+- `feedflipnets/core/strategies.py`
+  - function fixed_dfa_block_grads: (block, x_np, e_attn, e_mlp, Bq, Bk, Bv, B1) -> Gradients
+  - class FeedbackStrategy
+  - class Backprop
+  - class DFA
+  - class TernaryDFA
+  - class StructuredFeedback
+  - _...2 more_
+- `feedflipnets/core/transformer.py`
+  - function ln_vjp: (x, g_out, eps) -> Array
+  - function softmax_jac_apply: (a_row, g_row) -> Array
+  - function forward_np_cache: (block, x_np) -> Dict[str, Array]
+  - function autograd_ref: (block, x_np, e_block_np)
+  - class ProtoBlock
+- `feedflipnets/core/types.py`
+  - class Batch
+  - class RunResult
+  - class ActivationState
+  - class ModelDescription
+  - class StrategyState
+- `feedflipnets/data/adult.py` — function build_adult: (*, offline, cache_dir, val_split, test_split, seed, one_hot) -> DatasetSpec
+- `feedflipnets/data/ag_news.py` — function build_ag_news: (*, offline, cache_dir, val_split, test_split, seed, tfidf_max_features, svd_dim) -> DatasetSpec
+- `feedflipnets/data/cache.py`
+  - function fetch: (name, url, *, checksum, mirrors, offline_path, offline_builder, None] | None, filename, offline, retries, manifest, cache_dir) -> tuple[Path, Mapping[str, object]]
+  - class CacheError
+  - class CacheManifest
+- `feedflipnets/data/california.py` — function build_california_dataset: (*, offline, cache_dir, val_split, test_split, seed, standardize_inputs, standardize_targets) -> DatasetSpec
+- `feedflipnets/data/char_lm.py`
+  - function build_cfg_corpus: (seed) -> str
+  - function build_english_corpus: (root) -> str
+  - function prep: (text) -> Tuple[Array, Array, int]
+  - function bigram_floor: (train, val, V) -> float
+  - function get_batch: (src, bs, T, rng) -> Tuple[Array, Array]
+- `feedflipnets/data/cifar10.py` — function build_cifar10: (*, offline, cache_dir, val_split, test_split, seed, one_hot) -> DatasetSpec
+- `feedflipnets/data/csv_generic.py` — function load_csv_regression: (*, csv_path, target_col, offline, val_split, test_split, seed, standardize_inputs, standardize_targets, cache_dir) -> DatasetSpec, function load_csv_classification: (*, csv_path, target_col, offline, val_split, test_split, seed, one_hot, cache_dir) -> DatasetSpec
+- `feedflipnets/data/fashion_mnist.py` — function build_fashion_mnist: (*, offline, cache_dir, val_split, test_split, seed, one_hot) -> DatasetSpec
+- `feedflipnets/data/mnist.py` — function build_mnist: (*, offline, cache_dir, val_split, test_split, seed, one_hot) -> DatasetSpec
+- `feedflipnets/data/registry.py`
+  - function register_dataset: (name, factory) -> Callable[[DatasetFactory], DatasetFactory] | None
+  - function get_dataset: (dataset, /, *, offline, cache_dir, **options) -> DatasetSpec
+  - function available_datasets: () -> Iterable[str]
+  - function get: (dataset, /, *, offline, cache_dir, **options) -> DatasetSpec
+  - function iter_batches: (spec, split, batch_size, *, seed) -> Iterator[Batch]
+  - class DataSpec
+  - _...1 more_
+- `feedflipnets/data/ucr.py` — function build_ucr_dataset: (*, ucr_name, offline, cache_dir, val_split, test_split, seed) -> DatasetSpec
+- `feedflipnets/data/utils.py`
+  - function resolve_cache_dir: (cache_dir) -> Path
+  - function cache_file: (cache_dir, *parts, checksum) -> Path
+  - function seed_everything: (seed) -> np.random.Generator
+  - function deterministic_split: (n_samples, *, val_split, test_split, seed) -> SplitIndices
+  - function batch_iterator: (features, targets, indices, *, batch_size, seed) -> Iterator[Batch]
+  - function ensure_float32: (array) -> np.ndarray
+  - _...5 more_
+- `feedflipnets/eval/alignment.py`
+  - function per_matrix_cosine: (grads_a, Array], grads_b, Array]) -> Dict[str, float]
+  - function theta_deg: (cosine) -> float
+  - function min_theta_over_layers: (cosines, float]) -> float
+  - function depth_slope: (depths, theta_mins) -> Tuple[float, float]
+  - function attention_block_theta: (cosines, float]) -> float
+  - function per_path_theta: (cosines, float]) -> Dict[str, float]
+- `feedflipnets/eval/gradcheck.py`
+  - function max_rel_err_vs_finite_diff: (strategy, model, X, y, eps) -> float
+  - function block_grad_max_rel_err: (block, x_np, e_block_np, ref_grads, eps) -> float
+  - function value_path_exact_err: (one_grads, ref_grads) -> float
+- `feedflipnets/eval/lockfree.py`
+  - function e_fixed_perturbation_max_change: (strategy, model, activations, error, downstream_idx, upstream_key) -> float
+  - function bp_block_grads: (block, x_np, e_attn, e_mlp)
+  - function derefs_downstream_transpose: (fn) -> bool
+  - function block_transpose_perturb_change: (strategy, block, x_np, e_attn, e_mlp)
+- `feedflipnets/experiments/registry.py`
+  - function config_hash: (config, object]) -> str
+  - function load_registry: (path, schema_path) -> Mapping[str, object]
+  - function get_experiment: (name, *, path) -> ExperimentConfig
+  - class ExperimentConfig
+- `feedflipnets/models.py` — function forward_pass: (weights, x) -> List[np.ndarray], function backprop_deltas: (weights, activs, err) -> List[np.ndarray]
+- `feedflipnets/reporting/artifacts.py` — function write_manifest: (path, *, config, object], dataset_provenance, object]) -> str
+- `feedflipnets/reporting/metrics.py` — class JsonlSink, class CsvSink
+- `feedflipnets/reporting/plots.py` — class PlotAdapter
+- `feedflipnets/reporting/summary.py` — function compute_auc: (points) -> float, function write_summary: (metrics_jsonl, out_summary_json, *, tail) -> str
+- `feedflipnets/reporting/tensorboard.py` — class TensorBoardAdapter
+- `feedflipnets/train.py` — function train_single: (method, depth, freq, seed, epochs, dataset, max_points) -> Tuple[List[float], float, int], function sweep_and_log: (methods, depths, freqs, seeds, epochs, outdir, dataset, max_points) -> Dict[str, np.ndarray]
+- `feedflipnets/training/losses.py` — class Loss, class LossRegistry
+- `feedflipnets/training/metrics.py`
+  - function default_metrics: (task_type, *, num_classes) -> List[str]
+  - function compute_metric: (name, predictions, targets, *, task_type, num_classes) -> MetricResult
+  - function compute_metrics: (names, predictions, targets, *, task_type, num_classes) -> Mapping[str, float]
+  - class MetricResult
+- `feedflipnets/training/pipelines.py`
+  - function presets: () -> Mapping[str, Mapping[str, object]]
+  - function load_preset: (name) -> Mapping[str, object]
+  - function run_pipeline: (config, object]) -> RunResult | List[RunResult]
+- `feedflipnets/training/trainer.py`
+  - class FeedForwardModel
+  - class SGDOptimizer
+  - class Trainer
+- `feedflipnets/utils.py`
+  - function make_dataset: (freq, n, seed, dataset, max_points) -> Tuple[np.ndarray, np.ndarray]
+  - function tanh: (x) -> np.ndarray
+  - function tanh_deriv: (x) -> np.ndarray
+  - function quantize_stoch: (W, thr) -> np.ndarray
+  - function quantize_fixed: (W, thr) -> np.ndarray
+  - function quantize_sign: (W) -> np.ndarray
+  - _...1 more_
+- `importlinter/__main__.py` — function main: () -> None
+- `scripts/aggregate_modality_results.py`
+  - function modality_for: (dataset) -> str
+  - function task_type_for: (dataset) -> str
+  - function read_json: (path) -> Dict[str, object]
+  - function collect: () -> List[Row]
+  - function write_csv: (rows, out_path) -> None
+  - function write_json_rows: (rows, out_path) -> None
+  - _...3 more_
+- `scripts/baselines/cnn_dfa_baselines.py`
+  - function get_data: (dataset, batch_size, limit, seed)
+  - function train_bp: (model, loaders, epochs, lr, device) -> dict
+  - function train_dfa: (model, loaders, epochs, lr, num_classes, device, seed) -> dict
+  - function main: () -> None
+  - class TinyCNN
+  - class DFAUpdater
+- `scripts/bench_micro.py` — function main: ()
+- `scripts/build_paper_bundle.py` — function main: (argv) -> None
+- `scripts/build_submission.py`
+  - function fail: (msg) -> None
+  - function git_sha_short: () -> str
+  - function check_expected_paths: () -> Dict[str, Any]
+  - function fig_pareto: (df) -> List[str]
+  - function fig_series_mean_ci: (tidy, title, ylabel, outfile) -> Optional[str]
+  - function fig_bars_ci: (df, group_cols, value_col, title, ylabel, outfile) -> Optional[str]
+  - _...5 more_
+- `scripts/compile_benchmark_report.py`
+  - function main: () -> None
+  - class RunRecord
+  - class SummaryRecord
+- `scripts/compute_equalized_tables.py`
+  - function main: () -> None
+  - class VariantConfig
+  - class DatasetConfig
+- `scripts/export_ternary.py`
+  - function export_npz: (name, outdir, dims, layers, np.ndarray], tau) -> Path
+  - function export_bin: (name, outdir, dims, layers, np.ndarray], tau) -> Tuple[Path, Path]
+  - function export_c_header: (name, outdir, dims, layers, np.ndarray], tau) -> Path
+  - function main: () -> int
+- `scripts/gen_cnn_gap_table.py` — function main: () -> None
+- `scripts/gen_deployability_table.py` — function format_sparsity_list: (vals) -> str, function main: () -> None
+- `scripts/generate_deployability_table.py`
+  - function relu: (x) -> np.ndarray
+  - function quantize_ternary_det: (weights, tau) -> np.ndarray
+  - function detect_device: () -> DeviceInfo
+  - function dims_mnist: () -> Profile
+  - function dims_20ng: () -> Profile
+  - function dims_ag_news: () -> Profile
+  - _...11 more_
+- `scripts/generate_key_metrics.py`
+  - function build_table: () -> str
+  - function main: () -> None
+  - class MetricRow
+- `scripts/generate_missing_sweeps.py` — function main: () -> None
+- `scripts/make_pareto_plots.py` — function main: () -> None
+- `scripts/make_schedule_delta_table.py`
+  - function load_meta: (csv_path) -> Dict[str, Dict[str, float]]
+  - function pair: (rows, Dict[str, float]], base, epoch) -> Tuple[float, float, float, float]
+  - function fmt: (x, nd) -> str
+  - function main: () -> None
+- `scripts/meta_analysis.py`
+  - function load_jsonl: (path) -> List[Dict]
+  - function first_epoch_crossing: (df, metric, threshold, mode) -> float
+  - function early_slope: (df, metric, epochs) -> float
+  - function analyze_run: (run_dir) -> Dict
+  - function main: ()
+- `scripts/metrics_toolkit.py`
+  - function epochs_to_threshold: (history, threshold) -> int
+  - function stability_cv: (values) -> float
+  - function alignment_auc: (alignment, *, steps) -> float
+  - function tost_equivalence: (sample_a, sample_b, margin) -> TOSTResult
+  - class TOSTResult
+- `scripts/plot_alignment_and_throughput.py` — function main: () -> None
+- `scripts/plot_bound_calibration.py` — function main: () -> None
+- `scripts/plot_p_hist.py` — function main: () -> None
+- `scripts/preset_sweep.py` — function parse_args: (argv) -> argparse.Namespace, function main: (argv) -> None
+- `scripts/render_meta_figures.py`
+  - function plot_epochs_to_point: (runs, e90, float]) -> None
+  - function plot_early_slopes: (runs, acc_slope, float], r2_slope, float]) -> None
+  - function main: () -> None
+- `scripts/run_benchmark.py`
+  - function parse_args: () -> argparse.Namespace
+  - function main: () -> None
+  - class ModeConfig
+  - class DatasetConfig
+  - class VariantConfig
+- `scripts/run_cnn_baselines.py` — function parse_args: () -> argparse.Namespace, function main: () -> None
+
+---
+
+# Config
+
+## Environment Variables
+
+- `FEEDFLIP_CACHE_DIR` **required** — feedflipnets/data/cache.py
+- `FEEDFLIP_DATA_OFFLINE` **required** — cli/main.py
+- `FFN_CACHE_DIR` **required** — feedflipnets/data/cache.py
+- `FFN_DATA_OFFLINE` **required** — feedflipnets/data/cache.py
+- `FFN_MCU_CLOCK_MHZ` **required** — scripts/generate_deployability_table.py
+- `FFN_MCU_CYCLES_PER_MAC` **required** — scripts/generate_deployability_table.py
+- `PROCESSOR_IDENTIFIER` **required** — scripts/gen_deployability_table.py
+- `PYTHON_VERSION` **required** — feedflipnets/reporting/artifacts.py
+
+## Config Files
+
+- `pyproject.toml`
+
+---
+
+# Middleware
+
+## custom
+- strategies — `feedflipnets/core/strategies.py`
+- generate_deployability_table — `scripts/generate_deployability_table.py`
+- generate_key_metrics — `scripts/generate_key_metrics.py`
+- generate_missing_sweeps — `scripts/generate_missing_sweeps.py`
+
+---
+
+# Dependency Graph
+
+## Most Imported Files (change these carefully)
+
+- `/utils.py` — imported by **15** files
+- `//core/types.py` — imported by **15** files
+- `/registry.py` — imported by **11** files
+- `/data/loaders.py` — imported by **5** files
+- `/core.py` — imported by **4** files
+- `/types.py` — imported by **4** files
+- `/loaders.py` — imported by **4** files
+- `/cache.py` — imported by **3** files
+- `///core/types.py` — imported by **3** files
+- `//registry.py` — imported by **3** files
+- `//utils.py` — imported by **3** files
+- `/transformer.py` — imported by **2** files
+- `//core/deep_mlp.py` — imported by **2** files
+- `//core/transformer.py` — imported by **2** files
+- `/metrics.py` — imported by **2** files
+- `/data.py` — imported by **2** files
+- `/trainer.py` — imported by **2** files
+- `//core/strategies.py` — imported by **2** files
+- `/mnist.py` — imported by **1** files
+- `/timeseries.py` — imported by **1** files
+
+## Import Map (who imports what)
+
+- `/utils.py` ← `datasets/__init__.py`, `datasets/mnist.py`, `datasets/timeseries.py`, `datasets/tinystories.py`, `feedflipnets/__init__.py` +10 more
+- `//core/types.py` ← `feedflipnets/data/adult.py`, `feedflipnets/data/ag_news.py`, `feedflipnets/data/california.py`, `feedflipnets/data/cifar10.py`, `feedflipnets/data/csv_generic.py` +10 more
+- `/registry.py` ← `feedflipnets/data/__init__.py`, `feedflipnets/data/adult.py`, `feedflipnets/data/ag_news.py`, `feedflipnets/data/california.py`, `feedflipnets/data/cifar10.py` +6 more
+- `/data/loaders.py` ← `feedflipnets/utils.py`, `feedflipnets/utils.py`, `feedflipnets/utils.py`, `feedflipnets/utils.py`, `feedflipnets/utils.py`
+- `/core.py` ← `feedflipnets/__init__.py`, `feedflipnets/__init__.py`, `feedflipnets/__init__.py`, `feedflipnets/__init__.py`
+- `/types.py` ← `feedflipnets/core/activations.py`, `feedflipnets/core/deep_mlp.py`, `feedflipnets/core/quant.py`, `feedflipnets/core/strategies.py`
+- `/loaders.py` ← `feedflipnets/data/__init__.py`, `feedflipnets/data/__init__.py`, `feedflipnets/data/__init__.py`, `feedflipnets/data/__init__.py`
+- `/cache.py` ← `feedflipnets/data/ag_news.py`, `feedflipnets/data/mnist.py`, `feedflipnets/data/ucr.py`
+- `///core/types.py` ← `feedflipnets/data/loaders/synth_fixture.py`, `feedflipnets/data/loaders/synthetic.py`, `feedflipnets/data/loaders/tinystories.py`
+- `//registry.py` ← `feedflipnets/data/loaders/synth_fixture.py`, `feedflipnets/data/loaders/synthetic.py`, `feedflipnets/data/loaders/tinystories.py`
+
+---
+
+_Generated by [codesight](https://github.com/Houseofmvps/codesight) — see your codebase clearly_
