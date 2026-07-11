@@ -10,13 +10,13 @@ import numpy as np
 from ..core.types import Batch
 from .cache import fetch
 from .registry import DatasetSpec, DataSpec, register_dataset
-from .utils import batch_iterator, deterministic_split, resolve_cache_dir
+from .utils import SplitIndices, batch_iterator, deterministic_split, resolve_cache_dir
 
 MNIST_URL = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz"
 MNIST_CHECKSUM = "731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1"
 
 
-def _load_archive(path: Path) -> tuple[np.ndarray, np.ndarray]:
+def _load_archive(path: Path) -> tuple[np.ndarray, np.ndarray, int]:
     data = np.load(path)
 
     def _lookup(*keys: str) -> np.ndarray:
@@ -31,7 +31,7 @@ def _load_archive(path: Path) -> tuple[np.ndarray, np.ndarray]:
     y_test = _lookup("y_test", "Y_test").astype(np.int64)
     x = np.concatenate([x_train, x_test], axis=0)
     y = np.concatenate([y_train, y_test], axis=0)
-    return x, y
+    return x, y, int(x_train.shape[0])
 
 
 def _prepare_inputs(images: np.ndarray) -> np.ndarray:
@@ -84,6 +84,21 @@ def _offline_dataset() -> tuple[np.ndarray, np.ndarray]:
     return images_arr, labels_arr
 
 
+def _canonical_split(n_samples: int, n_train: int, *, val_split: float, seed: int) -> SplitIndices:
+    """Preserve the official test set; carve val from the train portion only."""
+
+    rng = np.random.default_rng(seed)
+    train_indices = np.arange(n_train)
+    rng.shuffle(train_indices)
+    val_size = int(round(n_train * val_split))
+    val_size = min(max(val_size, 1 if val_split > 0 else 0), n_train - 1)
+    return SplitIndices(
+        train=train_indices[val_size:],
+        val=train_indices[:val_size],
+        test=np.arange(n_train, n_samples),
+    )
+
+
 @register_dataset("mnist")
 def build_mnist(
     *,
@@ -97,6 +112,7 @@ def build_mnist(
     """Create a :class:`DatasetSpec` for MNIST."""
 
     cache_root = resolve_cache_dir(cache_dir)
+    n_train_official: int | None = None
     if offline:
         inputs_raw, labels_raw = _offline_dataset()
         provenance: dict[str, object] = {"mode": "offline", "source": "synthetic"}
@@ -112,20 +128,31 @@ def build_mnist(
             cache_dir=cache_root,
         )
 
-        inputs_raw, labels_raw = _load_archive(path)
+        inputs_raw, labels_raw, n_train_official = _load_archive(path)
     inputs = _prepare_inputs(inputs_raw)
     targets = _prepare_targets(labels_raw, one_hot=one_hot, num_classes=10)
 
-    splits = deterministic_split(
-        inputs.shape[0], val_split=val_split, test_split=test_split, seed=seed
-    )
+    if n_train_official is not None:
+        # Preserve the canonical MNIST test set; carve val from official train.
+        splits = _canonical_split(inputs.shape[0], n_train_official, val_split=val_split, seed=seed)
+    else:
+        splits = deterministic_split(
+            inputs.shape[0], val_split=val_split, test_split=test_split, seed=seed
+        )
 
     def loader(split: str, batch_size: int) -> Iterator[Batch]:
         if split not in {"train", "val", "test"}:
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(inputs, targets, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            inputs,
+            targets,
+            indices,
+            batch_size=batch_size,
+            seed=split_seed,
+            replacement=(split == "train"),
+        )
 
     target_dim = 10 if one_hot else 1
     data_spec = DataSpec(

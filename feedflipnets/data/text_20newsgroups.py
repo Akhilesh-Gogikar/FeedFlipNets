@@ -227,7 +227,14 @@ def build_20newsgroups(
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(X, y_one_hot, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            X,
+            y_one_hot,
+            indices,
+            batch_size=batch_size,
+            seed=split_seed,
+            replacement=(split == "train"),
+        )
 
     data_spec = DataSpec(
         d_in=int(X.shape[1]),

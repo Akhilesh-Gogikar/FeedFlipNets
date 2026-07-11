@@ -53,30 +53,34 @@ def build_california_dataset(
             "sklearn_version": getattr(fetch_california_housing, "__module__", "sklearn"),
         }
 
+    splits = deterministic_split(X.shape[0], val_split=val_split, test_split=test_split, seed=seed)
+
     normalization: dict[str, dict[str, list[float]]] = {}
 
     if standardize_inputs:
-        X, mean, std = standardize(X)
+        _, mean, std = standardize(X[splits.train])
+        X, _, _ = standardize(X, mean=mean, std=std)
         normalization["inputs"] = {
             "mean": mean.flatten().tolist(),
             "std": std.flatten().tolist(),
         }
 
     if standardize_targets:
-        y, t_mean, t_std = standardize(y)
+        _, t_mean, t_std = standardize(y[splits.train])
+        y, _, _ = standardize(y, mean=t_mean, std=t_std)
         normalization["targets"] = {
             "mean": t_mean.flatten().tolist(),
             "std": t_std.flatten().tolist(),
         }
-
-    splits = deterministic_split(X.shape[0], val_split=val_split, test_split=test_split, seed=seed)
 
     def loader(split: str, batch_size: int) -> Iterator[Batch]:
         if split not in {"train", "val", "test"}:
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(X, y, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            X, y, indices, batch_size=batch_size, seed=split_seed, replacement=(split == "train")
+        )
 
     data_spec = DataSpec(
         d_in=int(X.shape[1]),

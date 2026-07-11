@@ -152,7 +152,14 @@ def build_ucr_dataset(
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(features, targets, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            features,
+            targets,
+            indices,
+            batch_size=batch_size,
+            seed=split_seed,
+            replacement=(split == "train"),
+        )
 
     data_spec = DataSpec(
         d_in=int(features.shape[1]),

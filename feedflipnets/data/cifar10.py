@@ -13,6 +13,7 @@ from typing import Iterator
 import numpy as np
 
 from ..core.types import Batch
+from .mnist import _canonical_split
 from .registry import DatasetSpec, DataSpec, register_dataset
 from .utils import batch_iterator, deterministic_split, resolve_cache_dir
 
@@ -83,6 +84,7 @@ def build_cifar10(
     """
 
     resolve_cache_dir(cache_dir)
+    n_train_official: int | None = None
     if offline:
         inputs_raw, labels_raw = _offline_dataset()
         provenance: dict[str, object] = {"mode": "offline", "source": "synthetic"}
@@ -96,25 +98,56 @@ def build_cifar10(
                 "Install extras: pip install -r requirements-extras.txt"
             ) from exc
         transform = T.Compose([T.ToTensor()])
-        train = torchvision.datasets.CIFAR10(str(cache_dir or ".cache"), train=True, download=True, transform=transform)
-        test = torchvision.datasets.CIFAR10(str(cache_dir or ".cache"), train=False, download=True, transform=transform)
-        X = np.concatenate([np.stack([np.array(img) for img, _ in train]), np.stack([np.array(img) for img, _ in test])], axis=0)
-        y = np.concatenate([np.array([int(lbl) for _, lbl in train]), np.array([int(lbl) for _, lbl in test])], axis=0)
+        train = torchvision.datasets.CIFAR10(
+            str(cache_dir or ".cache"), train=True, download=True, transform=transform
+        )
+        test = torchvision.datasets.CIFAR10(
+            str(cache_dir or ".cache"), train=False, download=True, transform=transform
+        )
+        X = np.concatenate(
+            [
+                np.stack([np.array(img) for img, _ in train]),
+                np.stack([np.array(img) for img, _ in test]),
+            ],
+            axis=0,
+        )
+        y = np.concatenate(
+            [np.array([int(lbl) for _, lbl in train]), np.array([int(lbl) for _, lbl in test])],
+            axis=0,
+        )
         inputs_raw, labels_raw = X.astype(np.float32), y.astype(np.int64)
-        provenance = {"mode": "download", "source": "torchvision", "n_samples": int(inputs_raw.shape[0])}
+        n_train_official = len(train)
+        provenance = {
+            "mode": "download",
+            "source": "torchvision",
+            "n_samples": int(inputs_raw.shape[0]),
+        }
 
     inputs = _prepare_inputs(inputs_raw)
     num_classes = 10
     targets = _prepare_targets(labels_raw, one_hot=one_hot, num_classes=num_classes)
 
-    splits = deterministic_split(inputs.shape[0], val_split=val_split, test_split=test_split, seed=seed)
+    if n_train_official is not None:
+        # Preserve the canonical CIFAR-10 test set; carve val from official train.
+        splits = _canonical_split(inputs.shape[0], n_train_official, val_split=val_split, seed=seed)
+    else:
+        splits = deterministic_split(
+            inputs.shape[0], val_split=val_split, test_split=test_split, seed=seed
+        )
 
     def loader(split: str, batch_size: int) -> Iterator[Batch]:
         if split not in {"train", "val", "test"}:
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(inputs, targets, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            inputs,
+            targets,
+            indices,
+            batch_size=batch_size,
+            seed=split_seed,
+            replacement=(split == "train"),
+        )
 
     data_spec = DataSpec(
         d_in=int(inputs.shape[1]),
@@ -146,4 +179,3 @@ def build_cifar10(
 
 
 __all__ = ["build_cifar10"]
-

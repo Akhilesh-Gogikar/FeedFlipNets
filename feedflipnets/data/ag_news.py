@@ -116,11 +116,17 @@ def build_ag_news(
                 lowercase=True,
                 dtype=np.float32,
             )
-            X_sparse = vec.fit_transform(texts)
-            X = X_sparse
+            # Fit vectorizer (and SVD) on the train split only; transform the rest.
+            fit_splits = deterministic_split(
+                len(texts), val_split=val_split, test_split=test_split, seed=seed
+            )
+            train_texts = [texts[i] for i in fit_splits.train]
+            train_sparse = vec.fit_transform(train_texts)
+            X_sparse = vec.transform(texts)
             if svd_dim is not None and svd_dim > 0:
                 svd = TruncatedSVD(n_components=int(svd_dim), random_state=seed)
-                X = svd.fit_transform(X_sparse).astype(np.float32)
+                svd.fit(train_sparse)
+                X = svd.transform(X_sparse).astype(np.float32)
             else:
                 X = X_sparse.toarray().astype(np.float32)
             y_idx = labels.astype(np.int64)
@@ -143,7 +149,14 @@ def build_ag_news(
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(X, y_one_hot, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            X,
+            y_one_hot,
+            indices,
+            batch_size=batch_size,
+            seed=split_seed,
+            replacement=(split == "train"),
+        )
 
     d_in = int(X.shape[1])
     data_spec = DataSpec(

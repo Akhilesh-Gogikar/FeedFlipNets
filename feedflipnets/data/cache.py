@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import time
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, MutableMapping
@@ -85,6 +86,13 @@ def fetch(
         if offline_path is None:
             raise CacheError(f"Offline mode requested for {name!r} but no offline_path provided")
         path = _ensure_offline(offline_path, offline_builder)
+        warnings.warn(
+            f"Dataset {name!r}: using synthetic/offline fixture instead of the real "
+            "dataset. To disable offline mode, pass offline=False or set "
+            "FFN_DATA_OFFLINE=0 (or FEEDFLIP_DATA_OFFLINE=0).",
+            UserWarning,
+            stacklevel=2,
+        )
         record = _make_record(name, url, path, checksum, mode="offline")
         manifest.record(name, record)
         return path, record
@@ -114,6 +122,13 @@ def fetch(
 
     if offline_path:
         path = _ensure_offline(offline_path, offline_builder)
+        warnings.warn(
+            f"Dataset {name!r}: download failed; falling back to synthetic/offline "
+            "fixture instead of the real dataset. To disable offline mode, set "
+            "FFN_DATA_OFFLINE=0 (or FEEDFLIP_DATA_OFFLINE=0).",
+            UserWarning,
+            stacklevel=2,
+        )
         record = _make_record(name, url, path, checksum, mode="offline-fallback")
         manifest.record(name, record)
         return path, record

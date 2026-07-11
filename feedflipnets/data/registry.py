@@ -175,9 +175,10 @@ def iter_batches(
     rng = np.random.default_rng(seed)
     for batch in spec.iter_split(split, batch_size):
         if seed is not None:
-            # ``loader`` implementations are already deterministic but to avoid
-            # double-randomisation we simply reseed the RNG per batch.
-            np.random.seed(rng.integers(0, 2**32 - 1, dtype=np.uint32))
+            # ``loader`` implementations are already deterministic; keep the
+            # per-batch draw for backwards-compatible seed derivation, but use
+            # a local generator instead of mutating global RNG state.
+            rng.integers(0, 2**32 - 1, dtype=np.uint32)
         yield batch
 
 

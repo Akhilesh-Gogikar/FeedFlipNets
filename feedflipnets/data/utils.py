@@ -103,12 +103,23 @@ def batch_iterator(
     *,
     batch_size: int,
     seed: int,
+    replacement: bool = True,
 ) -> Iterator[Batch]:
-    """Yield deterministic batches by sampling with replacement."""
+    """Yield deterministic batches.
 
-    rng = np.random.default_rng(seed)
+    With ``replacement=True`` (default), samples with replacement forever.
+    With ``replacement=False``, yields sequential batches covering every
+    index exactly once (suitable for val/test evaluation), then stops.
+    """
+
     index_array = np.asarray(indices)
     n = index_array.size
+    if not replacement:
+        for start in range(0, n, batch_size):
+            subset = index_array[start : start + batch_size]
+            yield Batch(inputs=features[subset], targets=targets[subset])
+        return
+    rng = np.random.default_rng(seed)
     while True:
         sampled = rng.integers(0, n, size=batch_size)
         subset = index_array[sampled]

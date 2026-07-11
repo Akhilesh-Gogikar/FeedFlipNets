@@ -71,20 +71,30 @@ def build_adult(
         y_raw = (y_series.astype(str) == ">50K").astype(int).to_numpy().astype(np.int64)
         X_df = pd.get_dummies(X_cat, drop_first=True)
         X = X_df.to_numpy(dtype=np.float32, copy=True)
-        # Standardize features for stability
-        X, _, _ = standardize(X)
         y_idx = y_raw
         provenance = {"mode": "download", "openml_id": int(getattr(ds, "data_id", 0))}
 
     targets = _prepare_targets(y_idx, one_hot=one_hot)
     splits = deterministic_split(X.shape[0], val_split=val_split, test_split=test_split, seed=seed)
 
+    if not offline:
+        # Standardize features for stability using train-split statistics only
+        _, mean, std = standardize(X[splits.train])
+        X, _, _ = standardize(X, mean=mean, std=std)
+
     def loader(split: str, batch_size: int) -> Iterator[Batch]:
         if split not in {"train", "val", "test"}:
             raise ValueError(f"Unknown split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(X, targets, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            X,
+            targets,
+            indices,
+            batch_size=batch_size,
+            seed=split_seed,
+            replacement=(split == "train"),
+        )
 
     data_spec = DataSpec(
         d_in=int(X.shape[1]),

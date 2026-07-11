@@ -85,7 +85,9 @@ def _factory(
             raise ValueError(f"Unsupported split: {split}")
         indices = getattr(splits, split)
         split_seed = seed + {"train": 0, "val": 1, "test": 2}[split]
-        return batch_iterator(X, y, indices, batch_size=batch_size, seed=split_seed)
+        return batch_iterator(
+            X, y, indices, batch_size=batch_size, seed=split_seed, replacement=(split == "train")
+        )
 
     provenance = dict(provenance)
     provenance.update({"window": window, "vocab_size": len(vocab)})
