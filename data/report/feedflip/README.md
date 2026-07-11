@@ -1,7 +1,7 @@
 # FeedFlip: feedback-driven bit-flips for ternary nets — and the per-weight sign barrier
 
 The real thesis of FeedFlipNets: train ternary networks by using a cheap feedback signal to **flip
-bits directly**, with **no float shadow weights** — store only ternary `W ∈ {-1,0,+1}` (≈1.58 bits)
+bits directly**, with **no float shadow weights**: store only ternary `W ∈ {-1,0,+1}` (≈1.58 bits)
 plus a small signed integer flip-accumulator `c` per weight. Each step: `c += -sign(grad_est)`; when
 `|c| ≥ K`, flip the bit (`-1↔0↔+1`) and reset. A flip needs only the **sign**, so the natural
 feedback is DFA (cheap, transport-free, shadow-free). Prototypes: `experiments/feedflip_bitflip.py`
@@ -53,8 +53,8 @@ Stacked ternary char-LM (CFG corpus, floor 2.88 bpc, no float shadow), n=3:
 
 - **The flip mechanism works with a good sign:** `BP_flip` (1.72) beats the floor and the FROZEN control.
 - **Transport-free flipping FAILS on the transformer:** every DFA/AR-DFA arm is **worse than FROZEN
-  (2.01)** — flipping bits from the DFA sign is worse than not flipping. K32 only claws back to ~floor.
-- **AR-DFA does not rescue it:** it ties fixed-DFA, and per-weight sign-match `p ≈ 0.53` for **both** —
+  (2.01)**: flipping bits from the DFA sign is worse than not flipping. K32 only claws back to ~floor.
+- **AR-DFA does not rescue it:** it ties fixed-DFA, and per-weight sign-match `p ≈ 0.53` for **both**,
   barely above chance.
 
 ## 4. Pre-registered attack on the sign barrier (MLP rebuild) — NO-GO; the barrier held.
@@ -67,7 +67,7 @@ were pre-registered in the file docstring before any attack was run.
 Frozen baselines (`baselines.json`): bp_shadow **0.604** ± .013 (32 bits/w) ·
 dfa_k32 0.536 · dfa_ortho_k32 0.534 (7.6 bits/w) · feedflip_bp_k8 0.489 ·
 dfa_ortho_k8 0.483 · dfa_k8 0.473 (5.67 bits/w). Rebuild caveat: unlike the §2 table,
-BP-sign flips here **lag** the float-shadow anchor (0.489 vs 0.604) — the uncommitted
+BP-sign flips here **lag** the float-shadow anchor (0.489 vs 0.604); the uncommitted
 0.629 config could not be recovered, so §2's feedflip_bp≈bp_shadow claim should be
 treated as unreproduced until shown otherwise.
 
@@ -83,9 +83,9 @@ Attack arms (`attacks.json`, all 7.6 bits/w, n=3):
 
 **Gate: NO-GO** (best 0.541 < 0.60). Two diagnostics survive the negative result:
 - **Sign-match is not the binding constraint at this margin:** combo raised `p`
-  0.71→0.75 yet gained only +0.005 over dfa_k32 — within seed noise.
+  0.71→0.75 yet gained only +0.005 over dfa_k32, within seed noise.
 - **taught_B ② learns a *different* direction, not a better one:** `p` drops to 0.57
-  (below fixed-B) while accuracy stays at baseline — perturbation-taught feedback
+  (below fixed-B) while accuracy stays at baseline; perturbation-taught feedback
   stops imitating BP without finding a superior transport-free signal.
 
 ## 5. Round 2 — the feedback-information budget (pre-registered): sign fidelity is NOT the bottleneck.
@@ -106,7 +106,7 @@ refreshed every k steps). Results (`feedflip_round2.json`):
 | fa_random (control)   | 0 | 0.530 ± .004 | 0.717 |
 | kp_fa (Kolen–Pollack mirror) | 0 | 0.304 ± .037 | 0.328 |
 
-**Both gates NO-GO** (G-A1 kp_fa ≥ 0.60: no; G-A3 any k ≥ 8 ≥ 0.60: no) — and the
+**Both gates NO-GO** (G-A1 kp_fa ≥ 0.60: no; G-A3 any k ≥ 8 ≥ 0.60: no). The
 pre-registered interpretation rule **P5 fired**: even k=1, which feeds the flip
 mechanism the *bit-exact BP backward pass* (`p = 1.0` by construction), reaches only
 0.551.
@@ -116,12 +116,12 @@ mechanism the *bit-exact BP backward pass* (`p = 1.0` by construction), reaches 
   binding constraint is the magnitude-blind vote/flip accumulator, not feedback sign
   fidelity: what the float shadow buys is *magnitude accumulation*, not better signs.
 - **Sign fidelity is nearly free anyway:** acc(k) is flat out to k=4096
-  (0.0004 bits/w/step, late p 0.87, acc 0.557) — stale ternary W^T is as good as
+  (0.0004 bits/w/step, late p 0.87, acc 0.557): stale ternary W^T is as good as
   fresh transport. P1 (monotone decay in k) is not observed in this regime.
 - **kp_fa diverged** (P3 falsified): gradient co-mirroring under flip dynamics
   bootstraps its own feedback target (late p 0.33, acc 0.30); the KP theorem's
-  shared-update premise genuinely matters — W moving by flips breaks it.
-- **P4 confirmed:** fa_random (0.530) ≈ dfa_k32 (0.536) — chaining topology alone
+  shared-update premise genuinely matters; W moving by flips breaks it.
+- **P4 confirmed:** fa_random (0.530) ≈ dfa_k32 (0.536): chaining topology alone
   changes nothing.
 
 Consequences: registered arms A2 (prealigned init) and A4 (forward-gradient control
@@ -134,8 +134,8 @@ or stochastic-rounding flips with P(flip) ∝ |g|), staying ≤ 8 state bits/w.
 `experiments/feedflip_magnitude_votes.py`; pre-registration + gates frozen at commit
 `06b13da` (`PREREG_round3_magnitude_votes.md`) **before** any full run. Same frozen
 benchmark; new axis: gradient *magnitude* inside the ≤ 8 bits/w accumulator.
-Mechanisms — magq2 (2-bit weighted votes), stochT (Bernoulli vote rate ∝ |g|;
-unbiased integrator), ishadE (int8 SR shadow) — each × {st512 stale ternary
+Mechanisms: magq2 (2-bit weighted votes), stochT (Bernoulli vote rate ∝ |g|;
+unbiased integrator), ishadE (int8 SR shadow), each × {st512 stale ternary
 transport (0.0031 bits/w/step), farand (0 bits)}. Results (`feedflip_round3.json`):
 
 | arm | mean acc | late sign-match `p` | state bits/w |
@@ -155,19 +155,19 @@ Three findings survive:
 
 - **A state-precision frontier, not an information gap.** With late sign-match
   at 0.975 *and* quantized magnitude in the votes, accuracy gains only +0.017
-  over sign-only — ~37% of the gap to the float shadow. The information
+  over sign-only, ~37% of the gap to the float shadow. The information
   channel is saturated; what float32 still buys is *precision of
   accumulation*: 0.557 (sign-only, 7.6 b) → 0.574 (magnitude votes, 7.6 b) →
   0.604 (float shadow, 32 b). P2 missed its frozen bar narrowly (+1.9σ vs > 2σ).
 - **Feedback quality re-emerges once votes are unbiased (P3 violated for
-  stoch1):** st512 − farand = +0.030 (late `p` 0.975 vs 0.728) — the first
+  stoch1):** st512 − farand = +0.030 (late `p` 0.975 vs 0.728): the first
   arm family in this series where transport quality moves accuracy beyond
   noise. Round 2's "sign fidelity is nearly free" holds only for
   magnitude-blind votes.
 - **ishad caveat (exploratory diagnostic):** both int8 SR-shadow arms entered a
   zero-gradient absorbing state by ~step 60 (E-scaled SR steps churn weights
   through the ternarizer; units die; `g ≡ 0` ⇒ SR(0) = 0; 0.330 identically
-  across seeds/feedback). Not int8 saturation — a step-size dynamics failure.
+  across seeds/feedback). Not int8 saturation, but a step-size dynamics failure.
   The frontier reading therefore rests on the vote arms, and P1's predicted
   ordering (ishad ≥ stoch ≥ magq2) is refuted.
 
@@ -191,16 +191,16 @@ from feedback quality. Results (`feedflip_round4.json`, n=3):
 | ishad_e05_bp / e10_bp (oracle) | 0.330 ± .000 | — | 3 / 3 |
 
 **Gate: NO-GO** (best eligible 0.572 < 0.60; strict 0.604 unreached). **P4 returned
-no precision conclusion** — the frozen validity guard fired: no bp oracle arm
+no precision conclusion**. The frozen validity guard fired: no bp oracle arm
 survived dead-free. Findings:
 
 - **Round 3's ishad caveat is confirmed as a step-scale dynamics failure, not
   mechanism incapacity.** At E = 0.25 the same int8 SR shadow trains cleanly to
-  0.572 — statistically indistinguishable from round-3's best vote arm (0.574).
+  0.572, statistically indistinguishable from round-3's best vote arm (0.574).
   Accuracy is monotone in gentleness (0.572 → 0.556 → dead-ridden as E rises;
   the collapse boundary sits between E = 0.5 and E = 1.0).
 - **The 8-bit-state plateau is mechanism-independent.** Vote counters and SR
-  shadows — two different ≤ 8 b/w accumulators — both cap at ≈ 0.57, reinforcing
+  shadows (two different ≤ 8 b/w accumulators) both cap at ≈ 0.57, reinforcing
   the state-bits-frontier reading of §6 rather than revising it.
 - **Transport quality is again first-order** (replicating §6's stoch1 reversal in
   a second mechanism): st512 − farand = +0.023 (E=.25) / +0.039 (E=.5), late `p`
@@ -209,9 +209,9 @@ survived dead-free. Findings:
   died at every E (even E=0.25, 1/3 seeds; alive seeds reached 0.530/0.545):
   exact gradients flow *through* downstream ternary weights, so when layers
   ternarize toward zero the gradient vanishes and SR(0) = 0 is absorbing. B-matrix
-  feedback bypasses downstream W and never died at E ≤ 0.5 — feedback-driven arms
+  feedback bypasses downstream W and never died at E ≤ 0.5, so feedback-driven arms
   are *more* stable than exact-gradient arms here. The question the oracle was
-  built to answer — would bit-exact BP through an 8-bit accumulator reach 0.604? —
+  built to answer (would bit-exact BP through an 8-bit accumulator reach 0.604?)
   remains open and needs a liveness-protected oracle design.
 
 ## 8. Round 5 — precision oracle (pre-registered): the frontier's far end falls; 8-bit state DOES reach the anchor.
@@ -222,7 +222,7 @@ PREREG frozen at `08daadb` before any full run
 The design exploits a mechanical fact about the 0.604 anchor itself:
 `bp_shadow` already backprops *through the ternarized weights* (STE-style),
 re-deriving alpha and the ternary pattern from the shadow's absmean every
-step — the only thing an 8-bit arm cannot copy is the float32 storage. So
+step; the only thing an 8-bit arm cannot copy is the float32 storage. So
 the primary oracle is an **int8 SR clone of the anchor's exact loop**
 (per-layer grid `q_l = mean|Wf_l(init)|/G`, update `n += SR(−0.1·g/q_l)`,
 clip ±127), moving *only* the precision axis. G ∈ {8, 16, 32} all ran (no
@@ -238,7 +238,7 @@ liveness-protected fallback, and `st512s` (stale 8-bit shadow feedback,
 | bps_e025 / bps_e05 | 0.330 (collapse) | no — guard fired |
 | st512s_e025 (gate) | 0.554 | yes |
 
-**P5 resolved: C5 = 0.609 ≥ 0.604 — precision is NOT binding at 8 bits/w.**
+**P5 resolved: C5 = 0.609 ≥ 0.604, so precision is NOT binding at 8 bits/w.**
 The frozen decision rule lands in the overturn zone: an 8-bit stochastically
 rounded shadow, given the anchor's own update rule and transport, matches the
 float32 anchor dead-free on all seeds (sat ≤ 1.2%, alpha drift 1.8×).
@@ -248,7 +248,7 @@ float32 anchor dead-free on all seeds (sat ≤ 1.2%, alpha drift 1.8×).
   arms from the anchor is the *update rule*: rounds 3–4 arms take
   s_ema-normalized fixed-size steps (magnitude re-blinded per step), while the
   anchor and i8clone take magnitude-scaled steps `−0.1·g` on a fixed grid.
-  Carrying |g| into the *step size* — not merely into vote rates — is worth the
+  Carrying |g| into the *step size*, not merely into vote rates, is worth the
   final +0.03 even under 8-bit accumulation.
 - **Grid resolution is monotone and saturates within int8**: 0.563 → 0.592 →
   0.609 for G = 8/16/32 (typical init cell ±G, clip 127 leaves 4× headroom at
@@ -256,7 +256,7 @@ float32 anchor dead-free on all seeds (sat ≤ 1.2%, alpha drift 1.8×).
 - **"Liveness-protected" backward-through-shadow is not protected.** Both bps
   arms collapsed to the majority class (bps_e05 near-absorbing: 6.5–8.0k dead
   steps of 8k). The round-4 death mode is *activity* death (all hidden ReLUs
-  off ⇒ zero inputs ⇒ zero g everywhere), not backward-path death — rerouting
+  off ⇒ zero inputs ⇒ zero g everywhere), not backward-path death; rerouting
   the backward matrices around the ternary zeros does not prevent it.
 - **Higher-fidelity stale transport did not help the gate arm**: shipping 8-bit
   shadow values instead of ternary signs (5× the refresh bits of round-4's
@@ -264,53 +264,54 @@ float32 anchor dead-free on all seeds (sat ≤ 1.2%, alpha drift 1.8×).
 
 ## The unifying insight: cosine alignment ≠ per-weight sign
 AR-DFA's large *cosine*-alignment gain on attention (worst-case angle 90°→46°, `data/report/m2/`)
-does **not** translate into per-weight *sign* correctness (`p ≈ 0.53`, barely above chance). Bit-flips
-use only the sign, so the alignment gain is invisible to them. **The binding constraint for
-transport-free discrete/ternary learning is per-weight sign accuracy, and "alignment" (cosine — the
-standard DFA metric) is the wrong proxy for it.** The FeedFlip *mechanism* is genuinely efficient
-(≈5.6× less state, ~2× faster, shadow-free); the open problem is a transport-free rule whose
-per-weight sign — not just its aggregate direction — is reliably correct at depth and through attention.
+does **not** translate into per-weight *sign* correctness: `p ≈ 0.53`, barely above chance. Bit-flips
+read only the sign, so the alignment gain is invisible to them. **The binding constraint for
+transport-free discrete/ternary learning is per-weight sign accuracy; "alignment" (the standard
+cosine DFA metric) is the wrong proxy for it.** The FeedFlip *mechanism* is genuinely efficient:
+≈5.6× less state, ~2× faster, shadow-free. What stays open is a transport-free rule whose per-weight
+sign, not merely its aggregate direction, is reliably correct at depth and through attention.
 
-**Round-2 revision (§5):** on the MLP benchmark, sign accuracy is *necessary but not sufficient* —
-even p = 1.0 (bit-exact BP votes) recovers only 0.551 vs bp_shadow's 0.604. Beyond sign
-correctness, the deeper constraint is the flip accumulator's magnitude-blindness: the
-K-threshold vote counter discards |g|, which is exactly what the float shadow retains.
+**Round-2 revision (§5):** on the MLP benchmark, sign accuracy proved *necessary but not sufficient*.
+Even p = 1.0 (bit-exact BP votes) recovers only 0.551 against bp_shadow's 0.604. Beyond sign
+correctness, the deeper constraint is the flip accumulator's magnitude-blindness: the K-threshold
+vote counter discards |g|, exactly what the float shadow retains.
 
 **Round-3 revision (§6):** magnitude-blindness was also not the last wall. With sign
 fidelity saturated (late p 0.975) *and* 2-bit/stochastic magnitude in the votes,
-transport-free ternary training still caps at 0.574 vs 0.604. After three pre-registered
-NO-GO rounds the residual gap traces a diminishing-returns **state-bits frontier** —
+transport-free ternary training still caps at 0.574 vs 0.604. Across three pre-registered
+NO-GO rounds the residual gap traced a diminishing-returns **state-bits frontier**:
 0.557 (sign-only, ~7.6 b/w) → 0.574 (magnitude votes, 7.6 b/w) → 0.604 (float32 shadow,
-32 b/w) — i.e. what backprop's shadow ultimately buys on this benchmark is *accumulation
-precision*. One second-order reversal: transport quality becomes first-order again
-(+0.030) once votes are unbiased and high-rate (stoch1), so "stale/random feedback is
-free" is a property of magnitude-blind voting, not of the mechanism family.
+32 b/w). Read that way, what backprop's shadow ultimately buys on this benchmark is
+*accumulation precision*. One second-order reversal complicated the picture: transport
+quality becomes first-order again (+0.030) once votes are unbiased and high-rate (stoch1),
+so "stale/random feedback is free" is a property of magnitude-blind voting, not of the
+mechanism family.
 
-**Round-4 revision (§7):** the state-bits frontier survives a fourth pre-registered
-attack, now with the mechanism axis controlled: an int8 SR shadow at the correct step
-scale (E=0.25) lands on the same ≈0.57 plateau as the vote counters — the frontier is
-a property of ≤ 8 b/w accumulation *state*, not of any particular accumulator. The
-transport-quality reversal replicates (+0.02–0.04 across two mechanisms). One caveat
-now attaches to the frontier's far end: the 0.604 float-shadow anchor has not been
-shown reachable by exact gradients under 8-bit accumulation, because BP-fed shadows
-are dynamically unstable in ternary nets (gradient paths die through ternarized
-layers, an absorbing state that transport-free feedback happens to be immune to) —
-so "precision is what the shadow buys" rests on the vote/shadow plateau, pending a
-liveness-protected oracle.
+**Round-4 revision (§7):** the state-bits frontier survived a fourth pre-registered
+attack, now with the mechanism axis controlled. An int8 SR shadow at the correct step
+scale (E=0.25) lands on the same ≈0.57 plateau as the vote counters, so the frontier
+looked like a property of ≤ 8 b/w accumulation *state* rather than of any particular
+accumulator. The transport-quality reversal replicated (+0.02–0.04 across two
+mechanisms). One caveat attached to the frontier's far end: the 0.604 float-shadow
+anchor had not been shown reachable by exact gradients under 8-bit accumulation,
+because BP-fed shadows are dynamically unstable in ternary nets. (Gradient paths die
+through ternarized layers, an absorbing state that transport-free feedback happens to
+escape.) So "precision is what the shadow buys" rested on the vote/shadow plateau,
+pending a liveness-protected oracle.
 
-**Round-5 revision (§8) — corrects §6–§7.** The precision oracle resolves the open
+**Round-5 revision (§8), correcting §6–§7.** The precision oracle resolves the open
 question and *overturns* the "state-bits frontier" reading: an int8 (8 b/w) stochastic
 shadow reaches **0.609 ≥ 0.604** when it uses the anchor's own update rule, dead-free
-on all seeds. So the residual 0.57→0.60 gap was **never a bit-precision cost** — it is
-the **update rule**. Rounds 1–4's ≤8-bit arms all take *step-normalized* moves
-(each step re-normalizes by the per-layer gradient scale `s_ema`, re-discarding |g|'s
-across-step dynamic range); the anchor and the i8clone take *magnitude-scaled* SGD
-steps `−0.1·g` on a fixed grid, which preserves the relative size of large vs. small
-gradients across steps. Carrying magnitude into the **step size** (not just the vote
-rate) closes the gap at 8 bits. The genuinely hard, still-open problem is therefore
+on all seeds. So the residual 0.57→0.60 gap was **never a bit-precision cost**. It is
+the **update rule**. Rounds 1–4's ≤8-bit arms all take *step-normalized* moves: each
+step re-normalizes by the per-layer gradient scale `s_ema`, re-discarding the gradient's
+across-step dynamic range. The anchor and the i8clone instead take *magnitude-scaled* SGD
+steps `−0.1·g` on a fixed grid, preserving the relative size of large versus small
+gradients from one step to the next. Carrying magnitude into the **step size**, not
+merely the vote rate, closes the gap at 8 bits. The genuinely hard problem is therefore
 narrower and sharper than the four-round arc suggested: **a transport-free feedback
-signal accurate enough to drive a magnitude-scaled fixed-grid step** — the gate arm
+signal accurate enough to drive a magnitude-scaled fixed-grid step**. The gate arm
 (`st512s`, stale 8-bit transport) still stalls at 0.554, so the wall is feedback
 fidelity for magnitude-scaled updates, not accumulator precision and not sign
-correctness. The whole series' headline number to beat is unchanged (0.604 at 32 b/w),
-now matched at 8 b/w *with full transport*, and unmatched by anything transport-free.
+correctness. The headline number to beat is unchanged (0.604 at 32 b/w): now matched
+at 8 b/w *with full transport*, and unmatched by anything transport-free.
