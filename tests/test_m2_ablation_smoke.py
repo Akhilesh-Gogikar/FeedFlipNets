@@ -35,4 +35,8 @@ def test_two_only_adapts_transport_free_without_a_reuse():
     # ∝ d) rather than loosening the assertion, per the plan's margin guidance.
     fixed = run_condition("fixed_dfa", depth=1, seed=0, n_draws=20)
     two = run_condition("two_only", depth=1, seed=0, n_draws=20, adapt_steps=2000, adapt_K=32)
-    assert two["attn_block_theta"] <= fixed["attn_block_theta"]
+    # Strict margin: <= alone would pass with zero benefit; require a real improvement.
+    # Observed deterministic margin at these seeds/config is ~1.796 deg (measured twice,
+    # bit-identical), so 2.0 is too aggressive for this smoke config; 1.5 keeps headroom
+    # while still failing on any zero/near-zero-benefit regression (strictly > 0).
+    assert fixed["attn_block_theta"] - two["attn_block_theta"] >= 1.5

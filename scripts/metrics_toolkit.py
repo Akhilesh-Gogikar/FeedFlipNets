@@ -60,7 +60,14 @@ def _t_critical(df: int) -> float:
 
     if df <= 0:
         raise ValueError("degrees of freedom must be positive")
-    return _T_CRIT.get(df + 1, 1.96)
+    if df in _T_CRIT:
+        return _T_CRIT[df]
+    if df > max(_T_CRIT):
+        # Large df: t converges to the normal quantile.
+        return 1.96
+    # Small df missing from the table: use the nearest SMALLER df,
+    # whose critical value is larger (conservative).
+    return _T_CRIT[max(k for k in _T_CRIT if k < df)]
 
 
 def epochs_to_threshold(history: Sequence[float], threshold: float) -> int:

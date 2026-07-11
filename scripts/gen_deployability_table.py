@@ -8,12 +8,17 @@ For each run directory (e.g., runs/mnist-mlp-dfa), we extract:
 - Peak RAM during inference (weights at forward bit-width + max activation for batch=1)
 - CPU latency/inference (from test timings divided by total tested samples)
 
-Outputs docs/paper/_generated/deployability_table.tex.
+Outputs docs/paper/_generated/deployability_table_batched.tex.
+
+NOTE: The 'CPU Lat. (ms)' column is amortized batched latency (total test time
+divided by total samples). The canonical table with true single-sample
+perf_counter latency is produced by scripts/generate_deployability_table.py,
+which owns docs/paper/_generated/deployability_table.tex.
 
 Usage:
   python scripts/gen_deployability_table.py \
       --runs runs/mnist-mlp-dfa runs/20newsgroups-bow-mlp-dfa \
-      --out docs/paper/_generated/deployability_table.tex
+      --out docs/paper/_generated/deployability_table_batched.tex
 
 Notes:
 - Energy/inference is left as N/A with a footnote about MLPerf Tiny/MLMark.
@@ -33,7 +38,9 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 
-def _load_ckpt_shapes_and_arrays(path: pathlib.Path) -> Tuple[List[Tuple[int, int]], Dict[str, np.ndarray]]:
+def _load_ckpt_shapes_and_arrays(
+    path: pathlib.Path,
+) -> Tuple[List[Tuple[int, int]], Dict[str, np.ndarray]]:
     if not path.exists():
         raise FileNotFoundError(f"checkpoint not found: {path}")
     with np.load(path, allow_pickle=False) as data:
@@ -129,7 +136,10 @@ def main() -> None:
     ap.add_argument("--runs", nargs="+", required=True, help="Run directories under runs/")
     ap.add_argument(
         "--out",
-        default="docs/paper/_generated/deployability_table.tex",
+        # ponytail: distinct default from generate_deployability_table.py (the
+        # canonical single-sample-latency table) so the two scripts never
+        # silently overwrite each other's deployability_table.tex.
+        default="docs/paper/_generated/deployability_table_batched.tex",
         help="Output LaTeX path",
     )
     args = ap.parse_args()
@@ -164,7 +174,9 @@ def main() -> None:
         )
         rows.append(row)
 
-    header = r"""
+    header = r"""% NOTE: CPU Lat. (ms) here is BATCHED test time divided by total samples
+% (amortized), NOT true single-sample latency. For the canonical single-sample
+% perf_counter latency table, use scripts/generate_deployability_table.py.
 \begin{table}[H]
 \centering
 \small
@@ -176,7 +188,10 @@ Model & Params & Bits & Sparsity (per layer) & Peak RAM (KB) & CPU Lat. (ms) & E
     footer = r"""
 \bottomrule
 \end{tabular}
-\caption{Deployability metrics on a single CPU device. Forward path uses ternary (2-bit) weights. Peak RAM estimates include quantized weights and batch=1 activations. Energy/inference left as N/A; plan to follow MLPerf Tiny/EEMBC MLMark methodology.}
+\caption{Deployability metrics on a single CPU device. Forward path uses ternary
+(2-bit) weights. Peak RAM estimates include quantized weights and batch=1
+activations. Energy/inference left as N/A; plan to follow MLPerf Tiny/EEMBC
+MLMark methodology.}
 \end{table}
 """
 

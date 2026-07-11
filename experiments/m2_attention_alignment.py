@@ -72,7 +72,8 @@ def adapt_R_O_honest(
     rng = np.random.default_rng(seed)
     r_o = rng.standard_normal((d, d)) / np.sqrt(d)
     for it in range(steps):
-        g = np.random.default_rng(50000 + it)
+        # Key on BOTH seed and iteration so each seed sees independent probe data/perturbations.
+        g = np.random.default_rng(50000 + 100000 * seed + it)
         x = g.standard_normal((T, d))
         e = g.standard_normal((T, d))
         ghat = _ghat_ctx(block, x, e, k_samples, rho, g)
@@ -91,7 +92,8 @@ def _adapt_B(
     rng = np.random.default_rng(seed + 777)
     b = rng.standard_normal(shape) / np.sqrt(d)
     for it in range(steps):
-        g = np.random.default_rng(60000 + it)
+        # Key on BOTH seed and iteration so each seed sees independent probe data/perturbations.
+        g = np.random.default_rng(60000 + 100000 * seed + it)
         x = g.standard_normal((T, d))
         e = g.standard_normal((T, d))
         # ĝ_V via node perturbation of V (forward-only): reuse the Ctx probe since Ctx = A·V; here we

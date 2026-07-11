@@ -77,8 +77,14 @@ def main() -> None:
 
     grad_sq = np.array([row["grad_sq"] for row in all_rows], dtype=np.float64)
     sigma = np.array([row["sigma"] for row in all_rows], dtype=np.float64)
+    sign_term = np.array([row["sign_term"] for row in all_rows], dtype=np.float64)
     align = np.array([row["align_def"] for row in all_rows], dtype=np.float64)
-    pred = sigma + align  # alignment deficits are tiny; sigma dominates the bound
+    # Least-squares fit of the observed squared gradient norm on the bound
+    # components (sigma, sign term, alignment deficit) plus an intercept,
+    # as described in the module docstring.
+    design = np.column_stack([sigma, sign_term, align, np.ones_like(sigma)])
+    coef, *_ = np.linalg.lstsq(design, grad_sq, rcond=None)
+    pred = design @ coef
 
     rel_error = np.abs(pred - grad_sq) / np.maximum(grad_sq, 1e-6)
     caption = (

@@ -14,8 +14,6 @@ __all__ = [
     "activations",
     "strategies",
     "quant",
-    "feedback",
-    "quantization",
     "types",
     "load_preset",
     "presets",

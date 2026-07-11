@@ -13,6 +13,7 @@ from feedflipnets.eval.alignment import (
     depth_slope,
     min_theta_over_layers,
     per_matrix_cosine,
+    t_quantile_975,
 )
 
 DEPTHS = [2, 4, 8, 16]
@@ -104,12 +105,16 @@ def run_condition(
     }
 
 
-def _mean_min_theta(strategy: str) -> List[float]:
-    out = []
-    for depth in DEPTHS:
-        vals = [run_condition(strategy, depth, s)["min_theta"] for s in SEEDS]
-        out.append(float(np.mean(vals)))
-    return out
+def _min_theta_grid(strategy: str) -> Dict[int, List[float]]:
+    """min_theta per (depth, seed): {depth: [theta for each seed in SEEDS]}."""
+    return {
+        depth: [run_condition(strategy, depth, s)["min_theta"] for s in SEEDS] for depth in DEPTHS
+    }
+
+
+def _per_seed_slopes(grid: Dict[int, List[float]]) -> List[float]:
+    """OLS slope over depths computed independently for each seed."""
+    return [depth_slope(DEPTHS, [grid[d][i] for d in DEPTHS])[0] for i in range(len(SEEDS))]
 
 
 def fixed_dfa_slope_is_negative() -> bool:
@@ -140,12 +145,20 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     results = {}
     for strategy in ["dfa", "perturb"]:
-        thetas = _mean_min_theta(strategy)
-        slope, ci = depth_slope(DEPTHS, thetas)
+        grid = _min_theta_grid(strategy)
+        thetas = [float(np.mean(grid[d])) for d in DEPTHS]
+        # Slope is computed PER SEED and summarized as mean ± 95% t-CI across seeds,
+        # so the CI reflects cross-seed variance rather than a 4-point regression
+        # on per-depth means.
+        seed_slopes = _per_seed_slopes(grid)
+        ss = np.asarray(seed_slopes, dtype=np.float64)
+        n = len(ss)
+        ci = float(t_quantile_975(n - 1) * ss.std(ddof=1) / np.sqrt(n)) if n > 1 else float("inf")
         results[strategy] = {
             "depths": DEPTHS,
             "mean_min_theta": thetas,
-            "theta_slope_deg_per_layer": slope,
+            "per_seed_slopes": seed_slopes,
+            "theta_slope_deg_per_layer": float(ss.mean()),
             "slope_ci95": ci,
         }
     payload = json.dumps(_finite_or_none(results), indent=2)

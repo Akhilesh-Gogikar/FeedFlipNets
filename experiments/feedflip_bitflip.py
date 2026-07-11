@@ -337,7 +337,7 @@ def main() -> None:
     summary = {}
     for arm in args.arms:
         accs = [r["acc"] for r in rows if r["arm"] == arm]
-        ps = [r["sign_match_p"] for r in rows if r["arm"] == arm and r["sign_match_p"]]
+        ps = [r["sign_match_p"] for r in rows if r["arm"] == arm and r["sign_match_p"] is not None]
         summary[arm] = {
             "mean_acc": float(np.mean(accs)),
             "std_acc": float(np.std(accs)),

@@ -55,6 +55,10 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         help="Override the feedback/learning strategy",
     )
     parser.add_argument(
+        "--structure-type",
+        help="Structure type for --feedback structured (e.g. low_rank, block)",
+    )
+    parser.add_argument(
         "--loss",
         choices=["auto", "mse", "mae", "huber", "ce", "bce"],
         help="Override the training loss function",
@@ -169,7 +173,14 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         help="List registered experiments and exit",
     )
     parser.add_argument("--dump-config", type=Path, help="Dump the resolved config to a JSON file")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.feedback == "structured" and not args.structure_type:
+        parser.error("--feedback structured requires --structure-type (e.g. low_rank, block)")
+    # ponytail: 20newsgroups/ucr/ag_news loaders have no one_hot parameter; fail loudly
+    # instead of silently dropping the flag.
+    if args.one_hot is not None and args.dataset in {"20newsgroups", "ucr", "ag_news"}:
+        parser.error(f"--one-hot is not supported by the {args.dataset} loader")
+    return args
 
 
 def _load_override(path: Path) -> dict:
@@ -231,6 +242,8 @@ def main(argv: Iterable[str] | None = None) -> None:
 
     if args.feedback and args.feedback != "auto":
         config.setdefault("model", {})["strategy"] = args.feedback
+    if args.structure_type:
+        config.setdefault("model", {})["structure_type"] = args.structure_type
     if args.loss:
         config.setdefault("train", {})["loss"] = args.loss
     if args.metrics and args.metrics != "default":
@@ -249,8 +262,12 @@ def main(argv: Iterable[str] | None = None) -> None:
     config["offline"] = bool(args.offline)
 
     if args.dataset:
-        data_cfg = {"name": args.dataset, "options": {}}
-        opts = data_cfg["options"]
+        # Merge with the preset's data options (val_split/test_split/seed/one_hot...)
+        # when the dataset name matches; only CLI-provided flags override.
+        preset_data = config.get("data") or {}
+        preset_opts = preset_data.get("options") or {}
+        opts = dict(preset_opts) if preset_data.get("name") == args.dataset else {}
+        data_cfg = {"name": args.dataset, "options": opts}
         if args.val_split is not None:
             opts["val_split"] = float(args.val_split)
         if args.test_split is not None:
@@ -279,6 +296,8 @@ def main(argv: Iterable[str] | None = None) -> None:
     if args.seed is not None:
         config.setdefault("train", {})["seed"] = int(args.seed)
 
+    # cache.py reads FFN_DATA_OFFLINE first; keep both in sync.
+    os.environ["FFN_DATA_OFFLINE"] = "1" if args.offline else "0"
     os.environ["FEEDFLIP_DATA_OFFLINE"] = "1" if args.offline else "0"
 
     use_artifacts = config_source in {"experiment", "config"} and "sweep" not in config

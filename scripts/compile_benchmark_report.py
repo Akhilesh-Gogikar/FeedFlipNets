@@ -19,6 +19,7 @@ from __future__ import annotations
 import csv
 import json
 import math
+import sys
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -75,9 +76,22 @@ def _iter_runs(root: Path) -> Iterable[RunRecord]:
     for manifest_path in root.rglob("manifest.json"):
         run_dir = manifest_path.parent
         metrics_path = run_dir / "metrics_test.json"
-        manifest = _read_json(manifest_path)
-        metrics = _read_json(metrics_path)
-        timing = _read_json(run_dir / "timing.json")
+        try:
+            manifest = _read_json(manifest_path)
+            metrics = _read_json(metrics_path)
+            timing = _read_json(run_dir / "timing.json")
+        except Exception as exc:  # noqa: BLE001 - record and skip broken runs
+            print(
+                f"WARNING: failed to read run {run_dir}: {exc!r} — run excluded from aggregation",
+                file=sys.stderr,
+            )
+            continue
+        if not metrics:
+            print(
+                f"WARNING: run {run_dir} has missing/empty metrics_test.json — "
+                "it will not contribute metric values",
+                file=sys.stderr,
+            )
         # Optionally compute training throughput as well
         train_throughput = None
         try:
@@ -171,6 +185,7 @@ class SummaryRecord:
     count: int
     sem: float = 0.0
     ci95: float = 0.0
+    n_expected: int = 0
 
 
 GroupKey = Tuple[str, str, str, str, str, str]
@@ -181,13 +196,31 @@ def _aggregate(runs: Sequence[RunRecord]) -> List[SummaryRecord]:
     for run in runs:
         grouped[_group_key(run)].append(run)
 
+    # Expected seed count per config: the maximum group size observed. If any
+    # config has fewer surviving runs than this, survivorship must be visible.
+    expected = max((len(members) for members in grouped.values()), default=0)
+
     summary: List[SummaryRecord] = []
     for key, members in grouped.items():
         metrics_keys = set().union(*(run.metrics.keys() for run in members))
+        if len(members) < expected:
+            print(
+                "WARNING: SURVIVORSHIP — config "
+                f"{'/'.join(key)} has only {len(members)}/{expected} seed runs; "
+                "aggregates for this config average survivors only",
+                file=sys.stderr,
+            )
         for metric in sorted(metrics_keys):
             values = [run.metrics[metric] for run in members if metric in run.metrics]
             if not values:
                 continue
+            if len(values) < expected:
+                print(
+                    "WARNING: SURVIVORSHIP — config "
+                    f"{'/'.join(key)} metric '{metric}' aggregated over "
+                    f"n={len(values)}/{expected} seeds (missing/failed seeds dropped)",
+                    file=sys.stderr,
+                )
             # Use numpy for numerical robustness across Python versions
             mu = float(np.mean(values))
             sigma = float(np.std(values, ddof=1)) if len(values) > 1 else 0.0
@@ -208,6 +241,7 @@ def _aggregate(runs: Sequence[RunRecord]) -> List[SummaryRecord]:
                     count=n,
                     sem=sem,
                     ci95=ci95,
+                    n_expected=expected,
                 )
             )
     return summary
@@ -226,6 +260,13 @@ def _write_csv(path: Path, rows: Sequence[SummaryRecord]) -> None:
         writer.writeheader()
         for row in rows:
             writer.writerow(asdict(row))
+
+
+def _n_label(record: SummaryRecord) -> str:
+    """Render n as 'survivors/expected' when seeds are missing."""
+    if record.n_expected and record.count < record.n_expected:
+        return f"n={record.count}/{record.n_expected} (!)"
+    return str(record.count)
 
 
 def _format_pm(mu: float, err: float) -> str:
@@ -316,8 +357,8 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
             best_rec: SummaryRecord | None = None
             for v in variants:
                 r = _rec(v, primary)
-            if r and (best_rec is None or r.mean > best_rec.mean):
-                best_rec = r
+                if r and (best_rec is None or r.mean > best_rec.mean):
+                    best_rec = r
             # Best baseline among flip-off variants
             base_rec: SummaryRecord | None = None
             for v in variants:
@@ -348,7 +389,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                         best_label,
                         best_rec.strategy_variant,
                         flip_label,
-                        str(best_rec.count),
+                        _n_label(best_rec),
                         base_label,
                         f"{delta:.4f}" if base_rec is not None else "—",
                         f"{effect:.3f}" if base_rec is not None else "—",
@@ -383,7 +424,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                             _format_pm(record.mean, record.ci95),
                             record.strategy_variant,
                             f"{record.flip} ({record.flip_schedule})",
-                            str(record.count),
+                            _n_label(record),
                         ]
                     )
                     + " |"
@@ -416,7 +457,7 @@ def _write_markdown(runs: Sequence[RunRecord], summary: Sequence[SummaryRecord])
                         f"{record.flip} ({record.flip_schedule})",
                         record.metric,
                         _format_pm(record.mean, record.ci95) + highlight,
-                        str(record.count),
+                        _n_label(record),
                     ]
                 )
                 + " |"

@@ -117,8 +117,9 @@ def _train_bp(train, val, V, d, h, N, T, steps, lr, bs, seed):
             per_step = time.time() - s1
         if step % max(1, steps // 6) == 0:
             best = min(best, ev())
-    best = min(best, ev())
-    return best, time.time() - t0, per_step
+    final = ev()
+    best = min(best, final)
+    return final, best, time.time() - t0, per_step
 
 
 def _train_np(mode, train, val, V, d, h, N, T, steps, lr, bs, seed, adapt_cfg):
@@ -138,8 +139,9 @@ def _train_np(mode, train, val, V, d, h, N, T, steps, lr, bs, seed, adapt_cfg):
             b = m.eval_bpc(val)
             best = min(best, b)
             traj.append(round(b, 3))
-    best = min(best, m.eval_bpc(val))
-    return best, time.time() - t0, per_step, traj
+    final = m.eval_bpc(val)
+    best = min(best, final)
+    return final, best, time.time() - t0, per_step, traj
 
 
 _CORPUS_CACHE = {}
@@ -156,17 +158,23 @@ def _corpus(name):
 def run_condition(condition, d, h, N, T, bs, steps, lr, rho, Ksamp, lrR, seed, corpus="cfg"):
     """Run ONE (condition, seed). Returns {condition, seed, bpc, wall, per_step, traj}."""
     train, val, V, _floor = _corpus(corpus)
+    # Pre-registration note: the GO/NO-GO gate metric ("bpc") is the FINAL-checkpoint
+    # evaluation, held out from checkpoint selection; min-over-val ("bpc_best_val") is
+    # kept only as a selection/diagnostic value. Reporting min() over eval checkpoints
+    # for the gate would be an optimistic-selection bias on the pre-registered metric.
+    # Both arms (BP and NP conditions) are treated identically.
     if condition == "BP":
-        b, wt, ps = _train_bp(train, val, V, d, h, N, T, steps, lr, bs, seed)
+        b, b_best, wt, ps = _train_bp(train, val, V, d, h, N, T, steps, lr, bs, seed)
         traj = []
     else:
-        b, wt, ps, traj = _train_np(
+        b, b_best, wt, ps, traj = _train_np(
             condition, train, val, V, d, h, N, T, steps, lr, bs, seed, (rho, Ksamp, lrR)
         )
     return {
         "condition": condition,
         "seed": seed,
         "bpc": b,
+        "bpc_best_val": b_best,
         "wall": wt,
         "per_step": ps,
         "traj": traj,

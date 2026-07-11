@@ -119,3 +119,19 @@ def test_efixed_transpose_perturbation_leaves_two_invariant_but_moves_transport(
     P2["Wo"] = P["Wo"] + 5.0
     ctrl1 = e_top @ P2["Wo"].T
     assert np.max(np.abs(ctrl1 - ctrl0)) > 1.0  # the forbidden path is transpose-sensitive
+
+    # ② DOES move under the Wo perturbation — but only through the FORWARD matmul it
+    # legitimately uses (Ctx_pert @ P["Wo"] inside its local-loss recompute). Exact
+    # invariance to Wo would be wrong for a forward reader; transpose-freedom is pinned
+    # by the AST checks above. Execute the moved half so it isn't vacuous:
+    g1 = ghat_ctx_nodepert(P2, c, e_top, rho=0.02, K_samp=8, rng=np.random.default_rng(1))
+    assert not np.allclose(g1, g0)
+
+    # The executable INVARIANT half: ② never reads Wq/Wk/Wv (with the cache c fixed),
+    # so perturbing them must leave the estimate bit-identical (same rng seed).
+    P3 = dict(P)
+    P3["Wq"] = P["Wq"] + 5.0
+    P3["Wk"] = P["Wk"] + 5.0
+    P3["Wv"] = P["Wv"] + 5.0
+    g2 = ghat_ctx_nodepert(P3, c, e_top, rho=0.02, K_samp=8, rng=np.random.default_rng(1))
+    assert np.allclose(g2, g0)

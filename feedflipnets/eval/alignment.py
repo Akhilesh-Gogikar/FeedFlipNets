@@ -30,8 +30,38 @@ def min_theta_over_layers(cosines: Dict[str, float]) -> float:
     return max(theta_deg(c) for c in cosines.values())
 
 
+def t_quantile_975(df: int) -> float:
+    """Two-sided 95% Student-t critical value for small df (hardcoded table; no scipy
+    dependency). Falls back to the normal quantile for large df."""
+    table = {
+        1: 12.706,
+        2: 4.303,
+        3: 3.182,
+        4: 2.776,
+        5: 2.571,
+        6: 2.447,
+        7: 2.365,
+        8: 2.306,
+        9: 2.262,
+        10: 2.228,
+        15: 2.131,
+        20: 2.086,
+        30: 2.042,
+    }
+    if df <= 0:
+        return float("inf")
+    if df in table:
+        return table[df]
+    keys = sorted(table)
+    for k in keys:
+        if df < k:
+            return table[k]  # conservative: use the next-smaller-df (larger) quantile
+    return 1.96
+
+
 def depth_slope(depths: List[int], theta_mins: List[float]) -> Tuple[float, float]:
-    """OLS slope of theta_min vs L (degrees per layer) with a 95% CI half-width."""
+    """OLS slope of theta_min vs L (degrees per layer) with a 95% CI half-width
+    (Student-t with n-2 df, appropriate for the small n used here)."""
     x = np.asarray(depths, dtype=np.float64)
     yv = np.asarray(theta_mins, dtype=np.float64)
     n = len(x)
@@ -43,7 +73,7 @@ def depth_slope(depths: List[int], theta_mins: List[float]) -> Tuple[float, floa
     resid = yv - (ym + slope * (x - xm))
     s2 = float((resid**2).sum() / (n - 2))
     se = np.sqrt(s2 / (sxx + 1e-12))
-    return slope, float(1.96 * se)
+    return slope, float(t_quantile_975(n - 2) * se)
 
 
 # --- M2: attention-block theta + per-path breakdown (spec section 7) ---

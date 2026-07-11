@@ -14,9 +14,17 @@ def test_relu_and_hadamard_padding():
     relu_out = relu(x)
     assert np.allclose(relu_out, np.array([0.0, 0.0, 2.5]))
 
-    padded = hadamard_pre(np.ones((2, 3), dtype=np.float32))
+    # hadamard_pre pads to the next power of two and divides by sqrt(next_pow/size),
+    # so each row's norm shrinks by exactly that factor (padding adds zeros).
+    rng = np.random.default_rng(0)
+    rows = rng.standard_normal((2, 3)).astype(np.float32)
+    padded = hadamard_pre(rows)
     assert padded.shape[-1] == 4
-    assert np.isclose(np.linalg.norm(padded[0]), np.linalg.norm(padded[1]))
+    scale = np.sqrt(4 / 3)
+    for i in range(2):
+        assert np.allclose(padded[i, :3] * scale, rows[i], atol=1e-6)
+        assert np.allclose(padded[i, 3:], 0.0)
+        assert np.isclose(np.linalg.norm(padded[i]), np.linalg.norm(rows[i]) / scale, atol=1e-6)
 
 
 def test_quantization_deterministic_vs_stochastic():
