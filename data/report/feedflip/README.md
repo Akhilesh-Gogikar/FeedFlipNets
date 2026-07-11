@@ -171,6 +171,49 @@ Three findings survive:
   The frontier reading therefore rests on the vote arms, and P1's predicted
   ordering (ishad ≥ stoch ≥ magq2) is refuted.
 
+## 7. Round 4 — gentle-step int8 SR shadow (pre-registered): ishad rescued, but it lands on the same plateau; the bp ceiling control is dynamically invalid.
+`experiments/feedflip_ishad_gentle.py`; pre-registration + gates frozen at commit
+`5dbe4fc` (`PREREG_round4_ishad_gentle.md`) **before** any full run. Round 3's ishad
+arms (E ∈ {2, 8}) died in an absorbing state; round 4 re-probes the identical int8
+SR-shadow mechanism at E ∈ {0.25, 0.5, 1.0}, adding a bit-exact-BP oracle per E as a
+*ceiling control* (never gate-eligible) to separate accumulation-precision capacity
+from feedback quality. Results (`feedflip_round4.json`, n=3):
+
+| arm | mean acc | late sign-match `p` | dead seeds |
+| --- | -------- | ------------------- | ---------- |
+| **ishad_e025_st512** | **0.572** ± .014 | **0.970** | 0 |
+| ishad_e05_st512 | 0.556 ± .011 | 0.964 | 0 |
+| ishad_e025_farand | 0.548 ± .013 | 0.782 | 0 |
+| ishad_e05_farand | 0.517 ± .023 | 0.766 | 0 |
+| ishad_e10_farand | 0.441 ± .079 | 0.753 | 1 |
+| ishad_e10_st512 | 0.390 ± .085 | 0.857 | 2 |
+| ishad_e025_bp (oracle) | 0.468 ± .098 | — | 1 |
+| ishad_e05_bp / e10_bp (oracle) | 0.330 ± .000 | — | 3 / 3 |
+
+**Gate: NO-GO** (best eligible 0.572 < 0.60; strict 0.604 unreached). **P4 returned
+no precision conclusion** — the frozen validity guard fired: no bp oracle arm
+survived dead-free. Findings:
+
+- **Round 3's ishad caveat is confirmed as a step-scale dynamics failure, not
+  mechanism incapacity.** At E = 0.25 the same int8 SR shadow trains cleanly to
+  0.572 — statistically indistinguishable from round-3's best vote arm (0.574).
+  Accuracy is monotone in gentleness (0.572 → 0.556 → dead-ridden as E rises;
+  the collapse boundary sits between E = 0.5 and E = 1.0).
+- **The 8-bit-state plateau is mechanism-independent.** Vote counters and SR
+  shadows — two different ≤ 8 b/w accumulators — both cap at ≈ 0.57, reinforcing
+  the state-bits-frontier reading of §6 rather than revising it.
+- **Transport quality is again first-order** (replicating §6's stoch1 reversal in
+  a second mechanism): st512 − farand = +0.023 (E=.25) / +0.039 (E=.5), late `p`
+  0.97 vs 0.78.
+- **The bp oracle is dynamically invalid, not weak (exploratory).** BP-fed shadows
+  died at every E (even E=0.25, 1/3 seeds; alive seeds reached 0.530/0.545):
+  exact gradients flow *through* downstream ternary weights, so when layers
+  ternarize toward zero the gradient vanishes and SR(0) = 0 is absorbing. B-matrix
+  feedback bypasses downstream W and never died at E ≤ 0.5 — feedback-driven arms
+  are *more* stable than exact-gradient arms here. The question the oracle was
+  built to answer — would bit-exact BP through an 8-bit accumulator reach 0.604? —
+  remains open and needs a liveness-protected oracle design.
+
 ## The unifying insight: cosine alignment ≠ per-weight sign
 AR-DFA's large *cosine*-alignment gain on attention (worst-case angle 90°→46°, `data/report/m2/`)
 does **not** translate into per-weight *sign* correctness (`p ≈ 0.53`, barely above chance). Bit-flips
@@ -194,3 +237,15 @@ NO-GO rounds the residual gap traces a diminishing-returns **state-bits frontier
 precision*. One second-order reversal: transport quality becomes first-order again
 (+0.030) once votes are unbiased and high-rate (stoch1), so "stale/random feedback is
 free" is a property of magnitude-blind voting, not of the mechanism family.
+
+**Round-4 revision (§7):** the state-bits frontier survives a fourth pre-registered
+attack, now with the mechanism axis controlled: an int8 SR shadow at the correct step
+scale (E=0.25) lands on the same ≈0.57 plateau as the vote counters — the frontier is
+a property of ≤ 8 b/w accumulation *state*, not of any particular accumulator. The
+transport-quality reversal replicates (+0.02–0.04 across two mechanisms). One caveat
+now attaches to the frontier's far end: the 0.604 float-shadow anchor has not been
+shown reachable by exact gradients under 8-bit accumulation, because BP-fed shadows
+are dynamically unstable in ternary nets (gradient paths die through ternarized
+layers, an absorbing state that transport-free feedback happens to be immune to) —
+so "precision is what the shadow buys" rests on the vote/shadow plateau, pending a
+liveness-protected oracle.
