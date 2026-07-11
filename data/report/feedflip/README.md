@@ -7,6 +7,29 @@ plus a small signed integer flip-accumulator `c` per weight. Each step: `c += -s
 feedback is DFA (cheap, transport-free, shadow-free). Prototypes: `experiments/feedflip_bitflip.py`
 (MLP), `experiments/ternary_cpu_headtohead.py`, and the transformer flip study (scratchpad).
 
+## Bottom line (five pre-registered rounds)
+
+On the frozen MLP benchmark, a float32 shadow trained through the ternary forward pass reaches
+**0.604** accuracy. No transport-free method at ≤ 8 bits of optimizer state per weight beat **0.574**
+across five rounds, each with a gate frozen before the run. The residual gap is **not** what the first
+four rounds successively guessed: not per-weight sign fidelity (round 2 gave the mechanism bit-exact
+gradient signs and gained almost nothing), and not accumulator precision (round 5's int8 shadow
+*matched* the anchor, 0.609, once it borrowed the anchor's update rule). What remains is a single,
+sharply located obstacle: a transport-free feedback signal good enough to drive a **magnitude-scaled,
+fixed-grid weight step**, the update rule that separates the 8-bit plateau from the float anchor.
+
+| round (§) | question it froze | gate | what it established |
+| --- | --- | --- | --- |
+| 1 (§4) | can a better transport-free *sign* close the gap? | NO-GO · 0.541 | sign quality alone does not; the barrier holds |
+| 2 (§5) | is sign *fidelity* the bottleneck? | NO-GO · 0.551 at `p=1.0` | no; even perfect signs stall (overturns round 1) |
+| 3 (§6) | do magnitude-carrying votes help? | NO-GO · 0.574 | partly; looked like a state-*precision* frontier |
+| 4 (§7) | does a gentler int8 shadow break the plateau? | NO-GO · 0.572 | same plateau; the precision question stays open |
+| 5 (§8) | can 8-bit state reach the anchor with exact grads? | gate NO-GO · 0.554; oracle **0.609** | precision is *not* binding (overturns rounds 3–4); the gap is the update rule |
+
+Sections 1–3 set up the mechanism and the barrier; sections 4–8 are the five rounds above, in order.
+Each round's later revision (bottom of this page) records where a subsequent round corrected it, so the
+reasoning trail is honest rather than retrofitted.
+
 ## 1. Is DFA a good CPU ternary trainer? (gradient-descent framing) — No.
 Fair head-to-head with **absmean-scaled** ternary (BitNet/TWN recipe; raw ±1 blows up BP+STE),
 deep MLP, n=3:
