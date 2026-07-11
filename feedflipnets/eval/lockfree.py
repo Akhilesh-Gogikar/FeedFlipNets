@@ -98,10 +98,10 @@ def block_transpose_perturb_change(strategy, block, x_np, e_attn, e_mlp):
     tainted = copy.deepcopy(block)
     tainted.Wo = tainted.Wo + 5.0  # would change Wo.T if the strategy read it
     tainted.W2 = tainted.W2 + 5.0
-    # re-run ① with the SAME cache-source block but tainted transposes: ① ignores them.
-    # (block_grads recomputes the forward cache from block's weights; to isolate the TRANSPOSE input
-    # we compare against the positive control on the SAME tainted block.)
-    g_b = strategy.block_grads(block, x_np, e_attn=e_attn, e_mlp=e_mlp)
+    # re-run ① on the TAINTED block: a lock-free strategy never dereferences Wo.T/W2.T
+    # (its surrogates R_O/R_2 are fixed), so its grads for the upstream params are invariant;
+    # a transport-using strategy reads the tainted transposes and changes.
+    g_b = strategy.block_grads(tainted, x_np, e_attn=e_attn, e_mlp=e_mlp)
     one_change = max(
         float(np.max(np.abs(g_a[n] - g_b[n]))) for n in ["Wq", "Wk", "Wv", "Wo", "W1", "W2"]
     )

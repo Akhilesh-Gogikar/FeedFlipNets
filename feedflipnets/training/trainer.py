@@ -202,6 +202,7 @@ class Trainer:
         checkpoint_dir: str | Path | None = None,
         grad_clip: float | None = None,
         alignment_probe_steps: int | None = None,
+        eval_on_shadow: bool = False,
     ) -> RunResult:
         if device != "cpu":  # pragma: no cover - guardrail
             raise ValueError("Only CPU execution is supported in the reference trainer")
@@ -295,6 +296,7 @@ class Trainer:
                     flip_enabled=False,
                     split_name="val",
                     grad_clip=None,
+                    eval_quantized=flip_enabled and not eval_on_shadow,
                 )
                 self._emit_epoch("val", epoch, val_metrics, split_loggers)
 
@@ -312,6 +314,7 @@ class Trainer:
                     flip_enabled=False,
                     split_name="test",
                     grad_clip=None,
+                    eval_quantized=flip_enabled and not eval_on_shadow,
                 )
                 self._emit_epoch("test", epoch, test_metrics, split_loggers)
 
@@ -359,6 +362,7 @@ class Trainer:
         split_name: str,
         grad_clip: float | None,
         alignment_probe_steps: int | None = None,
+        eval_quantized: bool = False,
     ) -> tuple[Mapping[str, float], StrategyState]:
         iterator = iter(loader)
         losses: list[float] = []
@@ -379,7 +383,23 @@ class Trainer:
         grad_norm_sum = 0.0
         grad_norm_count = 0
 
-        if not training or not flip_enabled:
+        saved_forward: list[Array] | None = None
+        saved_quant_stats: list[float] | None = None
+        if not training:
+            if eval_quantized:
+                # Evaluate the DEPLOYED (ternary-projected) weights, not the raw
+                # float latents. Use the deterministic projection so eval never
+                # advances the stochastic quantisation RNG, and restore the
+                # forward weights afterwards so training state is untouched.
+                saved_forward = [w.copy() for w in self.model.weights]
+                saved_quant_stats = list(self.model.last_quant_stats)
+                self.model.weights = [
+                    quantize_ternary_det(shadow, self.model.tau)
+                    for shadow in self.model.shadow_weights
+                ]
+            else:
+                self.model.copy_shadow_to_forward()
+        elif not flip_enabled:
             self.model.copy_shadow_to_forward()
 
         for step_idx in range(max(1, steps)):
@@ -526,6 +546,9 @@ class Trainer:
             metrics["sigma_q2_max"] = float(np.max(per_layer))
             for i, val in enumerate(per_layer):
                 metrics[f"sigma_q2_l{i}"] = float(val)
+        if saved_forward is not None:
+            self.model.weights = saved_forward
+            self.model.last_quant_stats = saved_quant_stats or [0.0 for _ in saved_forward]
         return metrics, current_state
 
     def _emit_epoch(
